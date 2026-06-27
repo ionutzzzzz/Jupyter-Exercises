@@ -1,6 +1,61 @@
 import numpy as np
 import pandas as pd
 
+_last_axes = None
+
+def _post_execute_hook():
+    global _last_axes
+    try:
+        import matplotlib.pyplot as plt
+        fig = plt.gcf()
+        axes = fig.get_axes()
+        if axes:
+            def axes_key(ax):
+                return len(ax.lines) + len(ax.patches) + len(ax.collections) + len(ax.images)
+            active_ax = max(axes, key=axes_key)
+            if axes_key(active_ax) > 0:
+                _last_axes = active_ax
+    except Exception:
+        pass
+
+try:
+    from IPython import get_ipython
+    _ip = get_ipython()
+    if _ip is not None:
+        _ip.events.register('post_execute', _post_execute_hook)
+except Exception:
+    pass
+
+try:
+    import matplotlib.pyplot as plt
+    _orig_show = plt.show
+    def _custom_show(*args, **kwargs):
+        global _last_axes
+        try:
+            fig = plt.gcf()
+            axes = fig.get_axes()
+            if axes:
+                def axes_key(ax):
+                    return len(ax.lines) + len(ax.patches) + len(ax.collections) + len(ax.images)
+                active_ax = max(axes, key=axes_key)
+                if axes_key(active_ax) > 0:
+                    _last_axes = active_ax
+        except Exception:
+            pass
+        return _orig_show(*args, **kwargs)
+    plt.show = _custom_show
+except Exception:
+    pass
+
+def get_active_axes():
+    global _last_axes
+    import matplotlib.pyplot as plt
+    ax = plt.gca()
+    if len(ax.lines) == 0 and len(ax.patches) == 0 and len(ax.collections) == 0 and len(ax.images) == 0:
+        if _last_axes is not None:
+            return _last_axes
+    return ax
+
 class ExerciseStep:
     def __init__(self, check_fn, hint_msg, solution_msg):
         self.check_fn = check_fn
@@ -140,7 +195,7 @@ def ch2_s3_check(func):
 
 def ch3_s1_check():
     import matplotlib.pyplot as plt
-    ax = plt.gca()
+    ax = get_active_axes()
     title = ax.get_title()
     xlabel = ax.get_xlabel()
     ylabel = ax.get_ylabel()
@@ -157,7 +212,7 @@ def ch3_s1_check():
 
 def ch3_s2_check():
     import matplotlib.pyplot as plt
-    ax = plt.gca()
+    ax = get_active_axes()
     if len(ax.collections) == 0:
         return "Could not find scatter plot points. Make sure you plotted a scatter plot."
     if len(ax.collections) == 0 and len(ax.lines) == 0:
@@ -167,7 +222,7 @@ def ch3_s2_check():
 
 def ch3_s3_check():
     import matplotlib.pyplot as plt
-    ax = plt.gca()
+    ax = get_active_axes()
     collections = ax.collections
     has_quadmesh = False
     for coll in collections:
@@ -1056,13 +1111,13 @@ def ch2_s3_easy_check(s):
 
 def ch3_s1_easy_check():
     import matplotlib.pyplot as plt
-    ax = plt.gca()
+    ax = get_active_axes()
     if len(ax.lines) == 0: return "No line plot was drawn. Use plt.plot(x, y)."
     return True
 
 def ch3_s2_easy_check():
     import matplotlib.pyplot as plt
-    ax = plt.gca()
+    ax = get_active_axes()
     if not ax.get_title() or ax.get_title().strip() == "": return "Plot is missing a title."
     if not ax.get_xlabel() or ax.get_xlabel().strip() == "": return "Plot is missing X-axis label."
     if not ax.get_ylabel() or ax.get_ylabel().strip() == "": return "Plot is missing Y-axis label."
@@ -1070,7 +1125,7 @@ def ch3_s2_easy_check():
 
 def ch3_s3_easy_check():
     import matplotlib.pyplot as plt
-    ax = plt.gca()
+    ax = get_active_axes()
     if len(ax.collections) == 0: return "No scatter plot collection found. Make sure you used sns.scatterplot."
     return True
 
