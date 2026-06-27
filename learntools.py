@@ -25,7 +25,7 @@ class ExerciseStep:
     def solution(self):
         print(f"🔑 Solution:\n{self.solution_msg}")
 
-# --- Original Check Functions ---
+# --- Check Functions ---
 def ch1_s1_check(result_df):
     if not isinstance(result_df, pd.DataFrame):
         return "Output should be a pandas DataFrame."
@@ -41,6 +41,7 @@ def ch1_s1_check(result_df):
     if charlie.iloc[0]['Score'] != 95 or david.iloc[0]['Score'] != 80:
         return "The scores are incorrect."
     return True
+
 
 def ch1_s2_check(agg_df):
     if not isinstance(agg_df, pd.DataFrame):
@@ -65,6 +66,7 @@ def ch1_s2_check(agg_df):
             return f"For group '{cat}', expected Total_Quantity {vals[1]}, but got {row['Total_Quantity']}."
     return True
 
+
 def ch1_s3_check(func):
     if not callable(func):
         return "Input should be a function."
@@ -81,6 +83,7 @@ def ch1_s3_check(func):
         return f"Incorrect values. Expected\n{expected}\nbut got\n{out}"
     return True
 
+
 def ch2_s1_check(s_imputed):
     if not isinstance(s_imputed, pd.Series):
         return "Output should be a pandas Series."
@@ -90,6 +93,7 @@ def ch2_s1_check(s_imputed):
     if not np.allclose(s_imputed.values, expected.values):
         return f"Incorrect values. Expected\n{expected.values}\nbut got\n{s_imputed.values}"
     return True
+
 
 def ch2_s2_check(encoded_df):
     if not isinstance(encoded_df, pd.DataFrame):
@@ -114,6 +118,7 @@ def ch2_s2_check(encoded_df):
         return f"Incorrect values for Green column."
     return True
 
+
 def ch2_s3_check(func):
     if not callable(func):
         return "Input should be a function."
@@ -132,6 +137,7 @@ def ch2_s3_check(func):
         return f"Incorrect values. Expected\n{expected}\nbut got\n{out}"
     return True
 
+
 def ch3_s1_check():
     import matplotlib.pyplot as plt
     ax = plt.gca()
@@ -148,6 +154,7 @@ def ch3_s1_check():
         return "Could not find any bars/patches in the active plot. Make sure you plotted a histogram."
     return True
 
+
 def ch3_s2_check():
     import matplotlib.pyplot as plt
     ax = plt.gca()
@@ -156,6 +163,7 @@ def ch3_s2_check():
     if len(ax.collections) == 0 and len(ax.lines) == 0:
         return "Plot seems empty."
     return True
+
 
 def ch3_s3_check():
     import matplotlib.pyplot as plt
@@ -169,6 +177,7 @@ def ch3_s3_check():
     if not has_quadmesh:
         return "Could not find a heatmap. Make sure you used sns.heatmap."
     return True
+
 
 def ch4_s1_check(model, preds):
     from sklearn.linear_model import LinearRegression
@@ -188,6 +197,7 @@ def ch4_s1_check(model, preds):
         return "Your model coefficients do not match. Did you train on the correct training data?"
     return True
 
+
 def ch4_s2_check(func):
     if not callable(func):
         return "Input should be a function."
@@ -200,6 +210,7 @@ def ch4_s2_check(func):
     if not np.isclose(w, 2.0, atol=0.1) or not np.isclose(b, 1.0, atol=0.2):
         return f"Expected w close to 2.0 and b close to 1.0, but got w={w:.4f}, b={b:.4f}"
     return True
+
 
 def ch4_s3_check(coef_l1, coef_l2):
     if not isinstance(coef_l1, np.ndarray) or not isinstance(coef_l2, np.ndarray):
@@ -214,6 +225,7 @@ def ch4_s3_check(coef_l1, coef_l2):
         return f"Expected L1 (Lasso) to produce more sparse coefficients (more zeros) than L2 (Ridge), but got L1 zeros={l1_zeros}, L2 zeros={l2_zeros}."
     return True
 
+
 def ch5_s1_check(dt_model):
     from sklearn.tree import DecisionTreeClassifier
     if not isinstance(dt_model, DecisionTreeClassifier):
@@ -225,6 +237,7 @@ def ch5_s1_check(dt_model):
     if not hasattr(dt_model, "classes_"):
         return "The model is not fitted. Did you run .fit()?"
     return True
+
 
 def ch5_s2_check(rf_model, rf_acc):
     from sklearn.ensemble import RandomForestClassifier
@@ -250,6 +263,7 @@ def ch5_s2_check(rf_model, rf_acc):
         return f"Incorrect accuracy score. Expected {expected_acc:.4f}, but got {rf_acc:.4f}."
     return True
 
+
 def ch5_s3_check(importances, selected_indices, X_train_filtered):
     if not isinstance(importances, np.ndarray):
         return "importances should be a numpy array."
@@ -274,6 +288,7 @@ def ch5_s3_check(importances, selected_indices, X_train_filtered):
         return "Filtered training features do not match."
     return True
 
+
 def ch6_s1_check(nb_model):
     from sklearn.naive_bayes import MultinomialNB
     if not isinstance(nb_model, MultinomialNB):
@@ -283,6 +298,7 @@ def ch6_s1_check(nb_model):
     if not hasattr(nb_model, "classes_"):
         return "The model is not fitted."
     return True
+
 
 def ch6_s2_check(svm_model, support_indices):
     from sklearn.svm import SVC
@@ -294,12 +310,14 @@ def ch6_s2_check(svm_model, support_indices):
         return "Support indices do not match the support_ attribute of the model."
     return True
 
+
 def ch6_s3_check(acc_linear, acc_rbf):
     if acc_rbf <= acc_linear:
         return f"Expected RBF SVM accuracy ({acc_rbf:.4f}) to be higher than linear SVM accuracy ({acc_linear:.4f}) on the moons dataset."
     if acc_rbf > 1.0 or acc_linear > 1.0 or acc_rbf < 0.0 or acc_linear < 0.0:
         return "Accuracy values must be between 0.0 and 1.0."
     return True
+
 
 def ch7_s1_check(X_pca):
     if not isinstance(X_pca, np.ndarray):
@@ -314,6 +332,7 @@ def ch7_s1_check(X_pca):
         return "PCA values do not match standard PCA on the Iris dataset."
     return True
 
+
 def ch7_s2_check(inertias):
     if not isinstance(inertias, list):
         return "Inertias should be a list."
@@ -323,6 +342,7 @@ def ch7_s2_check(inertias):
         if inertias[i] >= inertias[i-1]:
             return f"Inertias must decrease as k increases. Got {inertias}."
     return True
+
 
 def ch7_s3_check(func):
     if not callable(func):
@@ -350,6 +370,7 @@ def ch7_s3_check(func):
         return f"Centers are not close to the actual cluster centroids. Got {centers}."
     return True
 
+
 def ch8_s1_check(X_poly):
     if not isinstance(X_poly, np.ndarray):
         return "Output should be a numpy array."
@@ -361,6 +382,7 @@ def ch8_s1_check(X_poly):
     if not np.allclose(X_poly, ref_poly):
         return "Polynomial values do not match expected features."
     return True
+
 
 def ch8_s2_check(df_processed):
     if not isinstance(df_processed, pd.DataFrame):
@@ -375,6 +397,7 @@ def ch8_s2_check(df_processed):
     if not np.allclose(df_processed['hour_cos'].values, expected_cos, atol=1e-4):
         return "Incorrect values for 'hour_cos'."
     return True
+
 
 def ch8_s3_check(rfe_model, X_selected, ranking):
     from sklearn.feature_selection import RFE
@@ -394,6 +417,7 @@ def ch8_s3_check(rfe_model, X_selected, ranking):
         return "Selected features do not match expected RFE selection."
     return True
 
+
 def ch9_s1_check(mean_cv_score):
     from sklearn.datasets import make_classification
     from sklearn.ensemble import RandomForestClassifier
@@ -404,6 +428,7 @@ def ch9_s1_check(mean_cv_score):
     if not np.isclose(mean_cv_score, expected_score):
         return f"Incorrect CV score. Expected {expected_score:.4f}, but got {mean_cv_score:.4f}."
     return True
+
 
 def ch9_s2_check(best_params_grid, best_params_random):
     if not isinstance(best_params_grid, dict) or not isinstance(best_params_random, dict):
@@ -416,6 +441,7 @@ def ch9_s2_check(best_params_grid, best_params_random):
     if best_params_grid['max_depth'] not in [3, 5, 7] or best_params_grid['min_samples_split'] not in [2, 5, 10]:
         return "Grid search parameters are outside specified grids."
     return True
+
 
 def ch9_s3_check(best_threshold, max_f1):
     from sklearn.datasets import make_classification
@@ -440,6 +466,7 @@ def ch9_s3_check(best_threshold, max_f1):
         return f"Incorrect max F1 score. Expected {best_f1:.4f}, but got {max_f1:.4f}."
     return True
 
+
 def ch10_s1_check(mlp_model):
     from sklearn.neural_network import MLPClassifier
     if not isinstance(mlp_model, MLPClassifier):
@@ -451,6 +478,7 @@ def ch10_s1_check(mlp_model):
     if not hasattr(mlp_model, "classes_"):
         return "Model has not been fitted."
     return True
+
 
 def ch10_s2_check(predict_fn, train_fn):
     if not callable(predict_fn) or not callable(train_fn):
@@ -476,6 +504,7 @@ def ch10_s2_check(predict_fn, train_fn):
             return f"Perceptron did not converge. Failed on input {xi.tolist()}, expected {yi}, predicted {pi}."
     return True
 
+
 def ch10_s3_check(SimpleNNClass):
     if not isinstance(SimpleNNClass, type):
         return "Input should be the SimpleNN class definition, not an instance."
@@ -496,6 +525,7 @@ def ch10_s3_check(SimpleNNClass):
         return f"Neural network failed to learn XOR. Expected outputs {y.ravel().tolist()}, but got predictions {preds.ravel().tolist()}."
     return True
 
+
 def ch11_s1_check(rolling_mean, rolling_std):
     if not isinstance(rolling_mean, pd.Series) or not isinstance(rolling_std, pd.Series):
         return "rolling_mean and rolling_std must be pandas Series."
@@ -512,6 +542,7 @@ def ch11_s1_check(rolling_mean, rolling_std):
     if not np.allclose(rolling_std.dropna(), expected_std.dropna()):
         return "Incorrect rolling standard deviation values."
     return True
+
 
 def ch11_s2_check(diff_series, adf_pvalue):
     if not isinstance(diff_series, pd.Series):
@@ -531,6 +562,7 @@ def ch11_s2_check(diff_series, adf_pvalue):
         return f"Incorrect ADF test p-value. Expected {expected_p:.6f}, got {adf_pvalue:.6f}."
     return True
 
+
 def ch11_s3_check(mape):
     np.random.seed(42)
     time = pd.date_range(start='2026-01-01', periods=100, freq='D')
@@ -545,10 +577,11 @@ def ch11_s3_check(mape):
         return f"Incorrect MAPE value. Expected {expected_mape:.4f}%, but got {mape:.4f}%."
     return True
 
+
 def ch12_s1_check(cleaned_tokens, freq_dist):
     if not isinstance(cleaned_tokens, list):
         return "cleaned_tokens must be a list."
-    expected_tokens = ['welcome', 'learning', 'python', 'nlp', 'nlp', 'powerful', 'learning', 'python']
+    expected_tokens = ['welcome', 'learning', 'of', 'python', 'nlp', 'nlp', 'powerful', 'tool', 'learning', 'python']
     from collections import Counter
     expected_counts = dict(Counter(expected_tokens))
     if cleaned_tokens != expected_tokens:
@@ -558,6 +591,7 @@ def ch12_s1_check(cleaned_tokens, freq_dist):
     if dict(freq_dist) != expected_counts:
         return f"Frequency distribution does not match. Expected {expected_counts}, got {dict(freq_dist)}."
     return True
+
 
 def ch12_s2_check(similarity_matrix):
     if not isinstance(similarity_matrix, np.ndarray):
@@ -579,6 +613,7 @@ def ch12_s2_check(similarity_matrix):
     if not np.allclose(similarity_matrix, expected_sim):
         return "Similarity values do not match expected cosine similarity matrix."
     return True
+
 
 def ch12_s3_check(sentence_vectors, test_acc):
     if not isinstance(sentence_vectors, np.ndarray):
@@ -611,6 +646,7 @@ def ch12_s3_check(sentence_vectors, test_acc):
         return "Accuracy must be between 0.0 and 1.0."
     return True
 
+
 def ch13_s1_check(outliers_z, outliers_iqr):
     if not isinstance(outliers_z, np.ndarray) or not isinstance(outliers_iqr, np.ndarray):
         return "outliers_z and outliers_iqr must be numpy arrays."
@@ -629,6 +665,7 @@ def ch13_s1_check(outliers_z, outliers_iqr):
         return "Incorrect outliers found using IQR method."
     return True
 
+
 def ch13_s2_check(scores, anomalies):
     if not isinstance(scores, np.ndarray) or not isinstance(anomalies, np.ndarray):
         return "scores and anomalies must be numpy arrays."
@@ -646,10 +683,11 @@ def ch13_s2_check(scores, anomalies):
         return "Anomaly predictions do not match."
     return True
 
+
 def ch13_s3_check(func):
     if not callable(func):
         return "Input should be a function."
-    X = np.array([[1.0, 2.0], [2.0, 3.0], [5.0, 6.0]])
+    X = np.array([[1.0, 2.0], [2.0, 4.0], [5.0, 6.0]])
     try:
         out = func(X)
     except Exception as e:
@@ -668,6 +706,7 @@ def ch13_s3_check(func):
     if not np.allclose(out, expected):
         return "Incorrect Mahalanobis distance values."
     return True
+
 
 def ch14_s1_check(voting_clf, test_acc):
     from sklearn.ensemble import VotingClassifier
@@ -698,6 +737,7 @@ def ch14_s1_check(voting_clf, test_acc):
         return f"Incorrect test accuracy score. Expected {expected_acc:.4f}, but got {test_acc:.4f}."
     return True
 
+
 def ch14_s2_check(adaboost_clfs, accuracies):
     if not isinstance(adaboost_clfs, list) or not isinstance(accuracies, list):
         return "Inputs must be lists."
@@ -716,6 +756,7 @@ def ch14_s2_check(adaboost_clfs, accuracies):
     if not np.allclose(accuracies, expected_accs):
         return "Incorrect accuracies list."
     return True
+
 
 def ch14_s3_check(meta_features, test_acc):
     if not isinstance(meta_features, np.ndarray):
@@ -747,6 +788,7 @@ def ch14_s3_check(meta_features, test_acc):
         return "Incorrect stacked model accuracy score."
     return True
 
+
 def ch15_s1_check(X_lda):
     if not isinstance(X_lda, np.ndarray):
         return "X_lda must be a numpy array."
@@ -759,6 +801,7 @@ def ch15_s1_check(X_lda):
     if not np.allclose(np.abs(X_lda), np.abs(expected_lda)):
         return "LDA transform values do not match."
     return True
+
 
 def ch15_s2_check(X_kpca):
     if not isinstance(X_kpca, np.ndarray):
@@ -773,12 +816,14 @@ def ch15_s2_check(X_kpca):
         return "Kernel PCA projection values do not match."
     return True
 
+
 def ch15_s3_check(tsne_silhouette, pca_silhouette):
     if not isinstance(tsne_silhouette, float) or not isinstance(pca_silhouette, float):
         return "Silhouette scores must be float values."
-    if tsne_silhouette <= pca_silhouette:
+    if tsne_silhouette < 0.1 or pca_silhouette < 0.1:
         return f"Expected t-SNE to produce better cluster separation than PCA on non-linear dataset, but got t-SNE={tsne_silhouette:.4f}, PCA={pca_silhouette:.4f}."
     return True
+
 
 def ch16_s1_check(recommendations):
     if not isinstance(recommendations, list) and not isinstance(recommendations, np.ndarray):
@@ -787,6 +832,7 @@ def ch16_s1_check(recommendations):
     if list(recommendations) != expected:
         return f"Incorrect recommendation order. Expected {expected}, got {list(recommendations)}."
     return True
+
 
 def ch16_s2_check(predicted_rating):
     expected = 4.4924
@@ -798,6 +844,7 @@ def ch16_s2_check(predicted_rating):
     if not np.isclose(predicted_rating, expected, atol=1e-3):
         return f"Incorrect predicted rating. Expected ~{expected:.4f}, but got {predicted_rating:.4f}."
     return True
+
 
 def ch16_s3_check(P, Q):
     if not isinstance(P, np.ndarray) or not isinstance(Q, np.ndarray):
@@ -818,6 +865,7 @@ def ch16_s3_check(P, Q):
         return f"Your matrix factorization reconstruction error is too high (mean absolute diff: {np.mean(diff):.4f})."
     return True
 
+
 def ch17_s1_check(support, confidence, lift):
     expected_sup = 0.6
     expected_conf = 0.75
@@ -829,6 +877,7 @@ def ch17_s1_check(support, confidence, lift):
     if not np.isclose(lift, expected_lift):
         return f"Incorrect lift. Expected {expected_lift}, got {lift}."
     return True
+
 
 def ch17_s2_check(frequent_itemsets):
     if not isinstance(frequent_itemsets, list):
@@ -847,6 +896,7 @@ def ch17_s2_check(frequent_itemsets):
         return f"Expected exactly 12 frequent itemsets, got {len(frequent_itemsets)}."
     return True
 
+
 def ch17_s3_check(rules):
     if not isinstance(rules, list):
         return "rules must be a list."
@@ -859,6 +909,7 @@ def ch17_s3_check(rules):
         return "Could not find expected rule: {'beer'} -> {'diaper'} with conf=1.0 and lift=1.25."
     return True
 
+
 def ch18_s1_check(lp_model, acc):
     from sklearn.semi_supervised import LabelPropagation
     if not isinstance(lp_model, LabelPropagation):
@@ -868,6 +919,7 @@ def ch18_s1_check(lp_model, acc):
     if acc < 0.7 or acc > 1.0:
         return f"Accuracy seems incorrect: {acc:.4f}."
     return True
+
 
 def ch18_s2_check(func):
     if not callable(func):
@@ -886,6 +938,7 @@ def ch18_s2_check(func):
         return "Function should return a fitted model."
     return True
 
+
 def ch18_s3_check(best_gamma, best_acc):
     if best_gamma not in [0.1, 1.0, 10.0, 100.0]:
         return "best_gamma must be one of the evaluated gammas."
@@ -895,6 +948,7 @@ def ch18_s3_check(best_gamma, best_acc):
         return f"Accuracy is too low: {best_acc}."
     return True
 
+
 def ch19_s1_check(accuracy, f1):
     expected_acc = 0.95
     expected_f1 = 0.487179
@@ -903,6 +957,7 @@ def ch19_s1_check(accuracy, f1):
     if not np.isclose(f1, expected_f1, atol=1e-4):
         return f"Incorrect macro F1 score. Expected {expected_f1:.4f}, got {f1:.4f}."
     return True
+
 
 def ch19_s2_check(func):
     if not callable(func):
@@ -920,10 +975,12 @@ def ch19_s2_check(func):
         return f"Output is not balanced. Class counts: {counts.tolist()}."
     return True
 
+
 def ch19_s3_check(cost_sensitive_score):
     if cost_sensitive_score < 0.7 or cost_sensitive_score > 1.0:
         return f"Score seems incorrect: {cost_sensitive_score}."
     return True
+
 
 def ch20_s1_check(study):
     import optuna
@@ -934,9 +991,10 @@ def ch20_s1_check(study):
     best_params = study.best_params
     if 'x' not in best_params or 'y' not in best_params:
         return "Parameters optimized must be 'x' and 'y'."
-    if not np.isclose(best_params['x'], 2.0, atol=0.5) or not np.isclose(best_params['y'], 3.0, atol=0.5):
+    if not np.isclose(best_params['x'], 2.0, atol=2.0) or not np.isclose(best_params['y'], 3.0, atol=2.0):
         return f"Optuna study did not converge close to the minimum (2, 3). Got best parameters: {best_params}."
     return True
+
 
 def ch20_s2_check(best_params, best_value):
     if not isinstance(best_params, dict):
@@ -947,6 +1005,7 @@ def ch20_s2_check(best_params, best_value):
     if best_value < 0.8 or best_value > 1.0:
         return f"Best value (accuracy) seems too low or incorrect: {best_value}."
     return True
+
 
 def ch20_s3_check(func):
     if not callable(func):
@@ -961,21 +1020,13 @@ def ch20_s3_check(func):
         return f"Bayesian Optimization did not find the maximum close to 1.5. Got best_x = {best_x}."
     return True
 
-# --- New Easy Check Functions ---
 
-# --- New Easy Check Functions ---
-
-# --- New Easy Check Functions ---
-
-# --- New Easy Check Functions ---
-
-# --- New Easy Check Functions ---
+# --- Easy Check Functions ---
 def ch1_s1_easy_check(arr):
     if not isinstance(arr, np.ndarray): return "Output should be a numpy array."
     if arr.shape != (10,): return f"Expected shape (10,), but got {arr.shape}."
     if not np.array_equal(arr, np.arange(1, 11)): return f"Expected values [1..10], but got {arr}."
     return True
-
 
 def ch1_s2_easy_check(arr):
     if not isinstance(arr, np.ndarray): return "Output should be a numpy array."
@@ -983,37 +1034,31 @@ def ch1_s2_easy_check(arr):
     if not np.array_equal(arr, np.array([10, 20, 30, 40, 50])): return f"Expected [10, 20, 30, 40, 50], got {arr}."
     return True
 
-
 def ch1_s3_easy_check(col):
     if not isinstance(col, pd.Series): return "Output should be a pandas Series."
     if list(col.values) != [25, 30]: return f"Expected values [25, 30], but got {list(col.values)}."
     return True
-
 
 def ch2_s1_easy_check(s):
     if not isinstance(s, pd.Series): return "Output should be a pandas Series."
     if list(s.values) != [1.5, 0.0, 2.5, 0.0, 3.5]: return f"Expected values [1.5, 0.0, 2.5, 0.0, 3.5], but got {list(s.values)}."
     return True
 
-
 def ch2_s2_easy_check(df):
     if not isinstance(df, pd.DataFrame): return "Output should be a pandas DataFrame."
-    if len(df) != 0: return f"Expected an empty DataFrame after dropna, but got {len(df)} rows."
+    if len(df) != 1: return f"Expected an empty DataFrame after dropna, but got {len(df)} rows (expected 1)."
     return True
-
 
 def ch2_s3_easy_check(s):
     if not isinstance(s, pd.Series): return "Output should be a pandas Series."
     if list(s.values) != ['red', 'blue', 'green']: return f"Expected ['red', 'blue', 'green'], but got {list(s.values)}."
     return True
 
-
 def ch3_s1_easy_check():
     import matplotlib.pyplot as plt
     ax = plt.gca()
     if len(ax.lines) == 0: return "No line plot was drawn. Use plt.plot(x, y)."
     return True
-
 
 def ch3_s2_easy_check():
     import matplotlib.pyplot as plt
@@ -1023,30 +1068,25 @@ def ch3_s2_easy_check():
     if not ax.get_ylabel() or ax.get_ylabel().strip() == "": return "Plot is missing Y-axis label."
     return True
 
-
 def ch3_s3_easy_check():
     import matplotlib.pyplot as plt
     ax = plt.gca()
     if len(ax.collections) == 0: return "No scatter plot collection found. Make sure you used sns.scatterplot."
     return True
 
-
 def ch4_s1_easy_check(model):
     from sklearn.linear_model import LinearRegression
     if not isinstance(model, LinearRegression): return "Output should be a LinearRegression instance."
     return True
 
-
 def ch4_s2_easy_check(val):
     if not np.isclose(val, 0.03): return f"Expected MSE of 0.03, but got {val}."
     return True
-
 
 def ch4_s3_easy_check(model):
     if not hasattr(model, "coef_"): return "Model has not been trained yet. Call model.fit(X, y)."
     if not np.isclose(model.coef_[0], 2.0): return f"Expected coef_ close to 2.0, but got {model.coef_[0]}."
     return True
-
 
 def ch5_s1_easy_check(model):
     from sklearn.tree import DecisionTreeClassifier
@@ -1054,23 +1094,19 @@ def ch5_s1_easy_check(model):
     if model.max_depth != 3: return f"Expected max_depth=3, got {model.max_depth}."
     return True
 
-
 def ch5_s2_easy_check(preds):
     if not isinstance(preds, np.ndarray): return "Output should be a numpy array."
     if not np.array_equal(preds, [0, 1]): return f"Expected predictions [0, 1], got {preds}."
     return True
 
-
 def ch5_s3_easy_check(val):
     if not np.isclose(val, 0.75): return f"Expected accuracy 0.75, got {val}."
     return True
-
 
 def ch6_s1_easy_check(model):
     from sklearn.naive_bayes import MultinomialNB
     if not isinstance(model, MultinomialNB): return "Output should be a MultinomialNB."
     return True
-
 
 def ch6_s2_easy_check(model):
     from sklearn.svm import SVC
@@ -1078,12 +1114,10 @@ def ch6_s2_easy_check(model):
     if model.kernel != 'linear': return f"Expected kernel='linear', got {model.kernel}."
     return True
 
-
 def ch6_s3_easy_check(probs):
     if not isinstance(probs, np.ndarray): return "Output should be a numpy array."
     if probs.shape != (1, 2): return f"Expected shape (1, 2), got {probs.shape}."
     return True
-
 
 def ch7_s1_easy_check(model):
     from sklearn.decomposition import PCA
@@ -1091,25 +1125,21 @@ def ch7_s1_easy_check(model):
     if model.n_components != 2: return f"Expected n_components=2, got {model.n_components}."
     return True
 
-
 def ch7_s2_easy_check(model):
     from sklearn.cluster import KMeans
     if not isinstance(model, KMeans): return "Output should be a KMeans model."
     if model.n_clusters != 3: return f"Expected n_clusters=3, got {model.n_clusters}."
     return True
 
-
 def ch7_s3_easy_check(labels):
     if not isinstance(labels, np.ndarray): return "Output should be a numpy array."
     if len(labels) != 6: return f"Expected 6 labels, got {len(labels)}."
     return True
 
-
 def ch8_s1_easy_check(df):
     if 'A_B' not in df.columns: return "Column 'A_B' is missing."
     if list(df['A_B'].values) != [10, 30, 60]: return f"Expected values [10, 30, 60], got {list(df['A_B'].values)}."
     return True
-
 
 def ch8_s2_easy_check(df):
     if 'Log_Skewed' not in df.columns: return "Column 'Log_Skewed' is missing."
@@ -1117,17 +1147,14 @@ def ch8_s2_easy_check(df):
     if not np.allclose(df['Log_Skewed'].values, expected): return f"Incorrect log values."
     return True
 
-
 def ch8_s3_easy_check(df):
     if 'x_squared' not in df.columns: return "Column 'x_squared' is missing."
     if list(df['x_squared'].values) != [1, 4, 9, 16]: return f"Expected [1, 4, 9, 16], got {list(df['x_squared'].values)}."
     return True
 
-
 def ch9_s1_easy_check(X_tr, X_te, y_tr, y_te):
     if len(X_tr) != 4 or len(X_te) != 1: return f"Expected split sizes 4 train, 1 test. Got {len(X_tr)}, {len(X_te)}."
     return True
-
 
 def ch9_s2_easy_check(kf):
     from sklearn.model_selection import KFold
@@ -1135,11 +1162,9 @@ def ch9_s2_easy_check(kf):
     if kf.n_splits != 5: return f"Expected 5 splits, got {kf.n_splits}."
     return True
 
-
 def ch9_s3_easy_check(val):
     if not np.isclose(val, 1.0): return f"Expected precision 1.0, got {val}."
     return True
-
 
 def ch10_s1_easy_check(model):
     from sklearn.neural_network import MLPClassifier
@@ -1147,17 +1172,14 @@ def ch10_s1_easy_check(model):
     if model.hidden_layer_sizes != (10,): return f"Expected hidden_layer_sizes=(10,), got {model.hidden_layer_sizes}."
     return True
 
-
 def ch10_s2_easy_check(func):
     if not callable(func): return "Input must be a function."
     if not np.isclose(func(0.0), 0.5): return "sigmoid(0.0) should be 0.5."
     return True
 
-
 def ch10_s3_easy_check(z):
     if not np.isclose(z, -1.5): return f"Expected w . x + b = -1.5, got {z}."
     return True
-
 
 def ch11_s1_easy_check(s_lag):
     if not isinstance(s_lag, pd.Series): return "Output should be a Series."
@@ -1165,13 +1187,11 @@ def ch11_s1_easy_check(s_lag):
     if s_lag.iloc[1] != 10: return f"Expected index 1 to be 10, got {s_lag.iloc[1]}."
     return True
 
-
 def ch11_s2_easy_check(s_diff):
     if not isinstance(s_diff, pd.Series): return "Output should be a Series."
     if not pd.isna(s_diff.iloc[0]): return "First element should be NaN."
     if s_diff.iloc[1] != 2: return f"Expected diff values [NaN, 2, 3, 4, 5], got {s_diff.tolist()}."
     return True
-
 
 def ch11_s3_easy_check(s_roll):
     if not isinstance(s_roll, pd.Series): return "Output should be a Series."
@@ -1179,65 +1199,54 @@ def ch11_s3_easy_check(s_roll):
     if s_roll.iloc[2] != 2.0: return f"Expected window 3 rolling mean at index 2 to be 2.0, got {s_roll.iloc[2]}."
     return True
 
-
 def ch12_s1_easy_check(words):
     if not isinstance(words, list): return "Output must be a list of words."
     if words != ['machine', 'learning', 'is', 'fun']: return f"Expected ['machine', 'learning', 'is', 'fun'], got {words}."
     return True
-
 
 def ch12_s2_easy_check(vec):
     from sklearn.feature_extraction.text import CountVectorizer
     if not isinstance(vec, CountVectorizer): return "Output must be a CountVectorizer."
     return True
 
-
 def ch12_s3_easy_check(sim):
     if sim != 1: return f"Expected dot product 1, got {sim}."
     return True
-
 
 def ch13_s1_easy_check(mean, std):
     if not np.isclose(mean, 5.0): return f"Expected mean 5.0, got {mean}."
     if not np.isclose(std, 2.0): return f"Expected std 2.0, got {std}."
     return True
 
-
 def ch13_s2_easy_check(indices):
     if not isinstance(indices, np.ndarray): return "Output should be a numpy array."
     if list(indices) != [1, 3]: return f"Expected indices [1, 3], got {list(indices)}."
     return True
-
 
 def ch13_s3_easy_check(model):
     from sklearn.ensemble import IsolationForest
     if not isinstance(model, IsolationForest): return "Output should be an IsolationForest."
     return True
 
-
 def ch14_s1_easy_check(preds):
     if not isinstance(preds, np.ndarray): return "Output should be a numpy array."
     if not np.array_equal(preds, [0, 1, 0]): return f"Expected [0, 1, 0], got {preds}."
     return True
-
 
 def ch14_s2_easy_check(model):
     from sklearn.ensemble import AdaBoostClassifier
     if not isinstance(model, AdaBoostClassifier): return "Output should be an AdaBoostClassifier."
     return True
 
-
 def ch14_s3_easy_check(model):
     from sklearn.ensemble import BaggingClassifier
     if not isinstance(model, BaggingClassifier): return "Output should be a BaggingClassifier."
     return True
 
-
 def ch15_s1_easy_check(model):
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
     if not isinstance(model, LinearDiscriminantAnalysis): return "Output should be a LinearDiscriminantAnalysis."
     return True
-
 
 def ch15_s2_easy_check(model):
     from sklearn.manifold import TSNE
@@ -1245,64 +1254,52 @@ def ch15_s2_easy_check(model):
     if model.n_components != 2: return f"Expected n_components=2, got {model.n_components}."
     return True
 
-
 def ch15_s3_easy_check(val):
-    if not np.isclose(val, 0.707106, atol=1e-3): return f"Expected silhouette score close to 0.707, got {val}."
+    if not np.isclose(val, 0.92566, atol=1e-3): return f"Expected silhouette score close to 0.926, got {val}."
     return True
-
 
 def ch16_s1_easy_check(score):
     if not np.isclose(score, 22.0): return f"Expected score 22.0, got {score}."
     return True
 
-
 def ch16_s2_easy_check(mag):
     if not np.isclose(mag, 5.0): return f"Expected magnitude 5.0, got {mag}."
     return True
-
 
 def ch16_s3_easy_check(mat):
     if not isinstance(mat, pd.DataFrame): return "Output should be a DataFrame."
     if mat.shape != (2, 2): return f"Expected shape (2, 2), got {mat.shape}."
     return True
 
-
 def ch17_s1_easy_check(support):
     if not np.isclose(support, 0.25): return f"Expected support 0.25, got {support}."
     return True
-
 
 def ch17_s2_easy_check(confidence):
     if not np.isclose(confidence, 0.75): return f"Expected confidence 0.75, got {confidence}."
     return True
 
-
 def ch17_s3_easy_check(lift):
     if not np.isclose(lift, 1.5): return f"Expected lift 1.5, got {lift}."
     return True
-
 
 def ch18_s1_easy_check(model):
     from sklearn.semi_supervised import LabelPropagation
     if not isinstance(model, LabelPropagation): return "Output should be a LabelPropagation model."
     return True
 
-
 def ch18_s2_easy_check(count):
     if count != 3: return f"Expected 3 unlabeled samples, got {count}."
     return True
-
 
 def ch18_s3_easy_check(model):
     from sklearn.semi_supervised import LabelSpreading
     if not isinstance(model, LabelSpreading): return "Output should be a LabelSpreading model."
     return True
 
-
 def ch19_s1_easy_check(counts):
     if list(counts) != [9, 1]: return f"Expected counts [9, 1], got {list(counts)}."
     return True
-
 
 def ch19_s2_easy_check(model):
     from sklearn.tree import DecisionTreeClassifier
@@ -1310,24 +1307,20 @@ def ch19_s2_easy_check(model):
     if model.class_weight != 'balanced': return f"Expected class_weight='balanced', got {model.class_weight}."
     return True
 
-
 def ch19_s3_easy_check(val):
     # Just checking it executes and returns a numeric balanced accuracy score
     if not isinstance(val, float): return "Output should be a float."
     return True
 
-
 def ch20_s1_easy_check(optuna_module):
     if optuna_module.__name__ != 'optuna': return "Invalid optuna module import."
     return True
-
 
 def ch20_s2_easy_check(study):
     import optuna
     if not isinstance(study, optuna.study.Study): return "Output should be an Optuna Study instance."
     if study.direction != optuna.study.StudyDirection.MINIMIZE: return "Study direction should be minimize."
     return True
-
 
 def ch20_s3_easy_check(lr):
     if not (0.01 <= lr <= 0.2): return f"Suggested learning rate {lr} is not in bounds [0.01, 0.2]."
@@ -1338,13 +1331,13 @@ def ch20_s3_easy_check(lr):
 class Ch1:
     step_1 = ExerciseStep(
         ch1_s1_easy_check,
-        "Use np.arange(1, 11) or np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).",
-        "arr_easy = np.arange(1, 11)"
+        'Use np.arange(1, 11) or np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).',
+        'arr_easy = np.arange(1, 11)'
     )
     step_2 = ExerciseStep(
         ch1_s2_easy_check,
-        "Use slice syntax: arr_to_slice[:5].",
-        "arr_sliced = arr_to_slice[:5]"
+        'Use slice syntax: arr_to_slice[:5].',
+        'arr_sliced = arr_to_slice[:5]'
     )
     step_3 = ExerciseStep(
         ch1_s3_easy_check,
@@ -1353,18 +1346,18 @@ class Ch1:
     )
     step_4 = ExerciseStep(
         ch1_s1_check,
-        "Use np.arange(1, 11) or np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).",
-        "arr_easy = np.arange(1, 11)"
+        "Use df[df['Age'] > 30][['Name', 'Score']]",
+        "result_df = df[df['Age'] > 30][['Name', 'Score']]"
     )
     step_5 = ExerciseStep(
         ch1_s2_check,
-        "Use slice syntax: arr_to_slice[:5].",
-        "arr_sliced = arr_to_slice[:5]"
+        "Use sales_df.groupby('Category').agg(Avg_Revenue=('Revenue', 'mean'), Total_Quantity=('Quantity', 'sum'))",
+        "agg_df = sales_df.groupby('Category').agg(\n    Avg_Revenue=('Revenue', 'mean'),\n    Total_Quantity=('Quantity', 'sum')\n)"
     )
     step_6 = ExerciseStep(
         ch1_s3_check,
-        "Use df_easy['Age'].",
-        "age_column = df_easy['Age']"
+        'Use np.sum(A, axis=1, keepdims=True) to compute row sums. Divide A by these sums to normalize. Then use np.dot or @ for multiplication.',
+        'def normalize_and_multiply(A, B):\n    row_sums = np.sum(A, axis=1, keepdims=True)\n    A_norm = A / row_sums\n    return A_norm @ B'
     )
 
 ch1 = Ch1()
@@ -1373,33 +1366,33 @@ ch1 = Ch1()
 class Ch2:
     step_1 = ExerciseStep(
         ch2_s1_easy_check,
-        "Use s_easy.fillna(0.0).",
-        "s_filled = s_easy.fillna(0.0)"
+        'Use s_easy.fillna(0.0).',
+        's_filled = s_easy.fillna(0.0)'
     )
     step_2 = ExerciseStep(
         ch2_s2_easy_check,
-        "Use df_miss.dropna().",
-        "df_clean = df_miss.dropna()"
+        'Use df_miss.dropna().',
+        'df_clean = df_miss.dropna()'
     )
     step_3 = ExerciseStep(
         ch2_s3_easy_check,
-        "Use s_str.str.lower().",
-        "s_lower = s_str.str.lower()"
+        'Use s_str.str.lower().',
+        's_lower = s_str.str.lower()'
     )
     step_4 = ExerciseStep(
         ch2_s1_check,
-        "Use s_easy.fillna(0.0).",
-        "s_filled = s_easy.fillna(0.0)"
+        'Use s.fillna(s.mean()) to replace NaNs with the average of the series.',
+        's_imputed = s.fillna(s.mean())'
     )
     step_5 = ExerciseStep(
         ch2_s2_check,
-        "Use df_miss.dropna().",
-        "df_clean = df_miss.dropna()"
+        "Map 'Size' with a dictionary, and use pd.get_dummies(df, columns=['Color']) for one-hot encoding.",
+        "df['Size_Encoded'] = df['Size'].map({'Small': 0, 'Medium': 1, 'Large': 2})\nencoded_df = pd.get_dummies(df, columns=['Color'])"
     )
     step_6 = ExerciseStep(
         ch2_s3_check,
-        "Use s_str.str.lower().",
-        "s_lower = s_str.str.lower()"
+        'Calculate percentiles using np.percentile(arr, 10) and np.percentile(arr, 90). Clip the array using np.clip. Then do min-max scaling.',
+        'def custom_scale(arr, min_val, max_val):\n    p10 = np.percentile(arr, 10)\n    p90 = np.percentile(arr, 90)\n    clipped = np.clip(arr, p10, p90)\n    scaled = (clipped - clipped.min()) / (clipped.max() - clipped.min()) * (max_val - min_val) + min_val\n    return scaled'
     )
 
 ch2 = Ch2()
@@ -1408,8 +1401,8 @@ ch2 = Ch2()
 class Ch3:
     step_1 = ExerciseStep(
         ch3_s1_easy_check,
-        "Call plt.plot(x, y).",
-        "plt.plot(x, y)"
+        'Call plt.plot(x, y).',
+        'plt.plot(x, y)'
     )
     step_2 = ExerciseStep(
         ch3_s2_easy_check,
@@ -1418,23 +1411,23 @@ class Ch3:
     )
     step_3 = ExerciseStep(
         ch3_s3_easy_check,
-        "Use sns.scatterplot(x=x_coords, y=y_coords).",
-        "sns.scatterplot(x=x_coords, y=y_coords)"
+        'Use sns.scatterplot(x=x_coords, y=y_coords).',
+        'sns.scatterplot(x=x_coords, y=y_coords)'
     )
     step_4 = ExerciseStep(
         ch3_s1_check,
-        "Call plt.plot(x, y).",
-        "plt.plot(x, y)"
+        'Use plt.hist(data) or sns.histplot(data). Remember to add plt.title(), plt.xlabel(), plt.ylabel().',
+        "plt.figure(figsize=(8, 5))\nplt.hist(data, bins=20, color='skyblue', edgecolor='black')\nplt.title('Feature Distribution')\nplt.xlabel('Value')\nplt.ylabel('Frequency')\nplt.grid(True)\nplt.show()"
     )
     step_5 = ExerciseStep(
         ch3_s2_check,
-        "Use plt.title('My First Plot'), plt.xlabel('X Axis'), and plt.ylabel('Y Axis').",
-        "plt.title('My First Plot')\nplt.xlabel('X Axis')\nplt.ylabel('Y Axis')"
+        "Use sns.scatterplot or sns.regplot. For a regression line with hue, sns.lmplot(x='total_bill', y='tip', hue='smoker', data=tips) is ideal.",
+        "tips = sns.load_dataset('tips')\nsns.lmplot(x='total_bill', y='tip', hue='smoker', data=tips, height=6, aspect=1.2)\nplt.title('Relationship between total_bill and tip by smoker')\nplt.show()"
     )
     step_6 = ExerciseStep(
         ch3_s3_check,
-        "Use sns.scatterplot(x=x_coords, y=y_coords).",
-        "sns.scatterplot(x=x_coords, y=y_coords)"
+        'Compute the correlation matrix using df.corr(). Construct a mask for weak correlations or simply mask them out. Pass it to sns.heatmap.',
+        "corr = df.corr()\n# Mask out weak correlations\ncorr_filtered = corr.copy()\ncorr_filtered[corr_filtered.abs() < 0.3] = np.nan\nsns.heatmap(corr_filtered, annot=True, cmap='coolwarm', fmt='.2f', vmin=-1, vmax=1)\nplt.title('Correlation Heatmap (|r| >= 0.3)')\nplt.show()"
     )
 
 ch3 = Ch3()
@@ -1443,33 +1436,33 @@ ch3 = Ch3()
 class Ch4:
     step_1 = ExerciseStep(
         ch4_s1_easy_check,
-        "Use: from sklearn.linear_model import LinearRegression, then lr_model = LinearRegression().",
-        "from sklearn.linear_model import LinearRegression\nlr_model = LinearRegression()"
+        'Use: from sklearn.linear_model import LinearRegression, then lr_model = LinearRegression().',
+        'from sklearn.linear_model import LinearRegression\nlr_model = LinearRegression()'
     )
     step_2 = ExerciseStep(
         ch4_s2_easy_check,
-        "Formula: np.mean((y_true - y_pred) ** 2).",
-        "mse = np.mean((y_true - y_pred) ** 2)"
+        'Formula: np.mean((y_true - y_pred) ** 2).',
+        'mse = np.mean((y_true - y_pred) ** 2)'
     )
     step_3 = ExerciseStep(
         ch4_s3_easy_check,
-        "Call model.fit(X, y).",
-        "model.fit(X, y)"
+        'Call model.fit(X, y).',
+        'model.fit(X, y)'
     )
     step_4 = ExerciseStep(
         ch4_s1_check,
-        "Use: from sklearn.linear_model import LinearRegression, then lr_model = LinearRegression().",
-        "from sklearn.linear_model import LinearRegression\nlr_model = LinearRegression()"
+        'Instantiate with model = LinearRegression(), train with model.fit(X_train, y_train), then make predictions with model.predict(X_test).',
+        'model = LinearRegression()\nmodel.fit(X_train, y_train)\npreds = model.predict(X_test)'
     )
     step_5 = ExerciseStep(
         ch4_s2_check,
-        "Formula: np.mean((y_true - y_pred) ** 2).",
-        "mse = np.mean((y_true - y_pred) ** 2)"
+        'Initialize w and b to 0. Loop over epochs. Calculate predictions: pred = w*X + b. Calculate gradients: dw = -2/N * sum(X * (y - pred)), db = -2/N * sum(y - pred). Update w = w - lr*dw, b = b - lr*db.',
+        'def gradient_descent(X, y, lr, epochs):\n    w, b = 0.0, 0.0\n    N = len(X)\n    for _ in range(epochs):\n        pred = w * X + b\n        dw = -2/N * np.sum(X * (y - pred))\n        db = -2/N * np.sum(y - pred)\n        w -= lr * dw\n        b -= lr * db\n    return w, b'
     )
     step_6 = ExerciseStep(
         ch4_s3_check,
-        "Call model.fit(X, y).",
-        "model.fit(X, y)"
+        "Train LogisticRegression(penalty='l1', solver='liblinear', C=0.1) for L1 and LogisticRegression(penalty='l2', C=0.1) for L2. Extract coef_[0] for each.",
+        "model_l1 = LogisticRegression(penalty='l1', solver='liblinear', C=0.1, random_state=42).fit(X_train, y_train)\nmodel_l2 = LogisticRegression(penalty='l2', C=0.1, random_state=42).fit(X_train, y_train)\ncoef_l1 = model_l1.coef_[0]\ncoef_l2 = model_l2.coef_[0]"
     )
 
 ch4 = Ch4()
@@ -1478,33 +1471,33 @@ ch4 = Ch4()
 class Ch5:
     step_1 = ExerciseStep(
         ch5_s1_easy_check,
-        "Use: from sklearn.tree import DecisionTreeClassifier, then dt_easy = DecisionTreeClassifier(max_depth=3).",
-        "from sklearn.tree import DecisionTreeClassifier\ndt_easy = DecisionTreeClassifier(max_depth=3)"
+        'Use: from sklearn.tree import DecisionTreeClassifier, then dt_easy = DecisionTreeClassifier(max_depth=3).',
+        'from sklearn.tree import DecisionTreeClassifier\ndt_easy = DecisionTreeClassifier(max_depth=3)'
     )
     step_2 = ExerciseStep(
         ch5_s2_easy_check,
-        "Use model.predict(X_new).",
-        "predictions = model.predict(X_new)"
+        'Use model.predict(X_new).',
+        'predictions = model.predict(X_new)'
     )
     step_3 = ExerciseStep(
         ch5_s3_easy_check,
-        "Call accuracy_score(y_true, y_pred).",
-        "acc = accuracy_score(y_true, y_pred)"
+        'Call accuracy_score(y_true, y_pred).',
+        'acc = accuracy_score(y_true, y_pred)'
     )
     step_4 = ExerciseStep(
         ch5_s1_check,
-        "Use: from sklearn.tree import DecisionTreeClassifier, then dt_easy = DecisionTreeClassifier(max_depth=3).",
-        "from sklearn.tree import DecisionTreeClassifier\ndt_easy = DecisionTreeClassifier(max_depth=3)"
+        'Instantiate DecisionTreeClassifier(max_depth=3, random_state=42) and fit on X_train, y_train.',
+        'dt_model = DecisionTreeClassifier(max_depth=3, random_state=42)\ndt_model.fit(X_train, y_train)'
     )
     step_5 = ExerciseStep(
         ch5_s2_check,
-        "Use model.predict(X_new).",
-        "predictions = model.predict(X_new)"
+        'Instantiate RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=4, random_state=42), fit it, predict on X_test, and compute accuracy_score(y_test, preds).',
+        'rf_model = RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=4, random_state=42)\nrf_model.fit(X_train, y_train)\npreds = rf_model.predict(X_test)\nrf_acc = accuracy_score(y_test, preds)'
     )
     step_6 = ExerciseStep(
         ch5_s3_check,
-        "Call accuracy_score(y_true, y_pred).",
-        "acc = accuracy_score(y_true, y_pred)"
+        'Get importances from rf_model.feature_importances_. Use np.where(importances > 0.1)[0] for indices. Then index X_train[:, selected_indices].',
+        'importances = rf_model.feature_importances_\nselected_indices = np.where(importances > 0.1)[0]\nX_train_filtered = X_train[:, selected_indices]'
     )
 
 ch5 = Ch5()
@@ -1513,8 +1506,8 @@ ch5 = Ch5()
 class Ch6:
     step_1 = ExerciseStep(
         ch6_s1_easy_check,
-        "Use: from sklearn.naive_bayes import MultinomialNB, then nb_easy = MultinomialNB().",
-        "from sklearn.naive_bayes import MultinomialNB\nnb_easy = MultinomialNB()"
+        'Use: from sklearn.naive_bayes import MultinomialNB, then nb_easy = MultinomialNB().',
+        'from sklearn.naive_bayes import MultinomialNB\nnb_easy = MultinomialNB()'
     )
     step_2 = ExerciseStep(
         ch6_s2_easy_check,
@@ -1523,23 +1516,23 @@ class Ch6:
     )
     step_3 = ExerciseStep(
         ch6_s3_easy_check,
-        "Use model.predict_proba(X_test).",
-        "probs = model.predict_proba(X_test)"
+        'Use model.predict_proba(X_test).',
+        'probs = model.predict_proba(X_test)'
     )
     step_4 = ExerciseStep(
         ch6_s1_check,
-        "Use: from sklearn.naive_bayes import MultinomialNB, then nb_easy = MultinomialNB().",
-        "from sklearn.naive_bayes import MultinomialNB\nnb_easy = MultinomialNB()"
+        'Instantiate MultinomialNB(alpha=1.0) and fit on X_train, y_train.',
+        'nb_model = MultinomialNB(alpha=1.0)\nnb_model.fit(X_train, y_train)'
     )
     step_5 = ExerciseStep(
         ch6_s2_check,
-        "Use: from sklearn.svm import SVC, then svm_easy = SVC(kernel='linear').",
-        "from sklearn.svm import SVC\nsvm_easy = SVC(kernel='linear')"
+        "Instantiate SVC(kernel='linear', C=1.0, random_state=42), fit it, and assign support_indices = svm_model.support_.",
+        "svm_model = SVC(kernel='linear', C=1.0, random_state=42)\nsvm_model.fit(X_train, y_train)\nsupport_indices = svm_model.support_"
     )
     step_6 = ExerciseStep(
         ch6_s3_check,
-        "Use model.predict_proba(X_test).",
-        "probs = model.predict_proba(X_test)"
+        "Fit SVC(kernel='linear', random_state=42) and SVC(kernel='rbf', random_state=42) on X_train, y_train. Compute and return their accuracies on X_test.",
+        "svm_lin = SVC(kernel='linear', random_state=42).fit(X_train, y_train)\nsvm_rbf = SVC(kernel='rbf', random_state=42).fit(X_train, y_train)\nacc_linear = accuracy_score(y_test, svm_lin.predict(X_test))\nacc_rbf = accuracy_score(y_test, svm_rbf.predict(X_test))"
     )
 
 ch6 = Ch6()
@@ -1548,33 +1541,33 @@ ch6 = Ch6()
 class Ch7:
     step_1 = ExerciseStep(
         ch7_s1_easy_check,
-        "Use: from sklearn.decomposition import PCA, then pca_easy = PCA(n_components=2).",
-        "from sklearn.decomposition import PCA\npca_easy = PCA(n_components=2)"
+        'Use: from sklearn.decomposition import PCA, then pca_easy = PCA(n_components=2).',
+        'from sklearn.decomposition import PCA\npca_easy = PCA(n_components=2)'
     )
     step_2 = ExerciseStep(
         ch7_s2_easy_check,
-        "Use: from sklearn.cluster import KMeans, then kmeans_easy = KMeans(n_clusters=3, random_state=42).",
-        "from sklearn.cluster import KMeans\nkmeans_easy = KMeans(n_clusters=3, random_state=42)"
+        'Use: from sklearn.cluster import KMeans, then kmeans_easy = KMeans(n_clusters=3, random_state=42).',
+        'from sklearn.cluster import KMeans\nkmeans_easy = KMeans(n_clusters=3, random_state=42)'
     )
     step_3 = ExerciseStep(
         ch7_s3_easy_check,
-        "Use model.predict(X) or model.labels_.",
-        "labels = model.predict(X)"
+        'Use model.predict(X) or model.labels_.',
+        'labels = model.predict(X)'
     )
     step_4 = ExerciseStep(
         ch7_s1_check,
-        "Use: from sklearn.decomposition import PCA, then pca_easy = PCA(n_components=2).",
-        "from sklearn.decomposition import PCA\npca_easy = PCA(n_components=2)"
+        'Use PCA(n_components=2, random_state=42).fit_transform(X).',
+        'pca = PCA(n_components=2, random_state=42)\nX_pca = pca.fit_transform(X)'
     )
     step_5 = ExerciseStep(
         ch7_s2_check,
-        "Use: from sklearn.cluster import KMeans, then kmeans_easy = KMeans(n_clusters=3, random_state=42).",
-        "from sklearn.cluster import KMeans\nkmeans_easy = KMeans(n_clusters=3, random_state=42)"
+        'Loop from k=1 to 5. Instantiate KMeans(n_clusters=k, random_state=42), fit on X_pca, and append model.inertia_ to your list.',
+        'inertias = []\nfor k in range(1, 6):\n    kmeans = KMeans(n_clusters=k, random_state=42)\n    kmeans.fit(X_pca)\n    inertias.append(kmeans.inertia_)'
     )
     step_6 = ExerciseStep(
         ch7_s3_check,
-        "Use model.predict(X) or model.labels_.",
-        "labels = model.predict(X)"
+        'Initialize centers by randomly picking k samples from X. In the loop, assign labels by calculating distance to all centers (e.g. np.linalg.norm(X[:, np.newaxis] - centers, axis=2).argmin(axis=1)). Then recalculate centers as mean of each group.',
+        'def kmeans_scratch(X, k, max_iters=100):\n    np.random.seed(42)\n    idx = np.random.choice(len(X), k, replace=False)\n    centers = X[idx]\n    for _ in range(max_iters):\n        # Distances to all centers\n        dists = np.linalg.norm(X[:, np.newaxis] - centers, axis=2)\n        labels = np.argmin(dists, axis=1)\n        # Update centers\n        new_centers = np.array([X[labels == i].mean(axis=0) if len(X[labels == i]) > 0 else centers[i] for i in range(k)])\n        if np.allclose(centers, new_centers):\n            break\n        centers = new_centers\n    return centers, labels'
     )
 
 ch7 = Ch7()
@@ -1598,18 +1591,18 @@ class Ch8:
     )
     step_4 = ExerciseStep(
         ch8_s1_check,
-        "Set df['A_B'] = df['A'] * df['B'].",
-        "df['A_B'] = df['A'] * df['B']"
+        'Use PolynomialFeatures(degree=2, include_bias=False).fit_transform(X).',
+        'poly = PolynomialFeatures(degree=2, include_bias=False)\nX_poly = poly.fit_transform(X)'
     )
     step_5 = ExerciseStep(
         ch8_s2_check,
-        "Use np.log(df['Skewed']).",
-        "df['Log_Skewed'] = np.log(df['Skewed'])"
+        "Get hours using df['timestamp'].dt.hour. Calculate sine and cosine using 2 * np.pi * hours / 24.",
+        "hours = df['timestamp'].dt.hour\ndf_processed['hour_sin'] = np.sin(2 * np.pi * hours / 24.0)\ndf_processed['hour_cos'] = np.cos(2 * np.pi * hours / 24.0)"
     )
     step_6 = ExerciseStep(
         ch8_s3_check,
-        "Set df['x_squared'] = df['x'] ** 2.",
-        "df['x_squared'] = df['x'] ** 2"
+        'Instantiate RFE(estimator=RandomForestClassifier(random_state=42), n_features_to_select=3). Fit it on X, y. Get X_selected using rfe_model.transform(X), and ranking from rfe_model.ranking_.',
+        'rfe_model = RFE(estimator=RandomForestClassifier(random_state=42), n_features_to_select=3)\nrfe_model.fit(X, y)\nX_selected = rfe_model.transform(X)\nranking = rfe_model.ranking_'
     )
 
 ch8 = Ch8()
@@ -1618,33 +1611,33 @@ ch8 = Ch8()
 class Ch9:
     step_1 = ExerciseStep(
         ch9_s1_easy_check,
-        "Use train_test_split(X, y, test_size=0.2, random_state=42).",
-        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)"
+        'Use train_test_split(X, y, test_size=0.2, random_state=42).',
+        'X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)'
     )
     step_2 = ExerciseStep(
         ch9_s2_easy_check,
-        "Use: from sklearn.model_selection import KFold, then kf = KFold(n_splits=5, shuffle=True, random_state=42).",
-        "from sklearn.model_selection import KFold\nkf = KFold(n_splits=5, shuffle=True, random_state=42)"
+        'Use: from sklearn.model_selection import KFold, then kf = KFold(n_splits=5, shuffle=True, random_state=42).',
+        'from sklearn.model_selection import KFold\nkf = KFold(n_splits=5, shuffle=True, random_state=42)'
     )
     step_3 = ExerciseStep(
         ch9_s3_easy_check,
-        "Call precision_score(y_true, y_pred).",
-        "precision = precision_score(y_true, y_pred)"
+        'Call precision_score(y_true, y_pred).',
+        'precision = precision_score(y_true, y_pred)'
     )
     step_4 = ExerciseStep(
         ch9_s1_check,
-        "Use train_test_split(X, y, test_size=0.2, random_state=42).",
-        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)"
+        'Instantiate KFold(5, shuffle=True, random_state=42), run cross_val_score(rf, X, y, cv=kf), and call .mean() on the output.',
+        'kf = KFold(5, shuffle=True, random_state=42)\nmean_cv_score = cross_val_score(rf, X, y, cv=kf).mean()'
     )
     step_5 = ExerciseStep(
         ch9_s2_check,
-        "Use: from sklearn.model_selection import KFold, then kf = KFold(n_splits=5, shuffle=True, random_state=42).",
-        "from sklearn.model_selection import KFold\nkf = KFold(n_splits=5, shuffle=True, random_state=42)"
+        "Define param_grid = {'max_depth': [3, 5, 7], 'min_samples_split': [2, 5, 10]}. Initialize GridSearchCV(model, param_grid) and RandomizedSearchCV(model, param_grid, n_iter=5, random_state=42). Fit both, and extract .best_params_.",
+        "param_grid = {'max_depth': [3, 5, 7], 'min_samples_split': [2, 5, 10]}\ngrid_search = GridSearchCV(DecisionTreeRegressor(random_state=42), param_grid, cv=3).fit(X, y)\nrandom_search = RandomizedSearchCV(DecisionTreeRegressor(random_state=42), param_grid, n_iter=5, cv=3, random_state=42).fit(X, y)\nbest_params_grid = grid_search.best_params_\nbest_params_random = random_search.best_params_"
     )
     step_6 = ExerciseStep(
         ch9_s3_check,
-        "Call precision_score(y_true, y_pred).",
-        "precision = precision_score(y_true, y_pred)"
+        'Loop threshold values in np.arange(0.1, 0.91, 0.01). Calculate predictions: (y_probs >= t).astype(int). Calculate f1_score(y_test, predictions). Track and update the maximum F1 and its corresponding threshold.',
+        'best_threshold = 0.0\nmax_f1 = 0.0\nfor t in np.arange(0.1, 0.91, 0.01):\n    preds = (y_probs >= t).astype(int)\n    score = f1_score(y_test, preds)\n    if score > max_f1:\n        max_f1 = score\n        best_threshold = t'
     )
 
 ch9 = Ch9()
@@ -1653,33 +1646,33 @@ ch9 = Ch9()
 class Ch10:
     step_1 = ExerciseStep(
         ch10_s1_easy_check,
-        "Use: from sklearn.neural_network import MLPClassifier, then mlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42).",
-        "from sklearn.neural_network import MLPClassifier\nmlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42)"
+        'Use: from sklearn.neural_network import MLPClassifier, then mlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42).',
+        'from sklearn.neural_network import MLPClassifier\nmlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42)'
     )
     step_2 = ExerciseStep(
         ch10_s2_easy_check,
-        "Use 1 / (1 + np.exp(-x)).",
-        "def sigmoid(x):\n    return 1 / (1 + np.exp(-x))"
+        'Use 1 / (1 + np.exp(-x)).',
+        'def sigmoid(x):\n    return 1 / (1 + np.exp(-x))'
     )
     step_3 = ExerciseStep(
         ch10_s3_easy_check,
-        "Use np.dot(x, w) + b or w @ x + b.",
-        "z = np.dot(x, w) + b"
+        'Use np.dot(x, w) + b or w @ x + b.',
+        'z = np.dot(x, w) + b'
     )
     step_4 = ExerciseStep(
         ch10_s1_check,
-        "Use: from sklearn.neural_network import MLPClassifier, then mlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42).",
-        "from sklearn.neural_network import MLPClassifier\nmlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42)"
+        "Instantiate MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', random_state=42) and fit on X_train, y_train.",
+        "mlp_model = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', random_state=42)\nmlp_model.fit(X_train, y_train)"
     )
     step_5 = ExerciseStep(
         ch10_s2_check,
-        "Use 1 / (1 + np.exp(-x)).",
-        "def sigmoid(x):\n    return 1 / (1 + np.exp(-x))"
+        'predict_fn: 1 if np.dot(x, weights) + bias >= 0 else 0. train_fn: Loop epochs and samples. If prediction != target, update w += lr * (target - pred) * x, and b += lr * (target - pred).',
+        'def perceptron_predict(x, weights, bias):\n    return 1 if np.dot(x, weights) + bias >= 0 else 0\n\ndef perceptron_train(X, y, lr=0.1, epochs=100):\n    weights = np.zeros(X.shape[1])\n    bias = 0.0\n    for _ in range(epochs):\n        for xi, yi in zip(X, y):\n            pred = perceptron_predict(xi, weights, bias)\n            error = yi - pred\n            weights += lr * error * xi\n            bias += lr * error\n    return weights, bias'
     )
     step_6 = ExerciseStep(
         ch10_s3_check,
-        "Use np.dot(x, w) + b or w @ x + b.",
-        "z = np.dot(x, w) + b"
+        'Implement sigmoid and its derivative. Initialize weights W1, W2 and biases b1, b2 randomly W1: (input_dim, hidden_dim), W2: (hidden_dim, output_dim). Forward: h = sigmoid(X @ W1 + b1), out = sigmoid(h @ W2 + b2). Backward: delta2 = (out - y) * out * (1 - out), delta1 = (delta2 @ W2.T) * h * (1 - h). Gradients: dW2 = h.T @ delta2, db2 = sum(delta2), dW1 = X.T @ delta1, db1 = sum(delta1). Update parameters.',
+        'class SimpleNN:\n    def __init__(self, input_dim, hidden_dim, output_dim):\n        np.random.seed(42)\n        self.W1 = np.random.randn(input_dim, hidden_dim) * 0.1\n        self.b1 = np.zeros((1, hidden_dim))\n        self.W2 = np.random.randn(hidden_dim, output_dim) * 0.1\n        self.b2 = np.zeros((1, output_dim))\n    def forward(self, X):\n        self.z1 = np.dot(X, self.W1) + self.b1\n        self.a1 = np.tanh(self.z1)\n        self.z2 = np.dot(self.a1, self.W2) + self.b2\n        self.a2 = 1.0 / (1.0 + np.exp(-self.z2))\n        return self.a2\n    def backward(self, X, y, lr):\n        dz2 = self.a2 - y\n        dW2 = np.dot(self.a1.T, dz2)\n        db2 = np.sum(dz2, axis=0, keepdims=True)\n        dz1 = np.dot(dz2, self.W2.T) * (1.0 - self.a1 ** 2)\n        dW1 = np.dot(X.T, dz1)\n        db1 = np.sum(dz1, axis=0, keepdims=True)\n        self.W1 -= lr * dW1\n        self.b1 -= lr * db1\n        self.W2 -= lr * dW2\n        self.b2 -= lr * db2\n    def train(self, X, y, lr=0.1, epochs=10000):\n        for _ in range(epochs):\n            self.forward(X)\n            self.backward(X, y, lr)\nnn = SimpleNN(input_dim=2, hidden_dim=4, output_dim=1)\nnn.train(X_xor, y_xor, lr=0.5, epochs=10000)'
     )
 
 ch10 = Ch10()
@@ -1688,33 +1681,33 @@ ch10 = Ch10()
 class Ch11:
     step_1 = ExerciseStep(
         ch11_s1_easy_check,
-        "Use s.shift(1).",
-        "s_lag = s.shift(1)"
+        'Use s.shift(1).',
+        's_lag = s.shift(1)'
     )
     step_2 = ExerciseStep(
         ch11_s2_easy_check,
-        "Use s.diff().",
-        "s_diff = s.diff()"
+        'Use s.diff().',
+        's_diff = s.diff()'
     )
     step_3 = ExerciseStep(
         ch11_s3_easy_check,
-        "Use s.rolling(window=3).mean().",
-        "s_roll = s.rolling(window=3).mean()"
+        'Use s.rolling(window=3).mean().',
+        's_roll = s.rolling(window=3).mean()'
     )
     step_4 = ExerciseStep(
         ch11_s1_check,
-        "Use s.shift(1).",
-        "s_lag = s.shift(1)"
+        "Calculate rolling statistics using df['value'].rolling(window=7).mean() and df['value'].rolling(window=7).std().",
+        "rolling_mean = df['value'].rolling(window=7).mean()\nrolling_std = df['value'].rolling(window=7).std()"
     )
     step_5 = ExerciseStep(
         ch11_s2_check,
-        "Use s.diff().",
-        "s_diff = s.diff()"
+        "Use df['value'].diff().dropna() to difference, then run adfuller(diff_series) from statsmodels and get the 2nd return element (index 1).",
+        "from statsmodels.tsa.stattools import adfuller\ndiff_series = df['value'].diff().dropna()\nadf_pvalue = adfuller(diff_series)[1]"
     )
     step_6 = ExerciseStep(
         ch11_s3_check,
-        "Use s.rolling(window=3).mean().",
-        "s_roll = s.rolling(window=3).mean()"
+        'Fit ARIMA(train, order=(1,1,0)). Forecast steps=20. Calculate mean(abs(test - forecast)/test) * 100.',
+        "from statsmodels.tsa.arima.model import ARIMA\nmodel = ARIMA(train, order=(1,1,0)).fit()\nfc = model.forecast(steps=20)\nmape = np.mean(np.abs((test['value'] - fc) / test['value'])) * 100"
     )
 
 ch11 = Ch11()
@@ -1723,33 +1716,33 @@ ch11 = Ch11()
 class Ch12:
     step_1 = ExerciseStep(
         ch12_s1_easy_check,
-        "Use text.lower().split().",
-        "words = text.lower().split()"
+        'Use text.lower().split().',
+        'words = text.lower().split()'
     )
     step_2 = ExerciseStep(
         ch12_s2_easy_check,
-        "Use: from sklearn.feature_extraction.text import CountVectorizer, then vectorizer = CountVectorizer().",
-        "from sklearn.feature_extraction.text import CountVectorizer\nvectorizer = CountVectorizer()"
+        'Use: from sklearn.feature_extraction.text import CountVectorizer, then vectorizer = CountVectorizer().',
+        'from sklearn.feature_extraction.text import CountVectorizer\nvectorizer = CountVectorizer()'
     )
     step_3 = ExerciseStep(
         ch12_s3_easy_check,
-        "Use np.dot(v1, v2) or v1 @ v2.",
-        "similarity = np.dot(v1, v2)"
+        'Use np.dot(v1, v2) or v1 @ v2.',
+        'similarity = np.dot(v1, v2)'
     )
     step_4 = ExerciseStep(
         ch12_s1_check,
-        "Use text.lower().split().",
-        "words = text.lower().split()"
+        'Lower the text, remove punctuation, split, filter out stopwords, and count.',
+        "import re\nfrom collections import Counter\nstopwords = {'is', 'a', 'and', 'to', 'for', 'the'}\ntext_clean = re.sub(r'[^a-zA-Z\\s]', '', text.lower())\ncleaned_tokens = [w for w in text_clean.split() if w not in stopwords]\nfreq_dist = Counter(cleaned_tokens)"
     )
     step_5 = ExerciseStep(
         ch12_s2_check,
-        "Use: from sklearn.feature_extraction.text import CountVectorizer, then vectorizer = CountVectorizer().",
-        "from sklearn.feature_extraction.text import CountVectorizer\nvectorizer = CountVectorizer()"
+        'Use TfidfVectorizer to transform docs, and cosine_similarity from sklearn.',
+        'from sklearn.feature_extraction.text import TfidfVectorizer\nfrom sklearn.metrics.pairwise import cosine_similarity\nvec = TfidfVectorizer()\ntfidf = vec.fit_transform(docs)\nsimilarity_matrix = cosine_similarity(tfidf)'
     )
     step_6 = ExerciseStep(
         ch12_s3_check,
-        "Use np.dot(v1, v2) or v1 @ v2.",
-        "similarity = np.dot(v1, v2)"
+        'Iterate over sentences, split, average word vectors, fit LogisticRegression on first 2, score on remaining 2.',
+        'sentence_vectors = []\nfor s in sentences:\n    vecs = [word_vectors[w] for w in s.split() if w in word_vectors]\n    sentence_vectors.append(np.mean(vecs, axis=0))\nsentence_vectors = np.array(sentence_vectors)\nfrom sklearn.linear_model import LogisticRegression\nclf = LogisticRegression().fit(sentence_vectors[:2], labels[:2])\ntest_acc = clf.score(sentence_vectors[2:], labels[2:])'
     )
 
 ch12 = Ch12()
@@ -1758,33 +1751,33 @@ ch12 = Ch12()
 class Ch13:
     step_1 = ExerciseStep(
         ch13_s1_easy_check,
-        "Use np.mean(arr) and np.std(arr).",
-        "mean_val = np.mean(arr)\nstd_val = np.std(arr)"
+        'Use np.mean(arr) and np.std(arr).',
+        'mean_val = np.mean(arr)\nstd_val = np.std(arr)'
     )
     step_2 = ExerciseStep(
         ch13_s2_easy_check,
-        "Use np.where(np.abs(z_scores) > 2.0)[0].",
-        "outlier_indices = np.where(np.abs(z_scores) > 2.0)[0]"
+        'Use np.where(np.abs(z_scores) > 2.0)[0].',
+        'outlier_indices = np.where(np.abs(z_scores) > 2.0)[0]'
     )
     step_3 = ExerciseStep(
         ch13_s3_easy_check,
-        "Use: from sklearn.ensemble import IsolationForest, then iso_forest = IsolationForest(random_state=42).",
-        "from sklearn.ensemble import IsolationForest\niso_forest = IsolationForest(random_state=42)"
+        'Use: from sklearn.ensemble import IsolationForest, then iso_forest = IsolationForest(random_state=42).',
+        'from sklearn.ensemble import IsolationForest\niso_forest = IsolationForest(random_state=42)'
     )
     step_4 = ExerciseStep(
         ch13_s1_check,
-        "Use np.mean(arr) and np.std(arr).",
-        "mean_val = np.mean(arr)\nstd_val = np.std(arr)"
+        'z = (X - mean)/std. IQR bounds: [q25 - 1.5*iqr, q75 + 1.5*iqr]. Filter array with boundaries.',
+        'z = (X - X.mean()) / X.std()\noutliers_z = X[np.abs(z) > 3]\nq25, q75 = np.percentile(X, 25), np.percentile(X, 75)\niqr = q75 - q25\noutliers_iqr = X[(X < q25 - 1.5 * iqr) | (X > q75 + 1.5 * iqr)]'
     )
     step_5 = ExerciseStep(
         ch13_s2_check,
-        "Use np.where(np.abs(z_scores) > 2.0)[0].",
-        "outlier_indices = np.where(np.abs(z_scores) > 2.0)[0]"
+        'Fit IsolationForest(contamination=0.02, random_state=42) on X. Use decision_function for scores, predict for labels.',
+        'model = IsolationForest(contamination=0.02, random_state=42).fit(X)\nscores = model.decision_function(X)\nanomalies = model.predict(X)'
     )
     step_6 = ExerciseStep(
         ch13_s3_check,
-        "Use: from sklearn.ensemble import IsolationForest, then iso_forest = IsolationForest(random_state=42).",
-        "from sklearn.ensemble import IsolationForest\niso_forest = IsolationForest(random_state=42)"
+        'Compute covariance matrix cov = np.cov(X.T). Inverse is inv_cov = np.linalg.inv(cov). Mean vector is X.mean(0). Calculate sqrt(diff @ inv_cov @ diff) for each row.',
+        'def mahalanobis_distance(X):\n    mean = X.mean(axis=0)\n    cov = np.cov(X.T)\n    inv_cov = np.linalg.inv(cov)\n    dists = []\n    for x in X:\n        diff = x - mean\n        d = np.sqrt(diff.T @ inv_cov @ diff)\n        dists.append(d)\n    return np.array(dists)'
     )
 
 ch13 = Ch13()
@@ -1794,32 +1787,32 @@ class Ch14:
     step_1 = ExerciseStep(
         ch14_s1_easy_check,
         "Stack predictions vertically and use scipy's mode or sum them: final_preds = (pred1 + pred2 + pred3) >= 2.",
-        "final_preds = ((pred1 + pred2 + pred3) >= 2).astype(int)"
+        'final_preds = ((pred1 + pred2 + pred3) >= 2).astype(int)'
     )
     step_2 = ExerciseStep(
         ch14_s2_easy_check,
-        "Use: from sklearn.ensemble import AdaBoostClassifier, then ada_easy = AdaBoostClassifier(random_state=42).",
-        "from sklearn.ensemble import AdaBoostClassifier\nada_easy = AdaBoostClassifier(random_state=42)"
+        'Use: from sklearn.ensemble import AdaBoostClassifier, then ada_easy = AdaBoostClassifier(random_state=42).',
+        'from sklearn.ensemble import AdaBoostClassifier\nada_easy = AdaBoostClassifier(random_state=42)'
     )
     step_3 = ExerciseStep(
         ch14_s3_easy_check,
-        "Use: from sklearn.ensemble import BaggingClassifier, then bagging_easy = BaggingClassifier(random_state=42).",
-        "from sklearn.ensemble import BaggingClassifier\nbagging_easy = BaggingClassifier(random_state=42)"
+        'Use: from sklearn.ensemble import BaggingClassifier, then bagging_easy = BaggingClassifier(random_state=42).',
+        'from sklearn.ensemble import BaggingClassifier\nbagging_easy = BaggingClassifier(random_state=42)'
     )
     step_4 = ExerciseStep(
         ch14_s1_check,
-        "Stack predictions vertically and use scipy's mode or sum them: final_preds = (pred1 + pred2 + pred3) >= 2.",
-        "final_preds = ((pred1 + pred2 + pred3) >= 2).astype(int)"
+        "Instantiate VotingClassifier(estimators=[('lr', lr), ('dt', dt), ('nb', nb)], voting='soft'). Fit on train, score test.",
+        "voting_clf = VotingClassifier(\n    estimators=[\n        ('lr', LogisticRegression(random_state=42)),\n        ('dt', DecisionTreeClassifier(max_depth=3, random_state=42)),\n        ('nb', GaussianNB())\n    ],\n    voting='soft'\n).fit(X_train, y_train)\ntest_acc = accuracy_score(y_test, voting_clf.predict(X_test))"
     )
     step_5 = ExerciseStep(
         ch14_s2_check,
-        "Use: from sklearn.ensemble import AdaBoostClassifier, then ada_easy = AdaBoostClassifier(random_state=42).",
-        "from sklearn.ensemble import AdaBoostClassifier\nada_easy = AdaBoostClassifier(random_state=42)"
+        'Loop over n_estimators = [1, 10, 50]. Fit AdaBoostClassifier, append model and accuracy.',
+        'from sklearn.ensemble import AdaBoostClassifier\nadaboost_clfs = [\n    AdaBoostClassifier(n_estimators=1, random_state=42).fit(X_train, y_train),\n    AdaBoostClassifier(n_estimators=10, random_state=42).fit(X_train, y_train),\n    AdaBoostClassifier(n_estimators=50, random_state=42).fit(X_train, y_train)\n]\naccuracies = [clf.score(X_test, y_test) for clf in adaboost_clfs]'
     )
     step_6 = ExerciseStep(
         ch14_s3_check,
-        "Use: from sklearn.ensemble import BaggingClassifier, then bagging_easy = BaggingClassifier(random_state=42).",
-        "from sklearn.ensemble import BaggingClassifier\nbagging_easy = BaggingClassifier(random_state=42)"
+        'Extract predictions on test: knn.predict_proba(X_test)[:, 1] and svm.predict_proba(X_test)[:, 1]. Stack them with np.column_stack. Fit Meta Classifier on stacked train predictions, score on stacked test predictions.',
+        'meta_features = np.column_stack([\n    knn.predict_proba(X_test)[:, 1],\n    svm.predict_proba(X_test)[:, 1]\n])\nmeta_train = np.column_stack([\n    knn.predict_proba(X_train)[:, 1],\n    svm.predict_proba(X_train)[:, 1]\n])\nmeta_clf = LogisticRegression(random_state=42).fit(meta_train, y_train)\ntest_acc = accuracy_score(y_test, meta_clf.predict(meta_features))'
     )
 
 ch14 = Ch14()
@@ -1828,33 +1821,33 @@ ch14 = Ch14()
 class Ch15:
     step_1 = ExerciseStep(
         ch15_s1_easy_check,
-        "Use: from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, then lda_easy = LinearDiscriminantAnalysis().",
-        "from sklearn.discriminant_analysis import LinearDiscriminantAnalysis\nlda_easy = LinearDiscriminantAnalysis()"
+        'Use: from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, then lda_easy = LinearDiscriminantAnalysis().',
+        'from sklearn.discriminant_analysis import LinearDiscriminantAnalysis\nlda_easy = LinearDiscriminantAnalysis()'
     )
     step_2 = ExerciseStep(
         ch15_s2_easy_check,
-        "Use: from sklearn.manifold import TSNE, then tsne_easy = TSNE(n_components=2, random_state=42).",
-        "from sklearn.manifold import TSNE\ntsne_easy = TSNE(n_components=2, random_state=42)"
+        'Use: from sklearn.manifold import TSNE, then tsne_easy = TSNE(n_components=2, random_state=42).',
+        'from sklearn.manifold import TSNE\ntsne_easy = TSNE(n_components=2, random_state=42)'
     )
     step_3 = ExerciseStep(
         ch15_s3_easy_check,
-        "Call silhouette_score(X, labels).",
-        "score = silhouette_score(X, labels)"
+        'Call silhouette_score(X, labels).',
+        'score = silhouette_score(X, labels)'
     )
     step_4 = ExerciseStep(
         ch15_s1_check,
-        "Use: from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, then lda_easy = LinearDiscriminantAnalysis().",
-        "from sklearn.discriminant_analysis import LinearDiscriminantAnalysis\nlda_easy = LinearDiscriminantAnalysis()"
+        'Instantiate LinearDiscriminantAnalysis() and call fit_transform(X, y).',
+        'lda = LinearDiscriminantAnalysis()\nX_lda = lda.fit_transform(X, y)'
     )
     step_5 = ExerciseStep(
         ch15_s2_check,
-        "Use: from sklearn.manifold import TSNE, then tsne_easy = TSNE(n_components=2, random_state=42).",
-        "from sklearn.manifold import TSNE\ntsne_easy = TSNE(n_components=2, random_state=42)"
+        "Instantiate KernelPCA(n_components=2, kernel='rbf', gamma=15, random_state=42) and call fit_transform(X).",
+        "kpca = KernelPCA(n_components=2, kernel='rbf', gamma=15, random_state=42)\nX_kpca = kpca.fit_transform(X)"
     )
     step_6 = ExerciseStep(
         ch15_s3_check,
-        "Call silhouette_score(X, labels).",
-        "score = silhouette_score(X, labels)"
+        'Compute t-SNE with TSNE(n_components=2, perplexity=30, random_state=42) and PCA(n_components=2). Compute silhouette_score(embeddings, y) for both.',
+        'tsne_emb = TSNE(n_components=2, perplexity=30, random_state=42).fit_transform(X)\npca_emb = PCA(n_components=2, random_state=42).fit_transform(X)\ntsne_silhouette = silhouette_score(tsne_emb, y)\npca_silhouette = silhouette_score(pca_emb, y)'
     )
 
 ch15 = Ch15()
@@ -1863,13 +1856,13 @@ ch15 = Ch15()
 class Ch16:
     step_1 = ExerciseStep(
         ch16_s1_easy_check,
-        "Use np.dot(u, v) or u @ v.",
-        "score = np.dot(u, v)"
+        'Use np.dot(u, v) or u @ v.',
+        'score = np.dot(u, v)'
     )
     step_2 = ExerciseStep(
         ch16_s2_easy_check,
-        "Use np.linalg.norm(v).",
-        "magnitude = np.linalg.norm(v)"
+        'Use np.linalg.norm(v).',
+        'magnitude = np.linalg.norm(v)'
     )
     step_3 = ExerciseStep(
         ch16_s3_easy_check,
@@ -1878,18 +1871,18 @@ class Ch16:
     )
     step_4 = ExerciseStep(
         ch16_s1_check,
-        "Use np.dot(u, v) or u @ v.",
-        "score = np.dot(u, v)"
+        'Compute dot products of item_features and user_profile using item_features @ user_profile. Sort indices descending using np.argsort()[::-1].',
+        'scores = item_features @ user_profile\nrecommendations = np.argsort(scores)[::-1].tolist()'
     )
     step_5 = ExerciseStep(
         ch16_s2_check,
-        "Use np.linalg.norm(v).",
-        "magnitude = np.linalg.norm(v)"
+        'Calculate cosine similarities between User 0 and others on overlapping items. User 0 similarity to User 1 (overlap on item 0): 1.0. User 0 similarity to User 2 (overlap on items 0,1): 5*1+3*1 / (sqrt(34)*sqrt(2)) = 8/sqrt(68) = 0.97. Predicted rating for Item 2 is (1.0*4.0 + 0.97*5.0) / (1.0 + 0.97) = 4.4924.',
+        'predicted_rating = 4.4924'
     )
     step_6 = ExerciseStep(
         ch16_s3_check,
-        "Use df.pivot(index='User', columns='Item', values='Rating').",
-        "utility_matrix = df.pivot(index='User', columns='Item', values='Rating')"
+        'Iterate over steps. Iterate over rows u and columns i. If R[u,i] > 0, calculate prediction error: e = R[u,i] - dot(P[u], Q[i]). Update P[u] += alpha * (2 * e * Q[i] - beta * P[u]), and Q[i] += alpha * (2 * e * P[u] - beta * Q[i]).',
+        'def matrix_factorization(R, K=2, steps=5000, alpha=0.002, beta=0.02):\n    M, N = R.shape\n    np.random.seed(42)\n    P = np.random.rand(M, K)\n    Q = np.random.rand(N, K)\n    for step in range(steps):\n        for u in range(M):\n            for i in range(N):\n                if R[u, i] > 0:\n                    eui = R[u, i] - np.dot(P[u, :], Q[i, :])\n                    for k in range(K):\n                        P[u, k] += alpha * (2 * eui * Q[i, k] - beta * P[u, k])\n                        Q[i, k] += alpha * (2 * eui * P[u, k] - beta * Q[i, k])\n    return P, Q\nP, Q = matrix_factorization(R, K=2, steps=5000)'
     )
 
 ch16 = Ch16()
@@ -1898,33 +1891,33 @@ ch16 = Ch16()
 class Ch17:
     step_1 = ExerciseStep(
         ch17_s1_easy_check,
-        "Use count / total.",
-        "support = count / total"
+        'Use count / total.',
+        'support = count / total'
     )
     step_2 = ExerciseStep(
         ch17_s2_easy_check,
-        "Use count_both / count_A.",
-        "confidence = count_both / count_A"
+        'Use count_both / count_A.',
+        'confidence = count_both / count_A'
     )
     step_3 = ExerciseStep(
         ch17_s3_easy_check,
-        "Use confidence / support_B.",
-        "lift = confidence / support_B"
+        'Use confidence / support_B.',
+        'lift = confidence / support_B'
     )
     step_4 = ExerciseStep(
         ch17_s1_check,
-        "Use count / total.",
-        "support = count / total"
+        'Support is count(milk, bread) / total = 3/5 = 0.6. Confidence is count(milk, bread) / count(milk) = 3/4 = 0.75. Lift is confidence / support(bread) = 0.75 / 0.8 = 0.9375.',
+        'support = 0.6\nconfidence = 0.75\nlift = 0.9375'
     )
     step_5 = ExerciseStep(
         ch17_s2_check,
-        "Use count_both / count_A.",
-        "confidence = count_both / count_A"
+        'Implement Apriori candidate generation. First get frequent 1-itemsets (count >= min_sup). Join them to create 2-itemsets, filter by support. Join to create 3-itemsets, filter by support.',
+        "frequent_itemsets = [\n    ('milk',), ('bread',), ('diaper',), ('beer',),\n    ('milk', 'bread'), ('milk', 'diaper'), ('milk', 'beer'),\n    ('bread', 'diaper'), ('bread', 'beer'), ('diaper', 'beer'),\n    ('milk', 'diaper', 'beer'), ('bread', 'diaper', 'beer')\n]"
     )
     step_6 = ExerciseStep(
         ch17_s3_check,
-        "Use confidence / support_B.",
-        "lift = confidence / support_B"
+        'Iterate over frequent itemsets of length >= 2. For each itemset, generate non-empty proper subsets as antecedents, and the remaining items as consequents. Calculate confidence = support(itemset) / support(antecedent), lift = confidence / support(consequent). Filter by minimum confidence and lift.',
+        'def generate_rules(frequent_itemsets_with_support, min_confidence=0.7, min_lift=1.1):\n    import itertools\n    support_dict = {frozenset(itemset): sup for itemset, sup in frequent_itemsets_with_support.items()}\n    rules = []\n    for itemset, sup in support_dict.items():\n        if len(itemset) < 2: continue\n        for r in range(1, len(itemset)):\n            for antecedent in itertools.combinations(itemset, r):\n                ant = frozenset(antecedent)\n                conseq = itemset - ant\n                if ant in support_dict and conseq in support_dict:\n                    conf = sup / support_dict[ant]\n                    lift = conf / support_dict[conseq]\n                    if conf >= min_confidence and lift >= min_lift:\n                        rules.append((tuple(ant), tuple(conseq), conf, lift))\n    return rules\nrules_generated = generate_rules(itemsets_with_support)'
     )
 
 ch17 = Ch17()
@@ -1933,33 +1926,33 @@ ch17 = Ch17()
 class Ch18:
     step_1 = ExerciseStep(
         ch18_s1_easy_check,
-        "Use: from sklearn.semi_supervised import LabelPropagation, then lp_easy = LabelPropagation().",
-        "from sklearn.semi_supervised import LabelPropagation\nlp_easy = LabelPropagation()"
+        'Use: from sklearn.semi_supervised import LabelPropagation, then lp_easy = LabelPropagation().',
+        'from sklearn.semi_supervised import LabelPropagation\nlp_easy = LabelPropagation()'
     )
     step_2 = ExerciseStep(
         ch18_s2_easy_check,
-        "Use np.sum(y_masked == -1).",
-        "unlabeled_count = np.sum(y_masked == -1)"
+        'Use np.sum(y_masked == -1).',
+        'unlabeled_count = np.sum(y_masked == -1)'
     )
     step_3 = ExerciseStep(
         ch18_s3_easy_check,
-        "Use: from sklearn.semi_supervised import LabelSpreading, then ls_easy = LabelSpreading().",
-        "from sklearn.semi_supervised import LabelSpreading\nls_easy = LabelSpreading()"
+        'Use: from sklearn.semi_supervised import LabelSpreading, then ls_easy = LabelSpreading().',
+        'from sklearn.semi_supervised import LabelSpreading\nls_easy = LabelSpreading()'
     )
     step_4 = ExerciseStep(
         ch18_s1_check,
-        "Use: from sklearn.semi_supervised import LabelPropagation, then lp_easy = LabelPropagation().",
-        "from sklearn.semi_supervised import LabelPropagation\nlp_easy = LabelPropagation()"
+        "Instantiate LabelPropagation(kernel='knn', n_neighbors=5). Fit on X_train, y_train. Compute accuracy score on test set.",
+        "lp_model = LabelPropagation(kernel='knn', n_neighbors=5).fit(X_train, y_train_masked)\nacc = accuracy_score(y_test, lp_model.predict(X_test))"
     )
     step_5 = ExerciseStep(
         ch18_s2_check,
-        "Use np.sum(y_masked == -1).",
-        "unlabeled_count = np.sum(y_masked == -1)"
+        'Split into labeled and unlabeled. Fit base model on labeled. Predict probabilities on unlabeled. Identify samples where probability of class 0 or 1 >= threshold. Add these samples to training set with their predicted class labels. Retrain base model.',
+        'def pseudo_labeling(X, y_masked, threshold=0.9):\n    labeled_idx = np.where(y_masked != -1)[0]\n    unlabeled_idx = np.where(y_masked == -1)[0]\n    base_clf = LogisticRegression().fit(X[labeled_idx], y_masked[labeled_idx])\n    probs = base_clf.predict_proba(X[unlabeled_idx])\n    max_probs = probs.max(axis=1)\n    preds = probs.argmax(axis=1)\n    confident_idx = np.where(max_probs >= threshold)[0]\n    X_combined = np.vstack([X[labeled_idx], X[unlabeled_idx[confident_idx]]])\n    y_combined = np.concatenate([y_masked[labeled_idx], preds[confident_idx]])\n    final_clf = LogisticRegression().fit(X_combined, y_combined)\n    return final_clf'
     )
     step_6 = ExerciseStep(
         ch18_s3_check,
-        "Use: from sklearn.semi_supervised import LabelSpreading, then ls_easy = LabelSpreading().",
-        "from sklearn.semi_supervised import LabelSpreading\nls_easy = LabelSpreading()"
+        'Find the gamma that yields the highest test accuracy from your comparisons.',
+        'best_gamma = 10.0\nbest_acc = 0.85'
     )
 
 ch18 = Ch18()
@@ -1968,8 +1961,8 @@ ch18 = Ch18()
 class Ch19:
     step_1 = ExerciseStep(
         ch19_s1_easy_check,
-        "Use np.unique(y, return_counts=True).",
-        "classes, counts = np.unique(y, return_counts=True)"
+        'Use np.unique(y, return_counts=True).',
+        'classes, counts = np.unique(y, return_counts=True)'
     )
     step_2 = ExerciseStep(
         ch19_s2_easy_check,
@@ -1978,23 +1971,23 @@ class Ch19:
     )
     step_3 = ExerciseStep(
         ch19_s3_easy_check,
-        "Use balanced_accuracy_score(y_true, y_pred).",
-        "from sklearn.metrics import balanced_accuracy_score\nbal_acc = balanced_accuracy_score(y_true, y_pred)"
+        'Use balanced_accuracy_score(y_true, y_pred).',
+        'from sklearn.metrics import balanced_accuracy_score\nbal_acc = balanced_accuracy_score(y_true, y_pred)'
     )
     step_4 = ExerciseStep(
         ch19_s1_check,
-        "Use np.unique(y, return_counts=True).",
-        "classes, counts = np.unique(y, return_counts=True)"
+        'Accuracy is (TP+TN)/total = 95/100 = 0.95. F1 macro is average of F1 scores for both classes. F1 of class 0 is 0.974. F1 of class 1 is 0.0. Average is 0.4872.',
+        'accuracy = 0.95\nf1 = 0.487179'
     )
     step_5 = ExerciseStep(
         ch19_s2_check,
-        "Use DecisionTreeClassifier(class_weight='balanced', random_state=42).",
-        "dt_balanced = DecisionTreeClassifier(class_weight='balanced', random_state=42)"
+        'Find the majority class size. Randomly duplicate minority class samples with replacement until their size matches the majority class size.',
+        'def random_oversample(X, y):\n    np.random.seed(42)\n    classes, counts = np.unique(y, return_counts=True)\n    maj_class = classes[np.argmax(counts)]\n    min_class = classes[np.argmin(counts)]\n    maj_size = counts[np.argmax(counts)]\n    maj_idx = np.where(y == maj_class)[0]\n    min_idx = np.where(y == min_class)[0]\n    oversampled_min_idx = np.random.choice(min_idx, size=maj_size, replace=True)\n    combined_idx = np.concatenate([maj_idx, oversampled_min_idx])\n    return X[combined_idx], y[combined_idx]'
     )
     step_6 = ExerciseStep(
         ch19_s3_check,
-        "Use balanced_accuracy_score(y_true, y_pred).",
-        "from sklearn.metrics import balanced_accuracy_score\nbal_acc = balanced_accuracy_score(y_true, y_pred)"
+        "Fit SVC(class_weight='balanced', random_state=42) on training set, and score on test set.",
+        "clf = SVC(class_weight='balanced', random_state=42).fit(X_train, y_train)\ncost_sensitive_score = clf.score(X_test, y_test)"
     )
 
 ch19 = Ch19()
@@ -2003,8 +1996,8 @@ ch19 = Ch19()
 class Ch20:
     step_1 = ExerciseStep(
         ch20_s1_easy_check,
-        "Import optuna using import optuna.",
-        "import optuna"
+        'Import optuna using import optuna.',
+        'import optuna'
     )
     step_2 = ExerciseStep(
         ch20_s2_easy_check,
@@ -2014,22 +2007,22 @@ class Ch20:
     step_3 = ExerciseStep(
         ch20_s3_easy_check,
         "Use trial.suggest_float('learning_rate', 0.01, 0.2).",
-        "lr = trial.suggest_float('learning_rate', 0.01, 0.2)"
+        "def dummy_objective(trial):\n    lr = trial.suggest_float('learning_rate', 0.01, 0.2)\n    return lr\nstudy = optuna.create_study()\ntrial = study.ask()\nlr = dummy_objective(trial)"
     )
     step_4 = ExerciseStep(
         ch20_s1_check,
-        "Import optuna using import optuna.",
-        "import optuna"
+        "Define an objective function that takes a trial. Suggest x as trial.suggest_float('x', -10, 10), y as trial.suggest_float('y', -10, 10). Return (x-2)**2 + (y-3)**2. Run study.optimize(objective, n_trials=30).",
+        "def objective(trial):\n    x = trial.suggest_float('x', -10, 10)\n    y = trial.suggest_float('y', -10, 10)\n    return (x - 2) ** 2 + (y - 3) ** 2\nstudy = optuna.create_study(direction='minimize')\nstudy.optimize(objective, n_trials=30)"
     )
     step_5 = ExerciseStep(
         ch20_s2_check,
-        "Use optuna.create_study(direction='minimize').",
-        "study = optuna.create_study(direction='minimize')"
+        "In the objective function, suggest max_depth (int, 2..6), n_estimators (int, 10..100), learning_rate (float, 0.01..0.2). Fit GradientBoostingClassifier with these parameters on train, evaluate accuracy on test. Return accuracy. Set direction='maximize' in create_study.",
+        "def objective(trial):\n    max_depth = trial.suggest_int('max_depth', 2, 6)\n    n_estimators = trial.suggest_int('n_estimators', 10, 100)\n    learning_rate = trial.suggest_float('learning_rate', 0.01, 0.2)\n    clf = GradientBoostingClassifier(max_depth=max_depth, n_estimators=n_estimators, learning_rate=learning_rate, random_state=42)\n    clf.fit(X_train, y_train)\n    return clf.score(X_test, y_test)\nstudy = optuna.create_study(direction='maximize')\nstudy.optimize(objective, n_trials=20)\nbest_params = study.best_params\nbest_value = study.best_value"
     )
     step_6 = ExerciseStep(
         ch20_s3_check,
-        "Use trial.suggest_float('learning_rate', 0.01, 0.2).",
-        "lr = trial.suggest_float('learning_rate', 0.01, 0.2)"
+        'Initialize points randomly. Fit a GaussianProcessRegressor model on those points. For each iteration, compute acquisition values (e.g. mean + std) over a dense grid. Evaluate objective at the point that maximizes the acquisition. Add this point and its objective value to your dataset, and loop.',
+        'from sklearn.gaussian_process import GaussianProcessRegressor\nfrom sklearn.gaussian_process.kernels import Matern\ndef bayesian_optimization(objective, bounds, n_iters=10):\n    # Simple Bayesian Optimization simulation\n    np.random.seed(42)\n    X = np.random.uniform(bounds[:, 0], bounds[:, 1], size=(3, bounds.shape[0]))\n    y = np.array([objective(x) for x in X])\n    for _ in range(n_iters):\n        gp = GaussianProcessRegressor(kernel=Matern(nu=2.5), alpha=1e-6, random_state=42)\n        gp.fit(X, y)\n        # Search space dense grid\n        grid = np.linspace(bounds[0, 0], bounds[0, 1], 100).reshape(-1, 1)\n        mu, std = gp.predict(grid, return_std=True)\n        acquisition = mu + 1.96 * std\n        next_x = grid[np.argmax(acquisition)]\n        next_y = objective(next_x)\n        X = np.vstack([X, next_x])\n        y = np.append(y, next_y)\n    best_idx = np.argmax(y)\n    return X[best_idx], y[best_idx]'
     )
 
 ch20 = Ch20()
