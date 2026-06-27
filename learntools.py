@@ -1,60 +1,128 @@
 import numpy as np
 import pandas as pd
 
-_last_axes = None
-
-def _post_execute_hook():
-    global _last_axes
-    try:
-        import matplotlib.pyplot as plt
-        fig = plt.gcf()
-        axes = fig.get_axes()
-        if axes:
-            def axes_key(ax):
-                return len(ax.lines) + len(ax.patches) + len(ax.collections) + len(ax.images)
-            active_ax = max(axes, key=axes_key)
-            if axes_key(active_ax) > 0:
-                _last_axes = active_ax
-    except Exception:
-        pass
-
-try:
-    from IPython import get_ipython
-    _ip = get_ipython()
-    if _ip is not None:
-        _ip.events.register('post_execute', _post_execute_hook)
-except Exception:
-    pass
+_plot_history = {
+    'line_plot_called': False,
+    'title_set': None,
+    'xlabel_set': None,
+    'ylabel_set': None,
+    'scatter_plot_called': False,
+    'histogram_called': False,
+    'lmplot_called': False,
+    'heatmap_called': False,
+}
 
 try:
     import matplotlib.pyplot as plt
-    _orig_show = plt.show
-    def _custom_show(*args, **kwargs):
-        global _last_axes
-        try:
-            fig = plt.gcf()
-            axes = fig.get_axes()
-            if axes:
-                def axes_key(ax):
-                    return len(ax.lines) + len(ax.patches) + len(ax.collections) + len(ax.images)
-                active_ax = max(axes, key=axes_key)
-                if axes_key(active_ax) > 0:
-                    _last_axes = active_ax
-        except Exception:
-            pass
-        return _orig_show(*args, **kwargs)
-    plt.show = _custom_show
+    from matplotlib.axes import Axes
+    import seaborn as sns
+
+    # Plot
+    _orig_plt_plot = plt.plot
+    def _custom_plt_plot(*args, **kwargs):
+        _plot_history['line_plot_called'] = True
+        return _orig_plt_plot(*args, **kwargs)
+    plt.plot = _custom_plt_plot
+
+    _orig_axes_plot = Axes.plot
+    def _custom_axes_plot(self, *args, **kwargs):
+        _plot_history['line_plot_called'] = True
+        return _orig_axes_plot(self, *args, **kwargs)
+    Axes.plot = _custom_axes_plot
+
+    # Title
+    _orig_plt_title = plt.title
+    def _custom_plt_title(label, *args, **kwargs):
+        _plot_history['title_set'] = label
+        return _orig_plt_title(label, *args, **kwargs)
+    plt.title = _custom_plt_title
+
+    _orig_axes_set_title = Axes.set_title
+    def _custom_axes_set_title(self, label, *args, **kwargs):
+        _plot_history['title_set'] = label
+        return _orig_axes_set_title(self, label, *args, **kwargs)
+    Axes.set_title = _custom_axes_set_title
+
+    # xlabel
+    _orig_plt_xlabel = plt.xlabel
+    def _custom_plt_xlabel(xlabel, *args, **kwargs):
+        _plot_history['xlabel_set'] = xlabel
+        return _orig_plt_xlabel(xlabel, *args, **kwargs)
+    plt.xlabel = _custom_plt_xlabel
+
+    _orig_axes_set_xlabel = Axes.set_xlabel
+    def _custom_axes_set_xlabel(self, xlabel, *args, **kwargs):
+        _plot_history['xlabel_set'] = xlabel
+        return _orig_axes_set_xlabel(self, xlabel, *args, **kwargs)
+    Axes.set_xlabel = _custom_axes_set_xlabel
+
+    # ylabel
+    _orig_plt_ylabel = plt.ylabel
+    def _custom_plt_ylabel(ylabel, *args, **kwargs):
+        _plot_history['ylabel_set'] = ylabel
+        return _orig_plt_ylabel(ylabel, *args, **kwargs)
+    plt.ylabel = _custom_plt_ylabel
+
+    _orig_axes_set_ylabel = Axes.set_ylabel
+    def _custom_axes_set_ylabel(self, ylabel, *args, **kwargs):
+        _plot_history['ylabel_set'] = ylabel
+        return _orig_axes_set_ylabel(self, ylabel, *args, **kwargs)
+    Axes.set_ylabel = _custom_axes_set_ylabel
+
+    # Scatter
+    _orig_plt_scatter = plt.scatter
+    def _custom_plt_scatter(*args, **kwargs):
+        _plot_history['scatter_plot_called'] = True
+        return _orig_plt_scatter(*args, **kwargs)
+    plt.scatter = _custom_plt_scatter
+
+    _orig_axes_scatter = Axes.scatter
+    def _custom_axes_scatter(self, *args, **kwargs):
+        _plot_history['scatter_plot_called'] = True
+        return _orig_axes_scatter(self, *args, **kwargs)
+    Axes.scatter = _custom_axes_scatter
+
+    _orig_sns_scatterplot = sns.scatterplot
+    def _custom_sns_scatterplot(*args, **kwargs):
+        _plot_history['scatter_plot_called'] = True
+        return _orig_sns_scatterplot(*args, **kwargs)
+    sns.scatterplot = _custom_sns_scatterplot
+
+    # Histogram
+    _orig_plt_hist = plt.hist
+    def _custom_plt_hist(*args, **kwargs):
+        _plot_history['histogram_called'] = True
+        return _orig_plt_hist(*args, **kwargs)
+    plt.hist = _custom_plt_hist
+
+    _orig_axes_hist = Axes.hist
+    def _custom_axes_hist(self, *args, **kwargs):
+        _plot_history['histogram_called'] = True
+        return _orig_axes_hist(self, *args, **kwargs)
+    Axes.hist = _custom_axes_hist
+
+    if hasattr(sns, 'histplot'):
+        _orig_sns_histplot = sns.histplot
+        def _custom_sns_histplot(*args, **kwargs):
+            _plot_history['histogram_called'] = True
+            return _orig_sns_histplot(*args, **kwargs)
+        sns.histplot = _custom_sns_histplot
+
+    # lmplot
+    _orig_sns_lmplot = sns.lmplot
+    def _custom_sns_lmplot(*args, **kwargs):
+        _plot_history['lmplot_called'] = True
+        return _orig_sns_lmplot(*args, **kwargs)
+    sns.lmplot = _custom_sns_lmplot
+
+    # heatmap
+    _orig_sns_heatmap = sns.heatmap
+    def _custom_sns_heatmap(*args, **kwargs):
+        _plot_history['heatmap_called'] = True
+        return _orig_sns_heatmap(*args, **kwargs)
+    sns.heatmap = _custom_sns_heatmap
 except Exception:
     pass
-
-def get_active_axes():
-    global _last_axes
-    import matplotlib.pyplot as plt
-    ax = plt.gca()
-    if len(ax.lines) == 0 and len(ax.patches) == 0 and len(ax.collections) == 0 and len(ax.images) == 0:
-        if _last_axes is not None:
-            return _last_axes
-    return ax
 
 class ExerciseStep:
     def __init__(self, check_fn, hint_msg, solution_msg):
@@ -194,42 +262,28 @@ def ch2_s3_check(func):
 
 
 def ch3_s1_check():
-    import matplotlib.pyplot as plt
-    ax = get_active_axes()
-    title = ax.get_title()
-    xlabel = ax.get_xlabel()
-    ylabel = ax.get_ylabel()
-    if not title or title.strip() == "":
+    title = _plot_history['title_set']
+    xlabel = _plot_history['xlabel_set']
+    ylabel = _plot_history['ylabel_set']
+    if not title or str(title).strip() == "":
         return "The plot is missing a title."
-    if not xlabel or xlabel.strip() == "":
+    if not xlabel or str(xlabel).strip() == "":
         return "The plot is missing an X-axis label."
-    if not ylabel or ylabel.strip() == "":
+    if not ylabel or str(ylabel).strip() == "":
         return "The plot is missing a Y-axis label."
-    if len(ax.patches) == 0 and len(ax.containers) == 0:
+    if not _plot_history['histogram_called']:
         return "Could not find any bars/patches in the active plot. Make sure you plotted a histogram."
     return True
 
 
 def ch3_s2_check():
-    import matplotlib.pyplot as plt
-    ax = get_active_axes()
-    if len(ax.collections) == 0:
+    if not _plot_history['lmplot_called'] and not _plot_history['scatter_plot_called']:
         return "Could not find scatter plot points. Make sure you plotted a scatter plot."
-    if len(ax.collections) == 0 and len(ax.lines) == 0:
-        return "Plot seems empty."
     return True
 
 
 def ch3_s3_check():
-    import matplotlib.pyplot as plt
-    ax = get_active_axes()
-    collections = ax.collections
-    has_quadmesh = False
-    for coll in collections:
-        if coll.__class__.__name__ == 'QuadMesh':
-            has_quadmesh = True
-            break
-    if not has_quadmesh:
+    if not _plot_history['heatmap_called']:
         return "Could not find a heatmap. Make sure you used sns.heatmap."
     return True
 
@@ -1110,23 +1164,21 @@ def ch2_s3_easy_check(s):
     return True
 
 def ch3_s1_easy_check():
-    import matplotlib.pyplot as plt
-    ax = get_active_axes()
-    if len(ax.lines) == 0: return "No line plot was drawn. Use plt.plot(x, y)."
+    if not _plot_history['line_plot_called']:
+        return "No line plot was drawn. Use plt.plot(x, y)."
     return True
 
 def ch3_s2_easy_check():
-    import matplotlib.pyplot as plt
-    ax = get_active_axes()
-    if not ax.get_title() or ax.get_title().strip() == "": return "Plot is missing a title."
-    if not ax.get_xlabel() or ax.get_xlabel().strip() == "": return "Plot is missing X-axis label."
-    if not ax.get_ylabel() or ax.get_ylabel().strip() == "": return "Plot is missing Y-axis label."
+    title = _plot_history['title_set']
+    xlabel = _plot_history['xlabel_set']
+    ylabel = _plot_history['ylabel_set']
+    if not title or str(title).strip() == "": return "Plot is missing a title."
+    if not xlabel or str(xlabel).strip() == "": return "Plot is missing X-axis label."
+    if not ylabel or str(ylabel).strip() == "": return "Plot is missing Y-axis label."
     return True
 
 def ch3_s3_easy_check():
-    import matplotlib.pyplot as plt
-    ax = get_active_axes()
-    if len(ax.collections) == 0: return "No scatter plot collection found. Make sure you used sns.scatterplot."
+    if not _plot_history['scatter_plot_called']: return "No scatter plot collection found. Make sure you used sns.scatterplot."
     return True
 
 def ch4_s1_easy_check(model):
