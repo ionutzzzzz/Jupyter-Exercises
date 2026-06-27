@@ -962,6 +962,14 @@ def ch20_s3_check(func):
     return True
 
 # --- New Easy Check Functions ---
+
+# --- New Easy Check Functions ---
+
+# --- New Easy Check Functions ---
+
+# --- New Easy Check Functions ---
+
+# --- New Easy Check Functions ---
 def ch1_s1_easy_check(arr):
     if not isinstance(arr, np.ndarray): return "Output should be a numpy array."
     if arr.shape != (10,): return f"Expected shape (10,), but got {arr.shape}."
@@ -1345,18 +1353,18 @@ class Ch1:
     )
     step_4 = ExerciseStep(
         ch1_s1_check,
-        "Use df[df['Age'] > 30][['Name', 'Score']]",
-        "result_df = df[df['Age'] > 30][['Name', 'Score']]"
+        "Use np.arange(1, 11) or np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).",
+        "arr_easy = np.arange(1, 11)"
     )
     step_5 = ExerciseStep(
         ch1_s2_check,
-        "Use sales_df.groupby('Category').agg(Avg_Revenue=('Revenue', 'mean'), Total_Quantity=('Quantity', 'sum'))",
-        "agg_df = sales_df.groupby('Category').agg(\n    Avg_Revenue=('Revenue', 'mean'),\n    Total_Quantity=('Quantity', 'sum')\n)"
+        "Use slice syntax: arr_to_slice[:5].",
+        "arr_sliced = arr_to_slice[:5]"
     )
     step_6 = ExerciseStep(
         ch1_s3_check,
-        "Use np.sum(A, axis=1, keepdims=True) to compute row sums. Divide A by these sums to normalize. Then use np.dot or @ for multiplication.",
-        "def normalize_and_multiply(A, B):\n    row_sums = np.sum(A, axis=1, keepdims=True)\n    A_norm = A / row_sums\n    return A_norm @ B"
+        "Use df_easy['Age'].",
+        "age_column = df_easy['Age']"
     )
 
 ch1 = Ch1()
@@ -1380,18 +1388,18 @@ class Ch2:
     )
     step_4 = ExerciseStep(
         ch2_s1_check,
-        "Use s.fillna(s.mean()) to replace NaNs with the average of the series.",
-        "s_imputed = s.fillna(s.mean())"
+        "Use s_easy.fillna(0.0).",
+        "s_filled = s_easy.fillna(0.0)"
     )
     step_5 = ExerciseStep(
         ch2_s2_check,
-        "Map 'Size' with a dictionary, and use pd.get_dummies(df, columns=['Color']) for one-hot encoding.",
-        "df['Size_Encoded'] = df['Size'].map({'Small': 0, 'Medium': 1, 'Large': 2})\nencoded_df = pd.get_dummies(df, columns=['Color'])"
+        "Use df_miss.dropna().",
+        "df_clean = df_miss.dropna()"
     )
     step_6 = ExerciseStep(
         ch2_s3_check,
-        "Calculate percentiles using np.percentile(arr, 10) and np.percentile(arr, 90). Clip the array using np.clip. Then do min-max scaling.",
-        "def custom_scale(arr, min_val, max_val):\n    p10 = np.percentile(arr, 10)\n    p90 = np.percentile(arr, 90)\n    clipped = np.clip(arr, p10, p90)\n    scaled = (clipped - clipped.min()) / (clipped.max() - clipped.min()) * (max_val - min_val) + min_val\n    return scaled"
+        "Use s_str.str.lower().",
+        "s_lower = s_str.str.lower()"
     )
 
 ch2 = Ch2()
@@ -1415,18 +1423,18 @@ class Ch3:
     )
     step_4 = ExerciseStep(
         ch3_s1_check,
-        "Use plt.hist(data) or sns.histplot(data). Remember to add plt.title(), plt.xlabel(), plt.ylabel().",
-        "plt.figure(figsize=(8, 5))\nplt.hist(data, bins=20, color='skyblue', edgecolor='black')\nplt.title('Feature Distribution')\nplt.xlabel('Value')\nplt.ylabel('Frequency')\nplt.grid(True)\nplt.show()"
+        "Call plt.plot(x, y).",
+        "plt.plot(x, y)"
     )
     step_5 = ExerciseStep(
         ch3_s2_check,
-        "Use sns.scatterplot or sns.regplot. For a regression line with hue, sns.lmplot(x='x', y='y', hue='group', data=df) is ideal.",
-        "sns.lmplot(x='x', y='y', hue='group', data=df, height=6, aspect=1.2)\nplt.title('Relationship between X and Y by Group')\nplt.show()"
+        "Use plt.title('My First Plot'), plt.xlabel('X Axis'), and plt.ylabel('Y Axis').",
+        "plt.title('My First Plot')\nplt.xlabel('X Axis')\nplt.ylabel('Y Axis')"
     )
     step_6 = ExerciseStep(
         ch3_s3_check,
-        "Compute the correlation matrix using df.corr(). Construct a mask for weak correlations or simply mask them out. Pass it to sns.heatmap.",
-        "corr = df.corr()\n# Mask out weak correlations\ncorr_filtered = corr.copy()\ncorr_filtered[corr_filtered.abs() < 0.3] = np.nan\nsns.heatmap(corr_filtered, annot=True, cmap='coolwarm', fmt='.2f', vmin=-1, vmax=1)\nplt.title('Correlation Heatmap (|r| >= 0.3)')\nplt.show()"
+        "Use sns.scatterplot(x=x_coords, y=y_coords).",
+        "sns.scatterplot(x=x_coords, y=y_coords)"
     )
 
 ch3 = Ch3()
@@ -1450,18 +1458,18 @@ class Ch4:
     )
     step_4 = ExerciseStep(
         ch4_s1_check,
-        "Instantiate with model = LinearRegression(), train with model.fit(X_train, y_train), then make predictions with model.predict(X_test).",
-        "model = LinearRegression()\nmodel.fit(X_train, y_train)\npreds = model.predict(X_test)"
+        "Use: from sklearn.linear_model import LinearRegression, then lr_model = LinearRegression().",
+        "from sklearn.linear_model import LinearRegression\nlr_model = LinearRegression()"
     )
     step_5 = ExerciseStep(
         ch4_s2_check,
-        "Initialize w and b to 0. Loop over epochs. Calculate predictions: pred = w*X + b. Calculate gradients: dw = -2/N * sum(X * (y - pred)), db = -2/N * sum(y - pred). Update w = w - lr*dw, b = b - lr*db.",
-        "def gradient_descent(X, y, lr, epochs):\n    w, b = 0.0, 0.0\n    N = len(X)\n    for _ in range(epochs):\n        pred = w * X + b\n        dw = -2/N * np.sum(X * (y - pred))\n        db = -2/N * np.sum(y - pred)\n        w -= lr * dw\n        b -= lr * db\n    return w, b"
+        "Formula: np.mean((y_true - y_pred) ** 2).",
+        "mse = np.mean((y_true - y_pred) ** 2)"
     )
     step_6 = ExerciseStep(
         ch4_s3_check,
-        "Train LogisticRegression(penalty='l1', solver='liblinear', C=0.1) for L1 and LogisticRegression(penalty='l2', C=0.1) for L2. Extract coef_[0] for each.",
-        "model_l1 = LogisticRegression(penalty='l1', solver='liblinear', C=0.1, random_state=42).fit(X_train, y_train)\nmodel_l2 = LogisticRegression(penalty='l2', C=0.1, random_state=42).fit(X_train, y_train)\ncoef_l1 = model_l1.coef_[0]\ncoef_l2 = model_l2.coef_[0]"
+        "Call model.fit(X, y).",
+        "model.fit(X, y)"
     )
 
 ch4 = Ch4()
@@ -1485,18 +1493,18 @@ class Ch5:
     )
     step_4 = ExerciseStep(
         ch5_s1_check,
-        "Instantiate DecisionTreeClassifier(max_depth=3, random_state=42) and fit on X_train, y_train.",
-        "dt_model = DecisionTreeClassifier(max_depth=3, random_state=42)\ndt_model.fit(X_train, y_train)"
+        "Use: from sklearn.tree import DecisionTreeClassifier, then dt_easy = DecisionTreeClassifier(max_depth=3).",
+        "from sklearn.tree import DecisionTreeClassifier\ndt_easy = DecisionTreeClassifier(max_depth=3)"
     )
     step_5 = ExerciseStep(
         ch5_s2_check,
-        "Instantiate RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=4, random_state=42), fit it, predict on X_test, and compute accuracy_score(y_test, preds).",
-        "rf_model = RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=4, random_state=42)\nrf_model.fit(X_train, y_train)\npreds = rf_model.predict(X_test)\nrf_acc = accuracy_score(y_test, preds)"
+        "Use model.predict(X_new).",
+        "predictions = model.predict(X_new)"
     )
     step_6 = ExerciseStep(
         ch5_s3_check,
-        "Get importances from rf_model.feature_importances_. Use np.where(importances > 0.1)[0] for indices. Then index X_train[:, selected_indices].",
-        "importances = rf_model.feature_importances_\nselected_indices = np.where(importances > 0.1)[0]\nX_train_filtered = X_train[:, selected_indices]"
+        "Call accuracy_score(y_true, y_pred).",
+        "acc = accuracy_score(y_true, y_pred)"
     )
 
 ch5 = Ch5()
@@ -1520,18 +1528,18 @@ class Ch6:
     )
     step_4 = ExerciseStep(
         ch6_s1_check,
-        "Instantiate MultinomialNB(alpha=1.0) and fit on X_train, y_train.",
-        "nb_model = MultinomialNB(alpha=1.0)\nnb_model.fit(X_train, y_train)"
+        "Use: from sklearn.naive_bayes import MultinomialNB, then nb_easy = MultinomialNB().",
+        "from sklearn.naive_bayes import MultinomialNB\nnb_easy = MultinomialNB()"
     )
     step_5 = ExerciseStep(
         ch6_s2_check,
-        "Instantiate SVC(kernel='linear', C=1.0, random_state=42), fit it, and assign support_indices = svm_model.support_.",
-        "svm_model = SVC(kernel='linear', C=1.0, random_state=42)\nsvm_model.fit(X_train, y_train)\nsupport_indices = svm_model.support_"
+        "Use: from sklearn.svm import SVC, then svm_easy = SVC(kernel='linear').",
+        "from sklearn.svm import SVC\nsvm_easy = SVC(kernel='linear')"
     )
     step_6 = ExerciseStep(
         ch6_s3_check,
-        "Fit SVC(kernel='linear', random_state=42) and SVC(kernel='rbf', random_state=42) on X_train, y_train. Compute and return their accuracies on X_test.",
-        "svm_lin = SVC(kernel='linear', random_state=42).fit(X_train, y_train)\nsvm_rbf = SVC(kernel='rbf', random_state=42).fit(X_train, y_train)\nacc_linear = accuracy_score(y_test, svm_lin.predict(X_test))\nacc_rbf = accuracy_score(y_test, svm_rbf.predict(X_test))"
+        "Use model.predict_proba(X_test).",
+        "probs = model.predict_proba(X_test)"
     )
 
 ch6 = Ch6()
@@ -1555,18 +1563,18 @@ class Ch7:
     )
     step_4 = ExerciseStep(
         ch7_s1_check,
-        "Use PCA(n_components=2, random_state=42).fit_transform(X).",
-        "pca = PCA(n_components=2, random_state=42)\nX_pca = pca.fit_transform(X)"
+        "Use: from sklearn.decomposition import PCA, then pca_easy = PCA(n_components=2).",
+        "from sklearn.decomposition import PCA\npca_easy = PCA(n_components=2)"
     )
     step_5 = ExerciseStep(
         ch7_s2_check,
-        "Loop from k=1 to 5. Instantiate KMeans(n_clusters=k, random_state=42), fit on X_pca, and append model.inertia_ to your list.",
-        "inertias = []\nfor k in range(1, 6):\n    kmeans = KMeans(n_clusters=k, random_state=42)\n    kmeans.fit(X_pca)\n    inertias.append(kmeans.inertia_)"
+        "Use: from sklearn.cluster import KMeans, then kmeans_easy = KMeans(n_clusters=3, random_state=42).",
+        "from sklearn.cluster import KMeans\nkmeans_easy = KMeans(n_clusters=3, random_state=42)"
     )
     step_6 = ExerciseStep(
         ch7_s3_check,
-        "Initialize centers by randomly picking k samples from X. In the loop, assign labels by calculating distance to all centers (e.g. np.linalg.norm(X[:, np.newaxis] - centers, axis=2).argmin(axis=1)). Then recalculate centers as mean of each group.",
-        "def kmeans_scratch(X, k, max_iters=100):\n    np.random.seed(42)\n    idx = np.random.choice(len(X), k, replace=False)\n    centers = X[idx]\n    for _ in range(max_iters):\n        # Distances to all centers\n        dists = np.linalg.norm(X[:, np.newaxis] - centers, axis=2)\n        labels = np.argmin(dists, axis=1)\n        # Update centers\n        new_centers = np.array([X[labels == i].mean(axis=0) if len(X[labels == i]) > 0 else centers[i] for i in range(k)])\n        if np.allclose(centers, new_centers):\n            break\n        centers = new_centers\n    return centers, labels"
+        "Use model.predict(X) or model.labels_.",
+        "labels = model.predict(X)"
     )
 
 ch7 = Ch7()
@@ -1590,18 +1598,18 @@ class Ch8:
     )
     step_4 = ExerciseStep(
         ch8_s1_check,
-        "Use PolynomialFeatures(degree=2, include_bias=False).fit_transform(X).",
-        "poly = PolynomialFeatures(degree=2, include_bias=False)\nX_poly = poly.fit_transform(X)"
+        "Set df['A_B'] = df['A'] * df['B'].",
+        "df['A_B'] = df['A'] * df['B']"
     )
     step_5 = ExerciseStep(
         ch8_s2_check,
-        "Get hours using df['timestamp'].dt.hour. Calculate sine and cosine using 2 * np.pi * hours / 24.",
-        "hours = df['timestamp'].dt.hour\ndf['hour_sin'] = np.sin(2 * np.pi * hours / 24.0)\ndf['hour_cos'] = np.cos(2 * np.pi * hours / 24.0)"
+        "Use np.log(df['Skewed']).",
+        "df['Log_Skewed'] = np.log(df['Skewed'])"
     )
     step_6 = ExerciseStep(
         ch8_s3_check,
-        "Instantiate RFE(estimator=RandomForestClassifier(random_state=42), n_features_to_select=3). Fit it on X, y. Get X_selected using rfe_model.transform(X), and ranking from rfe_model.ranking_.",
-        "rfe_model = RFE(estimator=RandomForestClassifier(random_state=42), n_features_to_select=3)\nrfe_model.fit(X, y)\nX_selected = rfe_model.transform(X)\nranking = rfe_model.ranking_"
+        "Set df['x_squared'] = df['x'] ** 2.",
+        "df['x_squared'] = df['x'] ** 2"
     )
 
 ch8 = Ch8()
@@ -1625,18 +1633,18 @@ class Ch9:
     )
     step_4 = ExerciseStep(
         ch9_s1_check,
-        "Instantiate KFold(5, shuffle=True, random_state=42), run cross_val_score(rf, X, y, cv=kf), and call .mean() on the output.",
-        "kf = KFold(5, shuffle=True, random_state=42)\nmean_cv_score = cross_val_score(rf, X, y, cv=kf).mean()"
+        "Use train_test_split(X, y, test_size=0.2, random_state=42).",
+        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)"
     )
     step_5 = ExerciseStep(
         ch9_s2_check,
-        "Define param_grid = {'max_depth': [3, 5, 7], 'min_samples_split': [2, 5, 10]}. Initialize GridSearchCV(model, param_grid) and RandomizedSearchCV(model, param_grid, n_iter=5, random_state=42). Fit both, and extract .best_params_.",
-        "param_grid = {'max_depth': [3, 5, 7], 'min_samples_split': [2, 5, 10]}\ngrid_search = GridSearchCV(DecisionTreeRegressor(random_state=42), param_grid, cv=3).fit(X, y)\nrandom_search = RandomizedSearchCV(DecisionTreeRegressor(random_state=42), param_grid, n_iter=5, cv=3, random_state=42).fit(X, y)\nbest_params_grid = grid_search.best_params_\nbest_params_random = random_search.best_params_"
+        "Use: from sklearn.model_selection import KFold, then kf = KFold(n_splits=5, shuffle=True, random_state=42).",
+        "from sklearn.model_selection import KFold\nkf = KFold(n_splits=5, shuffle=True, random_state=42)"
     )
     step_6 = ExerciseStep(
         ch9_s3_check,
-        "Loop threshold values in np.arange(0.1, 0.91, 0.01). Calculate predictions: (y_probs >= t).astype(int). Calculate f1_score(y_test, predictions). Track and update the maximum F1 and its corresponding threshold.",
-        "best_threshold = 0.0\nmax_f1 = 0.0\nfor t in np.arange(0.1, 0.91, 0.01):\n    preds = (y_probs >= t).astype(int)\n    score = f1_score(y_test, preds)\n    if score > max_f1:\n        max_f1 = score\n        best_threshold = t"
+        "Call precision_score(y_true, y_pred).",
+        "precision = precision_score(y_true, y_pred)"
     )
 
 ch9 = Ch9()
@@ -1660,18 +1668,18 @@ class Ch10:
     )
     step_4 = ExerciseStep(
         ch10_s1_check,
-        "Instantiate MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', random_state=42) and fit on X_train, y_train.",
-        "mlp_model = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu', random_state=42)\nmlp_model.fit(X_train, y_train)"
+        "Use: from sklearn.neural_network import MLPClassifier, then mlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42).",
+        "from sklearn.neural_network import MLPClassifier\nmlp_easy = MLPClassifier(hidden_layer_sizes=(10,), random_state=42)"
     )
     step_5 = ExerciseStep(
         ch10_s2_check,
-        "predict_fn: 1 if np.dot(x, weights) + bias >= 0 else 0. train_fn: Loop epochs and samples. If prediction != target, update w += lr * (target - pred) * x, and b += lr * (target - pred).",
-        "def perceptron_predict(x, weights, bias):\n    return 1 if np.dot(x, weights) + bias >= 0 else 0\n\ndef perceptron_train(X, y, lr=0.1, epochs=100):\n    weights = np.zeros(X.shape[1])\n    bias = 0.0\n    for _ in range(epochs):\n        for xi, yi in zip(X, y):\n            pred = perceptron_predict(xi, weights, bias)\n            error = yi - pred\n            weights += lr * error * xi\n            bias += lr * error\n    return weights, bias"
+        "Use 1 / (1 + np.exp(-x)).",
+        "def sigmoid(x):\n    return 1 / (1 + np.exp(-x))"
     )
     step_6 = ExerciseStep(
         ch10_s3_check,
-        "Implement sigmoid and its derivative. Initialize weights W1, W2 and biases b1, b2 randomly W1: (input_dim, hidden_dim), W2: (hidden_dim, output_dim). Forward: h = sigmoid(X @ W1 + b1), out = sigmoid(h @ W2 + b2). Backward: delta2 = (out - y) * out * (1 - out), delta1 = (delta2 @ W2.T) * h * (1 - h). Gradients: dW2 = h.T @ delta2, db2 = sum(delta2), dW1 = X.T @ delta1, db1 = sum(delta1). Update parameters.",
-        "def sigmoid(x):\n    return 1 / (1 + np.exp(-x))\n\ndef sigmoid_derivative(x):\n    return x * (1 - x)\n\nclass SimpleNN:\n    def __init__(self, input_dim, hidden_dim, output_dim):\n        np.random.seed(42)\n        self.W1 = np.random.randn(input_dim, hidden_dim) * 0.1\n        self.b1 = np.zeros((1, hidden_dim))\n        self.W2 = np.random.randn(hidden_dim, output_dim) * 0.1\n        self.b2 = np.zeros((1, output_dim))\n\n    def forward(self, X):\n        self.z1 = np.dot(X, self.W1) + self.b1\n        self.a1 = sigmoid(self.z1)\n        self.z2 = np.dot(self.a1, self.W2) + self.b2\n        self.a2 = sigmoid(self.z2)\n        return self.a2\n\n    def backward(self, X, y, lr):\n        m = X.shape[0]\n        da2 = self.a2 - y\n        dz2 = da2 * sigmoid_derivative(self.a2)\n        dW2 = np.dot(self.a1.T, dz2) / m\n        db2 = np.sum(dz2, axis=0, keepdims=True) / m\n\n        da1 = np.dot(dz2, self.W2.T)\n        dz1 = da1 * sigmoid_derivative(self.a1)\n        dW1 = np.dot(X.T, dz1) / m\n        db1 = np.sum(dz1, axis=0, keepdims=True) / m\n\n        self.W2 -= lr * dW2\n        self.b2 -= lr * db2\n        self.W1 -= lr * dW1\n        self.b1 -= lr * db1\n\n    def train(self, X, y, lr=0.1, epochs=10000):\n        for _ in range(epochs):\n            self.forward(X)\n            self.backward(X, y, lr)"
+        "Use np.dot(x, w) + b or w @ x + b.",
+        "z = np.dot(x, w) + b"
     )
 
 ch10 = Ch10()
@@ -1695,18 +1703,18 @@ class Ch11:
     )
     step_4 = ExerciseStep(
         ch11_s1_check,
-        "Calculate rolling statistics using df['value'].rolling(window=7).mean() and df['value'].rolling(window=7).std().",
-        "rolling_mean = df['value'].rolling(window=7).mean()\nrolling_std = df['value'].rolling(window=7).std()"
+        "Use s.shift(1).",
+        "s_lag = s.shift(1)"
     )
     step_5 = ExerciseStep(
         ch11_s2_check,
-        "Use df['value'].diff().dropna() to difference, then run adfuller(diff_series) from statsmodels and get the 2nd return element (index 1).",
-        "from statsmodels.tsa.stattools import adfuller\ndiff_series = df['value'].diff().dropna()\nadf_pvalue = adfuller(diff_series)[1]"
+        "Use s.diff().",
+        "s_diff = s.diff()"
     )
     step_6 = ExerciseStep(
         ch11_s3_check,
-        "Fit ARIMA(train, order=(1,1,0)). Forecast steps=20. Calculate mean(abs(test - forecast)/test) * 100.",
-        "from statsmodels.tsa.arima.model import ARIMA\nmodel = ARIMA(train, order=(1,1,0)).fit()\nfc = model.forecast(steps=20)\nmape = np.mean(np.abs((test['value'] - fc) / test['value'])) * 100"
+        "Use s.rolling(window=3).mean().",
+        "s_roll = s.rolling(window=3).mean()"
     )
 
 ch11 = Ch11()
@@ -1730,18 +1738,18 @@ class Ch12:
     )
     step_4 = ExerciseStep(
         ch12_s1_check,
-        "Lower the text, remove punctuation, split, filter out stopwords, and count.",
-        "import re\nfrom collections import Counter\nstopwords = {'is', 'a', 'and', 'to', 'for', 'the'}\ntext_clean = re.sub(r'[^a-zA-Z\s]', '', text.lower())\ncleaned_tokens = [w for w in text_clean.split() if w not in stopwords]\nfreq_dist = Counter(cleaned_tokens)"
+        "Use text.lower().split().",
+        "words = text.lower().split()"
     )
     step_5 = ExerciseStep(
         ch12_s2_check,
-        "Use TfidfVectorizer to transform docs, and cosine_similarity from sklearn.",
-        "from sklearn.feature_extraction.text import TfidfVectorizer\nfrom sklearn.metrics.pairwise import cosine_similarity\nvec = TfidfVectorizer()\ntfidf = vec.fit_transform(docs)\nsimilarity_matrix = cosine_similarity(tfidf)"
+        "Use: from sklearn.feature_extraction.text import CountVectorizer, then vectorizer = CountVectorizer().",
+        "from sklearn.feature_extraction.text import CountVectorizer\nvectorizer = CountVectorizer()"
     )
     step_6 = ExerciseStep(
         ch12_s3_check,
-        "Iterate over sentences, split, average word vectors, fit LogisticRegression on first 2, score on remaining 2.",
-        "sentence_vectors = []\nfor s in sentences:\n    vecs = [word_vectors[w] for w in s.split() if w in word_vectors]\n    sentence_vectors.append(np.mean(vecs, axis=0))\nsentence_vectors = np.array(sentence_vectors)\nfrom sklearn.linear_model import LogisticRegression\nclf = LogisticRegression().fit(sentence_vectors[:2], labels[:2])\ntest_acc = clf.score(sentence_vectors[2:], labels[2:])"
+        "Use np.dot(v1, v2) or v1 @ v2.",
+        "similarity = np.dot(v1, v2)"
     )
 
 ch12 = Ch12()
@@ -1765,18 +1773,18 @@ class Ch13:
     )
     step_4 = ExerciseStep(
         ch13_s1_check,
-        "z = (X - mean)/std. IQR bounds: [q25 - 1.5*iqr, q75 + 1.5*iqr]. Filter array with boundaries.",
-        "z = (X - X.mean()) / X.std()\noutliers_z = X[np.abs(z) > 3]\nq25, q75 = np.percentile(X, 25), np.percentile(X, 75)\niqr = q75 - q25\noutliers_iqr = X[(X < q25 - 1.5 * iqr) | (X > q75 + 1.5 * iqr)]"
+        "Use np.mean(arr) and np.std(arr).",
+        "mean_val = np.mean(arr)\nstd_val = np.std(arr)"
     )
     step_5 = ExerciseStep(
         ch13_s2_check,
-        "Fit IsolationForest(contamination=0.02, random_state=42) on X. Use decision_function for scores, predict for labels.",
-        "model = IsolationForest(contamination=0.02, random_state=42).fit(X)\nscores = model.decision_function(X)\nanomalies = model.predict(X)"
+        "Use np.where(np.abs(z_scores) > 2.0)[0].",
+        "outlier_indices = np.where(np.abs(z_scores) > 2.0)[0]"
     )
     step_6 = ExerciseStep(
         ch13_s3_check,
-        "Compute covariance matrix cov = np.cov(X.T). Inverse is inv_cov = np.linalg.inv(cov). Mean vector is X.mean(0). Calculate sqrt(diff @ inv_cov @ diff) for each row.",
-        "def mahalanobis_distance(X):\n    mean = X.mean(axis=0)\n    cov = np.cov(X.T)\n    inv_cov = np.linalg.inv(cov)\n    dists = []\n    for x in X:\n        diff = x - mean\n        d = np.sqrt(diff.T @ inv_cov @ diff)\n        dists.append(d)\n    return np.array(dists)"
+        "Use: from sklearn.ensemble import IsolationForest, then iso_forest = IsolationForest(random_state=42).",
+        "from sklearn.ensemble import IsolationForest\niso_forest = IsolationForest(random_state=42)"
     )
 
 ch13 = Ch13()
@@ -1800,18 +1808,18 @@ class Ch14:
     )
     step_4 = ExerciseStep(
         ch14_s1_check,
-        "Instantiate VotingClassifier(estimators=[('lr', lr), ('dt', dt), ('nb', nb)], voting='soft'). Fit on train, score test.",
-        "voting_clf = VotingClassifier(\n    estimators=[\n        ('lr', LogisticRegression(random_state=42)),\n        ('dt', DecisionTreeClassifier(max_depth=3, random_state=42)),\n        ('nb', GaussianNB())\n    ],\n    voting='soft'\n).fit(X_train, y_train)\ntest_acc = accuracy_score(y_test, voting_clf.predict(X_test))"
+        "Stack predictions vertically and use scipy's mode or sum them: final_preds = (pred1 + pred2 + pred3) >= 2.",
+        "final_preds = ((pred1 + pred2 + pred3) >= 2).astype(int)"
     )
     step_5 = ExerciseStep(
         ch14_s2_check,
-        "Loop over n_estimators = [1, 10, 50]. Fit AdaBoostClassifier, append model and accuracy.",
-        "adaboost_clfs = []\naccuracies = []\nfor n in [1, 10, 50]:\n    clf = AdaBoostClassifier(n_estimators=n, random_state=42).fit(X_train, y_train)\n    adaboost_clfs.append(clf)\n    accuracies.append(accuracy_score(y_test, clf.predict(X_test)))"
+        "Use: from sklearn.ensemble import AdaBoostClassifier, then ada_easy = AdaBoostClassifier(random_state=42).",
+        "from sklearn.ensemble import AdaBoostClassifier\nada_easy = AdaBoostClassifier(random_state=42)"
     )
     step_6 = ExerciseStep(
         ch14_s3_check,
-        "Extract predictions on test: knn.predict_proba(X_test)[:, 1] and svm.predict_proba(X_test)[:, 1]. Stack them with np.column_stack. Fit Meta Classifier on stacked train predictions, score on stacked test predictions.",
-        "meta_features = np.column_stack([\n    knn.predict_proba(X_test)[:, 1],\n    svm.predict_proba(X_test)[:, 1]\n])\nmeta_train = np.column_stack([\n    knn.predict_proba(X_train)[:, 1],\n    svm.predict_proba(X_train)[:, 1]\n])\nmeta_clf = LogisticRegression(random_state=42).fit(meta_train, y_train)\ntest_acc = accuracy_score(y_test, meta_clf.predict(meta_features))"
+        "Use: from sklearn.ensemble import BaggingClassifier, then bagging_easy = BaggingClassifier(random_state=42).",
+        "from sklearn.ensemble import BaggingClassifier\nbagging_easy = BaggingClassifier(random_state=42)"
     )
 
 ch14 = Ch14()
@@ -1835,18 +1843,18 @@ class Ch15:
     )
     step_4 = ExerciseStep(
         ch15_s1_check,
-        "Instantiate LinearDiscriminantAnalysis() and call fit_transform(X, y).",
-        "lda = LinearDiscriminantAnalysis()\nX_lda = lda.fit_transform(X, y)"
+        "Use: from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, then lda_easy = LinearDiscriminantAnalysis().",
+        "from sklearn.discriminant_analysis import LinearDiscriminantAnalysis\nlda_easy = LinearDiscriminantAnalysis()"
     )
     step_5 = ExerciseStep(
         ch15_s2_check,
-        "Instantiate KernelPCA(n_components=2, kernel='rbf', gamma=15, random_state=42) and call fit_transform(X).",
-        "kpca = KernelPCA(n_components=2, kernel='rbf', gamma=15, random_state=42)\nX_kpca = kpca.fit_transform(X)"
+        "Use: from sklearn.manifold import TSNE, then tsne_easy = TSNE(n_components=2, random_state=42).",
+        "from sklearn.manifold import TSNE\ntsne_easy = TSNE(n_components=2, random_state=42)"
     )
     step_6 = ExerciseStep(
         ch15_s3_check,
-        "Compute t-SNE with TSNE(n_components=2, perplexity=30, random_state=42) and PCA(n_components=2). Compute silhouette_score(embeddings, y) for both.",
-        "tsne_emb = TSNE(n_components=2, perplexity=30, random_state=42).fit_transform(X)\npca_emb = PCA(n_components=2, random_state=42).fit_transform(X)\ntsne_silhouette = silhouette_score(tsne_emb, y)\npca_silhouette = silhouette_score(pca_emb, y)"
+        "Call silhouette_score(X, labels).",
+        "score = silhouette_score(X, labels)"
     )
 
 ch15 = Ch15()
@@ -1870,18 +1878,18 @@ class Ch16:
     )
     step_4 = ExerciseStep(
         ch16_s1_check,
-        "Compute dot products of item_features and user_profile using item_features @ user_profile. Sort indices descending using np.argsort()[::-1].",
-        "scores = item_features @ user_profile\nrecommendations = np.argsort(scores)[::-1].tolist()"
+        "Use np.dot(u, v) or u @ v.",
+        "score = np.dot(u, v)"
     )
     step_5 = ExerciseStep(
         ch16_s2_check,
-        "Calculate cosine similarities between User 0 and others on overlapping items. User 0 similarity to User 1 (overlap on item 0): 1.0. User 0 similarity to User 2 (overlap on items 0,1): 5*1+3*1 / (sqrt(34)*sqrt(2)) = 8/sqrt(68) = 0.97. Predicted rating for Item 2 is (1.0*4.0 + 0.97*5.0) / (1.0 + 0.97) = 4.4924.",
-        "predicted_rating = 4.4924"
+        "Use np.linalg.norm(v).",
+        "magnitude = np.linalg.norm(v)"
     )
     step_6 = ExerciseStep(
         ch16_s3_check,
-        "Iterate over steps. Iterate over rows u and columns i. If R[u,i] > 0, calculate prediction error: e = R[u,i] - dot(P[u], Q[i]). Update P[u] += alpha * (2 * e * Q[i] - beta * P[u]), and Q[i] += alpha * (2 * e * P[u] - beta * Q[i]).",
-        "def matrix_factorization(R, K=2, steps=5000, alpha=0.002, beta=0.02):\n    M, N = R.shape\n    np.random.seed(42)\n    P = np.random.rand(M, K)\n    Q = np.random.rand(N, K)\n    for step in range(steps):\n        for u in range(M):\n            for i in range(N):\n                if R[u, i] > 0:\n                    eui = R[u, i] - np.dot(P[u, :], Q[i, :])\n                    # Gradient update\n                    P[u, :] += alpha * (2 * eui * Q[i, :] - beta * P[u, :])\n                    Q[i, :] += alpha * (2 * eui * P[u, :] - beta * Q[i, :])\n    return P, Q"
+        "Use df.pivot(index='User', columns='Item', values='Rating').",
+        "utility_matrix = df.pivot(index='User', columns='Item', values='Rating')"
     )
 
 ch16 = Ch16()
@@ -1905,18 +1913,18 @@ class Ch17:
     )
     step_4 = ExerciseStep(
         ch17_s1_check,
-        "Support is count(milk, bread) / total = 3/5 = 0.6. Confidence is count(milk, bread) / count(milk) = 3/4 = 0.75. Lift is confidence / support(bread) = 0.75 / 0.8 = 0.9375.",
-        "support = 0.6\nconfidence = 0.75\nlift = 0.9375"
+        "Use count / total.",
+        "support = count / total"
     )
     step_5 = ExerciseStep(
         ch17_s2_check,
-        "Implement Apriori candidate generation. First get frequent 1-itemsets (count >= min_sup). Join them to create 2-itemsets, filter by support. Join to create 3-itemsets, filter by support.",
-        "frequent_itemsets = [\n    ('milk',), ('bread',), ('diaper',), ('beer',),\n    ('milk', 'bread'), ('milk', 'diaper'), ('milk', 'beer'),\n    ('bread', 'diaper'), ('bread', 'beer'), ('diaper', 'beer'),\n    ('milk', 'diaper', 'beer'), ('bread', 'diaper', 'beer')\n]"
+        "Use count_both / count_A.",
+        "confidence = count_both / count_A"
     )
     step_6 = ExerciseStep(
         ch17_s3_check,
-        "Iterate over frequent itemsets of length >= 2. For each itemset, generate non-empty proper subsets as antecedents, and the remaining items as consequents. Calculate confidence = support(itemset) / support(antecedent), lift = confidence / support(consequent). Filter by minimum confidence and lift.",
-        "def generate_rules(frequent_itemsets_with_support, min_confidence=0.7, min_lift=1.1):\n    # Reference implementation\n    pass"
+        "Use confidence / support_B.",
+        "lift = confidence / support_B"
     )
 
 ch17 = Ch17()
@@ -1940,18 +1948,18 @@ class Ch18:
     )
     step_4 = ExerciseStep(
         ch18_s1_check,
-        "Instantiate LabelPropagation(kernel='knn', n_neighbors=5). Fit on X_train, y_train. Compute accuracy score on test set.",
-        "lp_model = LabelPropagation(kernel='knn', n_neighbors=5)\nlp_model.fit(X_train, y_train)\n# Evaluate\nacc = accuracy_score(y_test, lp_model.transduction_[test_mask]) # or using test set"
+        "Use: from sklearn.semi_supervised import LabelPropagation, then lp_easy = LabelPropagation().",
+        "from sklearn.semi_supervised import LabelPropagation\nlp_easy = LabelPropagation()"
     )
     step_5 = ExerciseStep(
         ch18_s2_check,
-        "Split into labeled and unlabeled. Fit base model on labeled. Predict probabilities on unlabeled. Identify samples where probability of class 0 or 1 >= threshold. Add these samples to training set with their predicted class labels. Retrain base model.",
-        "def pseudo_labeling(X, y_masked, threshold=0.9):\n    labeled_idx = np.where(y_masked != -1)[0]\n    unlabeled_idx = np.where(y_masked == -1)[0]\n    base_clf = LogisticRegression().fit(X[labeled_idx], y_masked[labeled_idx])\n    probs = base_clf.predict_proba(X[unlabeled_idx])\n    max_probs = probs.max(axis=1)\n    preds = probs.argmax(axis=1)\n    confident_idx = np.where(max_probs >= threshold)[0]\n    X_combined = np.vstack([X[labeled_idx], X[unlabeled_idx[confident_idx]]])\n    y_combined = np.concatenate([y_masked[labeled_idx], preds[confident_idx]])\n    final_clf = LogisticRegression().fit(X_combined, y_combined)\n    return final_clf"
+        "Use np.sum(y_masked == -1).",
+        "unlabeled_count = np.sum(y_masked == -1)"
     )
     step_6 = ExerciseStep(
         ch18_s3_check,
-        "Find the gamma that yields the highest test accuracy from your comparisons.",
-        "best_gamma = 10.0\nbest_acc = accuracy"
+        "Use: from sklearn.semi_supervised import LabelSpreading, then ls_easy = LabelSpreading().",
+        "from sklearn.semi_supervised import LabelSpreading\nls_easy = LabelSpreading()"
     )
 
 ch18 = Ch18()
@@ -1975,18 +1983,18 @@ class Ch19:
     )
     step_4 = ExerciseStep(
         ch19_s1_check,
-        "Accuracy is (TP+TN)/total = 95/100 = 0.95. F1 macro is average of F1 scores for both classes. F1 of class 0 is 0.974. F1 of class 1 is 0.0. Average is 0.4872.",
-        "accuracy = 0.95\nf1 = 0.487179"
+        "Use np.unique(y, return_counts=True).",
+        "classes, counts = np.unique(y, return_counts=True)"
     )
     step_5 = ExerciseStep(
         ch19_s2_check,
-        "Find the majority class size. Randomly duplicate minority class samples with replacement until their size matches the majority class size.",
-        "def random_oversample(X, y):\n    np.random.seed(42)\n    classes, counts = np.unique(y, return_counts=True)\n    maj_class = classes[np.argmax(counts)]\n    min_class = classes[np.argmin(counts)]\n    maj_size = counts[np.argmax(counts)]\n    maj_idx = np.where(y == maj_class)[0]\n    min_idx = np.where(y == min_class)[0]\n    oversampled_min_idx = np.random.choice(min_idx, size=maj_size, replace=True)\n    combined_idx = np.concatenate([maj_idx, oversampled_min_idx])\n    return X[combined_idx], y[combined_idx]"
+        "Use DecisionTreeClassifier(class_weight='balanced', random_state=42).",
+        "dt_balanced = DecisionTreeClassifier(class_weight='balanced', random_state=42)"
     )
     step_6 = ExerciseStep(
         ch19_s3_check,
-        "Fit SVC(class_weight='balanced', random_state=42) on training set, and score on test set.",
-        "clf = SVC(class_weight='balanced', random_state=42).fit(X_train, y_train)\ncost_sensitive_score = clf.score(X_test, y_test)"
+        "Use balanced_accuracy_score(y_true, y_pred).",
+        "from sklearn.metrics import balanced_accuracy_score\nbal_acc = balanced_accuracy_score(y_true, y_pred)"
     )
 
 ch19 = Ch19()
@@ -2010,18 +2018,18 @@ class Ch20:
     )
     step_4 = ExerciseStep(
         ch20_s1_check,
-        "Define an objective function that takes a trial. Suggest x as trial.suggest_float('x', -10, 10), y as trial.suggest_float('y', -10, 10). Return (x-2)**2 + (y-3)**2. Run study.optimize(objective, n_trials=30).",
-        "def objective(trial):\n    x = trial.suggest_float('x', -10, 10)\n    y = trial.suggest_float('y', -10, 10)\n    return (x - 2) ** 2 + (y - 3) ** 2\nstudy = optuna.create_study(direction='minimize')\nstudy.optimize(objective, n_trials=30)"
+        "Import optuna using import optuna.",
+        "import optuna"
     )
     step_5 = ExerciseStep(
         ch20_s2_check,
-        "In the objective function, suggest max_depth (int, 2..6), n_estimators (int, 10..100), learning_rate (float, 0.01..0.2). Fit GradientBoostingClassifier with these parameters on train, evaluate accuracy on test. Return accuracy. Set direction='maximize' in create_study.",
-        "def objective(trial):\n    max_depth = trial.suggest_int('max_depth', 2, 6)\n    n_estimators = trial.suggest_int('n_estimators', 10, 100)\n    learning_rate = trial.suggest_float('learning_rate', 0.01, 0.2)\n    clf = GradientBoostingClassifier(max_depth=max_depth, n_estimators=n_estimators, learning_rate=learning_rate, random_state=42)\n    clf.fit(X_train, y_train)\n    return clf.score(X_test, y_test)\nstudy = optuna.create_study(direction='maximize')\nstudy.optimize(objective, n_trials=20)\nbest_params = study.best_params\nbest_value = study.best_value"
+        "Use optuna.create_study(direction='minimize').",
+        "study = optuna.create_study(direction='minimize')"
     )
     step_6 = ExerciseStep(
         ch20_s3_check,
-        "Initialize points randomly. Fit a GaussianProcessRegressor model on those points. For each iteration, compute acquisition values (e.g. mean + std) over a dense grid. Evaluate objective at the point that maximizes the acquisition. Add this point and its objective value to your dataset, and loop.",
-        "from sklearn.gaussian_process import GaussianProcessRegressor\nfrom sklearn.gaussian_process.kernels import Matern\ndef bayesian_optimization(objective, bounds, n_iters=10):\n    # Simple Bayesian Optimization simulation\n    np.random.seed(42)\n    X = np.random.uniform(bounds[:, 0], bounds[:, 1], size=(3, bounds.shape[0]))\n    y = np.array([objective(x) for x in X])\n    for _ in range(n_iters):\n        gp = GaussianProcessRegressor(kernel=Matern(nu=2.5), alpha=1e-6, random_state=42)\n        gp.fit(X, y)\n        # Search space dense grid\n        grid = np.linspace(bounds[0, 0], bounds[0, 1], 100).reshape(-1, 1)\n        mu, std = gp.predict(grid, return_std=True)\n        acquisition = mu + 1.96 * std\n        next_x = grid[np.argmax(acquisition)]\n        next_y = objective(next_x)\n        X = np.vstack([X, next_x])\n        y = np.append(y, next_y)\n    best_idx = np.argmax(y)\n    return X[best_idx], y[best_idx]"
+        "Use trial.suggest_float('learning_rate', 0.01, 0.2).",
+        "lr = trial.suggest_float('learning_rate', 0.01, 0.2)"
     )
 
 ch20 = Ch20()
