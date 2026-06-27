@@ -1,15 +1,29 @@
 import numpy as np
 import pandas as pd
+import re
+
+def check_code_history(pattern):
+    try:
+        from IPython import get_ipython
+        ip = get_ipython()
+        if ip is not None:
+            history = ip.user_ns.get('_ih', [])
+            for code in history:
+                if re.search(pattern, code):
+                    return True
+    except Exception:
+        pass
+    return False
 
 _plot_history = {
-    'line_plot_called': False,
+    'line_plots': [],
+    'scatter_plots': [],
+    'histograms': [],
+    'lmplots': [],
+    'heatmaps': [],
     'title_set': None,
     'xlabel_set': None,
     'ylabel_set': None,
-    'scatter_plot_called': False,
-    'histogram_called': False,
-    'lmplot_called': False,
-    'heatmap_called': False,
 }
 
 try:
@@ -20,13 +34,13 @@ try:
     # Plot
     _orig_plt_plot = plt.plot
     def _custom_plt_plot(*args, **kwargs):
-        _plot_history['line_plot_called'] = True
+        _plot_history['line_plots'].append((args, kwargs))
         return _orig_plt_plot(*args, **kwargs)
     plt.plot = _custom_plt_plot
 
     _orig_axes_plot = Axes.plot
     def _custom_axes_plot(self, *args, **kwargs):
-        _plot_history['line_plot_called'] = True
+        _plot_history['line_plots'].append((args, kwargs))
         return _orig_axes_plot(self, *args, **kwargs)
     Axes.plot = _custom_axes_plot
 
@@ -72,57 +86,118 @@ try:
     # Scatter
     _orig_plt_scatter = plt.scatter
     def _custom_plt_scatter(*args, **kwargs):
-        _plot_history['scatter_plot_called'] = True
+        _plot_history['scatter_plots'].append((args, kwargs))
         return _orig_plt_scatter(*args, **kwargs)
     plt.scatter = _custom_plt_scatter
 
     _orig_axes_scatter = Axes.scatter
     def _custom_axes_scatter(self, *args, **kwargs):
-        _plot_history['scatter_plot_called'] = True
+        _plot_history['scatter_plots'].append((args, kwargs))
         return _orig_axes_scatter(self, *args, **kwargs)
     Axes.scatter = _custom_axes_scatter
 
     _orig_sns_scatterplot = sns.scatterplot
     def _custom_sns_scatterplot(*args, **kwargs):
-        _plot_history['scatter_plot_called'] = True
+        _plot_history['scatter_plots'].append((args, kwargs))
         return _orig_sns_scatterplot(*args, **kwargs)
     sns.scatterplot = _custom_sns_scatterplot
 
     # Histogram
     _orig_plt_hist = plt.hist
     def _custom_plt_hist(*args, **kwargs):
-        _plot_history['histogram_called'] = True
+        _plot_history['histograms'].append((args, kwargs))
         return _orig_plt_hist(*args, **kwargs)
     plt.hist = _custom_plt_hist
 
     _orig_axes_hist = Axes.hist
     def _custom_axes_hist(self, *args, **kwargs):
-        _plot_history['histogram_called'] = True
+        _plot_history['histograms'].append((args, kwargs))
         return _orig_axes_hist(self, *args, **kwargs)
     Axes.hist = _custom_axes_hist
 
     if hasattr(sns, 'histplot'):
         _orig_sns_histplot = sns.histplot
         def _custom_sns_histplot(*args, **kwargs):
-            _plot_history['histogram_called'] = True
+            _plot_history['histograms'].append((args, kwargs))
             return _orig_sns_histplot(*args, **kwargs)
         sns.histplot = _custom_sns_histplot
 
     # lmplot
     _orig_sns_lmplot = sns.lmplot
     def _custom_sns_lmplot(*args, **kwargs):
-        _plot_history['lmplot_called'] = True
+        _plot_history['lmplots'].append((args, kwargs))
         return _orig_sns_lmplot(*args, **kwargs)
     sns.lmplot = _custom_sns_lmplot
 
     # heatmap
     _orig_sns_heatmap = sns.heatmap
     def _custom_sns_heatmap(*args, **kwargs):
-        _plot_history['heatmap_called'] = True
+        _plot_history['heatmaps'].append((args, kwargs))
         return _orig_sns_heatmap(*args, **kwargs)
     sns.heatmap = _custom_sns_heatmap
 except Exception:
     pass
+
+def check_plotted_data(plot_type, expected_x, expected_y=None):
+    plots = _plot_history.get(plot_type, [])
+    for args, kwargs in plots:
+        # 1. Positional arguments
+        if expected_y is not None:
+            if len(args) >= 2:
+                try:
+                    if np.allclose(args[0], expected_x) and np.allclose(args[1], expected_y):
+                        return True
+                except Exception:
+                    pass
+        else:
+            if len(args) >= 1:
+                try:
+                    if np.allclose(args[0], expected_x):
+                        return True
+                except Exception:
+                    pass
+        
+        # 2. Keyword arguments
+        x_val = kwargs.get('x', None)
+        y_val = kwargs.get('y', None)
+        if x_val is not None:
+            if expected_y is not None:
+                if y_val is not None:
+                    try:
+                        if np.allclose(x_val, expected_x) and np.allclose(y_val, expected_y):
+                            return True
+                    except Exception:
+                        pass
+            else:
+                try:
+                    if np.allclose(x_val, expected_x):
+                        return True
+                except Exception:
+                    pass
+
+        # 3. DataFrame kwargs: data=df, x='col1', y='col2'
+        data = kwargs.get('data', None)
+        x_col = kwargs.get('x', None)
+        y_col = kwargs.get('y', None)
+        if data is not None and isinstance(data, pd.DataFrame):
+            if isinstance(x_col, str) and expected_y is not None and isinstance(y_col, str):
+                try:
+                    if x_col in data.columns and y_col in data.columns:
+                        x_data = data[x_col].values
+                        y_data = data[y_col].values
+                        if np.allclose(x_data, expected_x) and np.allclose(y_data, expected_y):
+                            return True
+                except Exception:
+                    pass
+            elif isinstance(x_col, str) and expected_y is None:
+                try:
+                    if x_col in data.columns:
+                        x_data = data[x_col].values
+                        if np.allclose(x_data, expected_x):
+                            return True
+                except Exception:
+                    pass
+    return False
 
 class ExerciseStep:
     def __init__(self, check_fn, hint_msg, solution_msg):
@@ -262,30 +337,69 @@ def ch2_s3_check(func):
 
 
 def ch3_s1_check():
+    has_hist = False
+    for args, kwargs in _plot_history.get('histograms', []):
+        if len(args) >= 1:
+            try:
+                if len(args[0]) == 500:
+                    has_hist = True
+                    break
+            except Exception:
+                pass
+        x_val = kwargs.get('x', None)
+        if x_val is not None:
+            try:
+                if len(x_val) == 500:
+                    has_hist = True
+                    break
+            except Exception:
+                pass
+    
+    hist_correct = has_hist or check_code_history(r'\b(hist|histplot)\s*\(\s*data\b')
+    if not hist_correct:
+        return "Could not find correct histogram plot of 'data'."
+        
     title = _plot_history['title_set']
     xlabel = _plot_history['xlabel_set']
     ylabel = _plot_history['ylabel_set']
-    if not title or str(title).strip() == "":
-        return "The plot is missing a title."
-    if not xlabel or str(xlabel).strip() == "":
-        return "The plot is missing an X-axis label."
-    if not ylabel or str(ylabel).strip() == "":
-        return "The plot is missing a Y-axis label."
-    if not _plot_history['histogram_called']:
-        return "Could not find any bars/patches in the active plot. Make sure you plotted a histogram."
+    
+    title_correct = (title and str(title).strip().lower() == "feature distribution") or check_code_history(r'\b(title|set_title)\s*\(\s*[\'"]Feature Distribution[\'"]\s*\)')
+    xlabel_correct = (xlabel and str(xlabel).strip().lower() == "value") or check_code_history(r'\b(xlabel|set_xlabel)\s*\(\s*[\'"]Value[\'"]\s*\)')
+    ylabel_correct = (ylabel and str(ylabel).strip().lower() == "frequency") or check_code_history(r'\b(ylabel|set_ylabel)\s*\(\s*[\'"]Frequency[\'"]\s*\)')
+    grid_correct = check_code_history(r'\bgrid\s*\(') or check_code_history(r'\bgrid\s*=\s*True\b')
+    
+    if not title_correct: return "Plot is missing or has incorrect title. Expected 'Feature Distribution'."
+    if not xlabel_correct: return "Plot is missing or has incorrect X-axis label. Expected 'Value'."
+    if not ylabel_correct: return "Plot is missing or has incorrect Y-axis label. Expected 'Frequency'."
+    if not grid_correct: return "Make sure to turn on the grid."
     return True
 
 
 def ch3_s2_check():
-    if not _plot_history['lmplot_called'] and not _plot_history['scatter_plot_called']:
-        return "Could not find scatter plot points. Make sure you plotted a scatter plot."
-    return True
+    has_lmplot = False
+    for args, kwargs in _plot_history.get('lmplots', []):
+        x_val = kwargs.get('x', None)
+        y_val = kwargs.get('y', None)
+        hue_val = kwargs.get('hue', None)
+        if x_val == 'total_bill' and y_val == 'tip' and hue_val == 'smoker':
+            has_lmplot = True
+            break
+    if has_lmplot or check_code_history(r'\blmplot\s*\('):
+        return True
+    return "Could not find correct scatter plot with a regression line. Make sure you used sns.lmplot with total_bill, tip, and smoker."
 
 
 def ch3_s3_check():
-    if not _plot_history['heatmap_called']:
-        return "Could not find a heatmap. Make sure you used sns.heatmap."
-    return True
+    has_heatmap = False
+    for args, kwargs in _plot_history.get('heatmaps', []):
+        annot = kwargs.get('annot', None)
+        cmap = kwargs.get('cmap', None)
+        if annot is True and cmap == 'coolwarm':
+            has_heatmap = True
+            break
+    if has_heatmap or check_code_history(r'\bheatmap\s*\('):
+        return True
+    return "Could not find correct heatmap. Make sure you used sns.heatmap with annot=True and cmap='coolwarm'."
 
 
 def ch4_s1_check(model, preds):
@@ -1164,22 +1278,42 @@ def ch2_s3_easy_check(s):
     return True
 
 def ch3_s1_easy_check():
-    if not _plot_history['line_plot_called']:
-        return "No line plot was drawn. Use plt.plot(x, y)."
-    return True
+    expected_x = [1, 2, 3, 4]
+    expected_y = [10, 20, 25, 30]
+    if check_plotted_data('line_plots', expected_x, expected_y):
+        return True
+    if check_code_history(r'\b(plot|lineplot)\s*\(\s*x\s*,\s*y\s*\)'):
+        return True
+    return "No correct line plot was drawn. Use plt.plot(x, y)."
 
 def ch3_s2_easy_check():
+    expected_x = [1, 2, 3, 4]
+    expected_y = [1, 4, 9, 16]
+    data_correct = check_plotted_data('line_plots', expected_x, expected_y) or check_code_history(r'\b(plot|lineplot)\s*\(\s*x\s*,\s*y\s*\)')
+    if not data_correct:
+        return "Plot data seems incorrect. Make sure you plot x vs y."
+        
     title = _plot_history['title_set']
     xlabel = _plot_history['xlabel_set']
     ylabel = _plot_history['ylabel_set']
-    if not title or str(title).strip() == "": return "Plot is missing a title."
-    if not xlabel or str(xlabel).strip() == "": return "Plot is missing X-axis label."
-    if not ylabel or str(ylabel).strip() == "": return "Plot is missing Y-axis label."
+    
+    title_correct = (title and str(title).strip().lower() == "my first plot") or check_code_history(r'\b(title|set_title)\s*\(\s*[\'"]My First Plot[\'"]\s*\)')
+    xlabel_correct = (xlabel and str(xlabel).strip().lower() == "x axis") or check_code_history(r'\b(xlabel|set_xlabel)\s*\(\s*[\'"]X Axis[\'"]\s*\)')
+    ylabel_correct = (ylabel and str(ylabel).strip().lower() == "y axis") or check_code_history(r'\b(ylabel|set_ylabel)\s*\(\s*[\'"]Y Axis[\'"]\s*\)')
+    
+    if not title_correct: return "Plot is missing or has incorrect title. Expected 'My First Plot'."
+    if not xlabel_correct: return "Plot is missing or has incorrect X-axis label. Expected 'X Axis'."
+    if not ylabel_correct: return "Plot is missing or has incorrect Y-axis label. Expected 'Y Axis'."
     return True
 
 def ch3_s3_easy_check():
-    if not _plot_history['scatter_plot_called']: return "No scatter plot collection found. Make sure you used sns.scatterplot."
-    return True
+    expected_x = [1, 2, 3, 4]
+    expected_y = [10, 15, 13, 18]
+    if check_plotted_data('scatter_plots', expected_x, expected_y):
+        return True
+    if check_code_history(r'\b(scatterplot|scatter)\s*\(\s*(x_coords\s*,\s*y_coords|x\s*=\s*x_coords\s*,\s*y\s*=\s*y_coords)\b'):
+        return True
+    return "No correct scatter plot was found. Make sure you used sns.scatterplot with x_coords and y_coords."
 
 def ch4_s1_easy_check(model):
     from sklearn.linear_model import LinearRegression
