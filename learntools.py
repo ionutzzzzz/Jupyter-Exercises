@@ -2266,4 +2266,716 @@ class Ch20:
         'from sklearn.gaussian_process import GaussianProcessRegressor\nfrom sklearn.gaussian_process.kernels import Matern\ndef bayesian_optimization(objective, bounds, n_iters=10):\n    # Simple Bayesian Optimization simulation\n    np.random.seed(42)\n    X = np.random.uniform(bounds[:, 0], bounds[:, 1], size=(3, bounds.shape[0]))\n    y = np.array([objective(x) for x in X])\n    for _ in range(n_iters):\n        gp = GaussianProcessRegressor(kernel=Matern(nu=2.5), alpha=1e-6, random_state=42)\n        gp.fit(X, y)\n        # Search space dense grid\n        grid = np.linspace(bounds[0, 0], bounds[0, 1], 100).reshape(-1, 1)\n        mu, std = gp.predict(grid, return_std=True)\n        acquisition = mu + 1.96 * std\n        next_x = grid[np.argmax(acquisition)]\n        next_y = objective(next_x)\n        X = np.vstack([X, next_x])\n        y = np.append(y, next_y)\n    best_idx = np.argmax(y)\n    return X[best_idx], y[best_idx]'
     )
 
+    step_6 = ExerciseStep(
+        ch20_s3_check,
+        'Initialize points randomly. Fit a GaussianProcessRegressor model on those points. For each iteration, compute acquisition values (e.g. mean + std) over a dense grid. Evaluate objective at the point that maximizes the acquisition. Add this point and its objective value to your dataset, and loop.',
+        'from sklearn.gaussian_process import GaussianProcessRegressor\nfrom sklearn.gaussian_process.kernels import Matern\ndef bayesian_optimization(objective, bounds, n_iters=10):\n    # Simple Bayesian Optimization simulation\n    np.random.seed(42)\n    X = np.random.uniform(bounds[:, 0], bounds[:, 1], size=(3, bounds.shape[0]))\n    y = np.array([objective(x) for x in X])\n    for _ in range(n_iters):\n        gp = GaussianProcessRegressor(kernel=Matern(nu=2.5), alpha=1e-6, random_state=42)\n        gp.fit(X, y)\n        # Search space dense grid\n        grid = np.linspace(bounds[0, 0], bounds[0, 1], 100).reshape(-1, 1)\n        mu, std = gp.predict(grid, return_std=True)\n        acquisition = mu + 1.96 * std\n        next_x = grid[np.argmax(acquisition)]\n        next_y = objective(next_x)\n        X = np.vstack([X, next_x])\n        y = np.append(y, next_y)\n    best_idx = np.argmax(y)\n    return X[best_idx], y[best_idx]'
+    )
+
 ch20 = Ch20()
+
+
+# ==========================================
+# --- CHAPTER 21: REINFORCEMENT LEARNING ---
+# ==========================================
+
+def ch21_s1_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    res1 = func(np.array([1.0, 5.0, 2.0, 0.5]), epsilon=0.0)
+    if res1 != 1: return f"Expected greedy action 1, got {res1}."
+    res2 = func(np.array([1.0, 5.0, 2.0, 0.5]), epsilon=1.0, random_state=42)
+    if res2 is None: return "Function returned None."
+    return True
+
+def ch21_s2_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    res = func(q_val=2.0, reward=10.0, max_next_q=5.0, alpha=0.1, gamma=0.9)
+    if not np.isclose(res, 3.25):
+        return f"Expected Q-value of 3.25, got {res}."
+    return True
+
+def ch21_s3_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    res = func(16, 4)
+    if not isinstance(res, np.ndarray): return "Expected a numpy array."
+    if res.shape != (16, 4): return f"Expected shape (16, 4), got {res.shape}."
+    if not np.all(res == 0): return "Expected Q-table to be initialized with all zeros."
+    return True
+
+def ch21_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    # Test boundary transitions and step updates
+    s, r, d = func(0, 1, grid_size=4)
+    if s != 4 or r != -1 or d is not False:
+        return f"From state 0 taking action 1 (down): expected (4, -1, False), got ({s}, {r}, {d})."
+    s, r, d = func(0, 0, grid_size=4)
+    if s != 0 or r != -1 or d is not False:
+        return f"From state 0 taking action 0 (up): expected (0, -1, False), got ({s}, {r}, {d})."
+    s, r, d = func(14, 3, grid_size=4)
+    if s != 15 or r != 10 or d is not True:
+        return f"From state 14 taking action 3 (right): expected (15, 10, True), got ({s}, {r}, {d})."
+    return True
+
+def ch21_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    q_table = np.array([[1.0, 2.0, 1.5, 0.5]])
+    rng = np.random.RandomState(42)
+    act = func(q_table, 0, epsilon=0.0, rng=rng)
+    if act != 1: return f"Greedy action selection: expected action 1, got {act}."
+    act2 = func(q_table, 0, epsilon=1.0, rng=rng)
+    if act2 not in [0, 1, 2, 3]: return f"Random action selection: expected action in [0, 3], got {act2}."
+    return True
+
+def ch21_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        q_table = func(epochs=100, alpha=0.1, gamma=0.9, epsilon=0.1)
+    except Exception as e:
+        return f"Error executing train_q_learning: {str(e)}"
+    if not isinstance(q_table, np.ndarray):
+        return "Expected Q-table to be a numpy array."
+    if q_table.shape != (16, 4):
+        return f"Expected shape (16, 4), got {q_table.shape}."
+    if np.all(q_table == 0.0):
+        return "Q-table is still all zeros. Check if your training updates are functioning."
+    # The action that moves down/right from state 0 should have non-zero value
+    if np.sum(q_table[0]) == 0.0:
+        return "Q-values for initial state (state 0) are still 0.0."
+    return True
+
+class Ch21:
+    step_1 = ExerciseStep(
+        ch21_s1_easy_check,
+        'Use np.random.RandomState(random_state) to select actions randomly or greedily based on epsilon.',
+        'def epsilon_greedy(q_values, epsilon, random_state=None):\n    rng = np.random.RandomState(random_state)\n    if rng.rand() < epsilon:\n        return rng.randint(len(q_values))\n    else:\n        return np.argmax(q_values)'
+    )
+    step_2 = ExerciseStep(
+        ch21_s2_easy_check,
+        'Implement: q_val + alpha * (reward + gamma * max_next_q - q_val)',
+        'def bellman_update(q_val, reward, max_next_q, alpha, gamma):\n    return q_val + alpha * (reward + gamma * max_next_q - q_val)'
+    )
+    step_3 = ExerciseStep(
+        ch21_s3_easy_check,
+        'Use np.zeros((num_states, num_actions))',
+        'def init_q_table(num_states, num_actions):\n    return np.zeros((num_states, num_actions))'
+    )
+    step_4 = ExerciseStep(
+        ch21_s1_check,
+        'Convert the state to row and col, adjust based on action (0: up, 1: down, 2: left, 3: right), keep inside the grid boundary, and return the reward (-1 for normal steps, +10 for goal) and done.',
+        'def gridworld_step(state, action, grid_size=4):\n    row, col = state // grid_size, state % grid_size\n    if action == 0 and row > 0: row -= 1\n    elif action == 1 and row < grid_size - 1: row += 1\n    elif action == 2 and col > 0: col -= 1\n    elif action == 3 and col < grid_size - 1: col += 1\n    next_state = row * grid_size + col\n    done = (next_state == grid_size * grid_size - 1)\n    reward = 10.0 if done else -1.0\n    return next_state, reward, done'
+    )
+    step_5 = ExerciseStep(
+        ch21_s2_check,
+        'Check if rng.rand() < epsilon; if so select randomly, else select using np.argmax on q_table[state].',
+        'def select_action(q_table, state, epsilon, rng):\n    if rng.rand() < epsilon:\n        return rng.randint(q_table.shape[1])\n    else:\n        return np.argmax(q_table[state])'
+    )
+    step_6 = ExerciseStep(
+        ch21_s3_check,
+        'Loop over epochs. For each epoch, run environment steps, select epsilon-greedy actions, and perform Bellman Q-value updates.',
+        'def train_q_learning(epochs=100, alpha=0.1, gamma=0.9, epsilon=0.1):\n    q_table = np.zeros((16, 4))\n    for epoch in range(epochs):\n        rng = np.random.RandomState(epoch)\n        state = 0\n        done = False\n        steps = 0\n        while not done and steps < 50:\n            action = select_action(q_table, state, epsilon, rng)\n            next_state, reward, done = gridworld_step(state, action)\n            max_next_q = np.max(q_table[next_state])\n            q_table[state, action] = bellman_update(q_table[state, action], reward, max_next_q, alpha, gamma)\n            state = next_state\n            steps += 1\n    return q_table'
+    )
+
+ch21 = Ch21()
+
+
+# ====================================================
+# --- CHAPTER 22: COMPUTER VISION & CONVOLUTIONS ---
+# ====================================================
+
+def ch22_s1_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    from PIL import Image
+    import os
+    img = Image.new('RGB', (10, 10), color='blue')
+    temp_path = 'temp_dummy_ch22.png'
+    img.save(temp_path)
+    try:
+        arr = func(temp_path)
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+    if not isinstance(arr, np.ndarray): return "Expected a numpy array."
+    if arr.ndim != 2: return "Expected a 2D grayscale image array."
+    if arr.shape != (10, 10): return f"Expected shape (10, 10), got {arr.shape}."
+    if not (0.0 <= arr.min() <= arr.max() <= 1.0): return "Values should be scaled between 0.0 and 1.0."
+    return True
+
+def ch22_s2_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    img = np.array([[1.0, 2.0], [3.0, 4.0]])
+    res = func(img, pool_size=2)
+    if not np.isclose(res[0, 0], 4.0):
+        return f"Expected max value of 4.0, got {res[0, 0]}."
+    return True
+
+def ch22_s3_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    img = np.arange(12).reshape(2, 2, 3)
+    res = func(img)
+    if not np.allclose(res[:, 0, :], img[:, 1, :]):
+        return "Horizontal flip does not correctly swap the columns."
+    return True
+
+def ch22_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    img = np.ones((10, 10))
+    res = func(img)
+    if not np.allclose(res[1:-1, 1:-1], 0.0):
+        return "Sobel horizontal filter on a constant region should output zeros."
+    return True
+
+
+def ch22_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    img = np.array([
+        [0.0, 1.0, 2.0],
+        [3.0, 4.0, 5.0],
+        [6.0, 7.0, 8.0]
+    ])
+    kernel = np.array([[1.0, 0.0], [0.0, 1.0]])
+    # conv2d_scratch with stride=1, padding=0:
+    # element (0,0): 0*1 + 4*1 = 4
+    # element (0,1): 1*1 + 5*1 = 6
+    # element (1,0): 3*1 + 7*1 = 10
+    # element (1,1): 4*1 + 8*1 = 12
+    expected = np.array([[4.0, 6.0], [10.0, 12.0]])
+    res = func(img, kernel, stride=1, padding=0)
+    if not np.allclose(res, expected):
+        return f"Expected convolution output \n{expected}\n, got \n{res}\n"
+    return True
+
+def ch22_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    img = np.ones((6, 6))
+    conv_kernel = np.ones((3, 3))
+    pool_size = 2
+    dense_weights = np.ones((4, 2))
+    dense_bias = np.zeros(2)
+    try:
+        res = func(img, conv_kernel, pool_size, dense_weights, dense_bias)
+    except Exception as e:
+        return f"Error executing cnn_forward: {str(e)}"
+    if not np.allclose(res, np.array([0.5, 0.5])):
+        return f"Expected [0.5, 0.5] softmax outputs, got {res}."
+    return True
+
+class Ch22:
+    step_1 = ExerciseStep(
+        ch22_s1_easy_check,
+        'Use Image.open(img_path).convert("L"), then cast to np.array and divide by 255.0.',
+        'from PIL import Image\ndef to_grayscale(img_path):\n    img = Image.open(img_path).convert("L")\n    return np.array(img, dtype=float) / 255.0'
+    )
+    step_2 = ExerciseStep(
+        ch22_s2_easy_check,
+        'Determine output shape, slide a pool_size window with stride equal to pool_size, and take np.max of the window.',
+        'def max_pooling_2d(img, pool_size=2):\n    h, w = img.shape\n    out_h = h // pool_size\n    out_w = w // pool_size\n    pooled = np.zeros((out_h, out_w))\n    for i in range(out_h):\n        for j in range(out_w):\n            window = img[i*pool_size:(i+1)*pool_size, j*pool_size:(j+1)*pool_size]\n            pooled[i, j] = np.max(window)\n    return pooled'
+    )
+    step_3 = ExerciseStep(
+        ch22_s3_easy_check,
+        'Use horizontal indexing: img[:, ::-1, :] or img[:, ::-1].',
+        'def horizontal_flip(img):\n    return img[:, ::-1, ...]'
+    )
+    step_4 = ExerciseStep(
+        ch22_s1_check,
+        'Create the Sobel horizontal kernel and use scipy.signal.convolve2d with mode="same".',
+        'from scipy.signal import convolve2d\ndef apply_sobel_horizontal(img):\n    kernel = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])\n    return convolve2d(img, kernel, mode="same")'
+    )
+    step_5 = ExerciseStep(
+        ch22_s2_check,
+        'Pad the image if needed, slide the kernel over the image by the stride, perform element-wise multiplication and sum.',
+        'def conv2d_scratch(img, kernel, stride=1, padding=0):\n    if padding > 0:\n        img = np.pad(img, padding, mode="constant")\n    h_in, w_in = img.shape\n    k_h, k_w = kernel.shape\n    h_out = (h_in - k_h) // stride + 1\n    w_out = (w_in - k_w) // stride + 1\n    out = np.zeros((h_out, w_out))\n    for i in range(h_out):\n        for j in range(w_out):\n            r = i * stride\n            c = j * stride\n            window = img[r:r+k_h, c:c+k_w]\n            out[i, j] = np.sum(window * kernel)\n    return out'
+    )
+    step_6 = ExerciseStep(
+        ch22_s3_check,
+        'Perform convolve2d, ReLU (np.maximum(0, x)), max_pooling_2d, flattening, dense layer calculation, and softmax.',
+        'from scipy.signal import convolve2d\ndef cnn_forward(img, conv_kernel, pool_size, dense_weights, dense_bias):\n    conv_out = convolve2d(img, conv_kernel, mode="valid")\n    relu_out = np.maximum(0, conv_out)\n    # Reuse max pool logic\n    h, w = relu_out.shape\n    out_h, out_w = h // pool_size, w // pool_size\n    pooled = np.zeros((out_h, out_w))\n    for i in range(out_h):\n        for j in range(out_w):\n            pooled[i, j] = np.max(relu_out[i*pool_size:(i+1)*pool_size, j*pool_size:(j+1)*pool_size])\n    flat = pooled.flatten()\n    dense_out = np.dot(flat, dense_weights) + dense_bias\n    exp_vals = np.exp(dense_out - np.max(dense_out))\n    return exp_vals / np.sum(exp_vals)'
+    )
+
+ch22 = Ch22()
+
+
+# ===============================================
+# --- CHAPTER 23: GRAPH MACHINE LEARNING --------
+# ===============================================
+
+def ch23_s1_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    adj = np.array([[0, 1], [1, 0]])
+    res = func(adj)
+    if not np.allclose(res, np.array([1, 1])):
+        return f"Expected node degrees [1, 1], got {res}."
+    return True
+
+def ch23_s2_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    adj = np.array([
+        [0, 1, 1],
+        [1, 0, 1],
+        [1, 1, 0]
+    ])
+    # Node 0 neighbors: {1, 2}. Node 1 neighbors: {0, 2}.
+    # Intersection: {2} (size 1)
+    # Union: {0, 1, 2} (size 3)
+    # Jaccard = 1/3
+    res = func(adj, 0, 1)
+    if not np.isclose(res, 1.0/3.0):
+        return f"Expected Jaccard 1/3, got {res}."
+    return True
+
+def ch23_s3_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    adj = np.array([[0, 1], [1, 0]])
+    res = func(adj)
+    expected = np.array([[1, -1], [-1, 1]])
+    if not np.allclose(res, expected):
+        return f"Expected Laplacian \n{expected}\n, got \n{res}\n"
+    return True
+
+def ch23_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    M = np.array([[0.5, 0.5], [0.5, 0.5]])
+    r = np.array([0.5, 0.5])
+    res = func(M, r, d=0.8)
+    # 0.8 * [0.5, 0.5] + 0.2 / 2 * [1, 1] = [0.4, 0.4] + [0.1, 0.1] = [0.5, 0.5]
+    if not np.allclose(res, np.array([0.5, 0.5])):
+        return f"Expected PageRank output [0.5, 0.5], got {res}."
+    return True
+
+def ch23_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    T = np.array([[0, 1], [1, 0]], dtype=float)
+    Y = np.array([[1.0, 0.0], [0.0, 0.0]])
+    Y_orig = Y.copy()
+    res = func(T, Y, Y_orig, [0])
+    # T * Y = [ [0, 0], [1, 0] ]
+    # Reset labeled [0]: row 0 is reset to [1, 0]
+    # Expected: [ [1, 0], [1, 0] ]
+    if not np.allclose(res, np.array([[1.0, 0.0], [1.0, 0.0]])):
+        return f"Expected labels \n[[1, 0], [1, 0]]\n, got \n{res}\n"
+    return True
+
+def ch23_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    adj = np.array([
+        [0, 1],
+        [1, 0]
+    ])
+    walks = func(adj, walk_length=3, num_walks=2, random_state=42)
+    if walks.shape != (4, 3):
+        return f"Expected walks shape (4, 3), got {walks.shape}."
+    return True
+
+class Ch23:
+    step_1 = ExerciseStep(
+        ch23_s1_easy_check,
+        'Sum the columns or rows of the adjacency matrix.',
+        'def get_degrees(adj_matrix):\n    return np.sum(adj_matrix, axis=1)'
+    )
+    step_2 = ExerciseStep(
+        ch23_s2_easy_check,
+        'Find neighbors of u and v, compute their intersection and union size, and return intersection / union.',
+        'def jaccard_coefficient(adj_matrix, u, v):\n    n_u = set(np.where(adj_matrix[u] > 0)[0])\n    n_v = set(np.where(adj_matrix[v] > 0)[0])\n    if not n_u or not n_v: return 0.0\n    union = n_u.union(n_v)\n    if len(union) == 0: return 0.0\n    return len(n_u.intersection(n_v)) / len(union)'
+    )
+    step_3 = ExerciseStep(
+        ch23_s3_easy_check,
+        'Compute degree matrix D and return D - adj_matrix.',
+        'def graph_laplacian(adj_matrix):\n    D = np.diag(np.sum(adj_matrix, axis=1))\n    return D - adj_matrix'
+    )
+    step_4 = ExerciseStep(
+        ch23_s1_check,
+        'Implement: d * np.dot(M, r) + (1 - d) / N * np.ones(N).',
+        'def pagerank_iteration(M, r, d=0.85):\n    N = len(r)\n    return d * np.dot(M, r) + (1.0 - d) / N'
+    )
+    step_5 = ExerciseStep(
+        ch23_s2_check,
+        'Perform matrix multiplication np.dot(T, Y), then reset row values for labeled nodes using Y_orig.',
+        'def label_prop_step(T, Y, Y_orig, labeled_indices):\n    Y_new = np.dot(T, Y)\n    Y_new[labeled_indices] = Y_orig[labeled_indices]\n    return Y_new'
+    )
+    step_6 = ExerciseStep(
+        ch23_s3_check,
+        'For each node, generate walks using random neighbor transition choices. If a node has no neighbors, stay on the current node.',
+        'def generate_random_walks(adj_matrix, walk_length=5, num_walks=10, random_state=42):\n    rng = np.random.RandomState(random_state)\n    N = adj_matrix.shape[0]\n    walks = []\n    for node in range(N):\n        for _ in range(num_walks):\n            walk = [node]\n            curr = node\n            for _ in range(walk_length - 1):\n                neighbors = np.where(adj_matrix[curr] > 0)[0]\n                if len(neighbors) > 0:\n                    curr = rng.choice(neighbors)\n                walk.append(curr)\n            walks.append(walk)\n    return np.array(walks)'
+    )
+
+ch23 = Ch23()
+
+
+# ====================================================
+# --- CHAPTER 24: MODEL INTERPRETABILITY (XAI) -------
+# ====================================================
+
+def ch24_s1_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    from sklearn.linear_model import LinearRegression
+    X = np.array([[1.0], [2.0], [3.0], [4.0]])
+    y = np.array([2.0, 4.0, 6.0, 8.0])
+    model = LinearRegression().fit(X, y)
+    res = func(model, X, y, random_state=42)
+    if not hasattr(res, 'importances_mean'):
+        return "Expected output to have 'importances_mean' attribute."
+    return True
+
+def ch24_s2_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    shap = np.array([[1.0, -2.0], [-3.0, 4.0]])
+    res = func(shap)
+    if not np.allclose(res, np.array([2.0, 3.0])):
+        return f"Expected mean absolute SHAP values [2.0, 3.0], got {res}."
+    return True
+
+def ch24_s3_easy_check(func):
+    if not callable(func): return "Input must be a function."
+    coefs = np.array([3.0, -4.0])
+    stds = np.array([2.0, 0.5])
+    res = func(coefs, stds)
+    if not np.allclose(res, np.array([6.0, 2.0])):
+        return f"Expected linear importance [6.0, 2.0], got {res}."
+    return True
+
+def ch24_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    class DummyModel:
+        def predict(self, X):
+            return X[:, 0]
+    X = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+    y = np.array([1.0, 3.0, 5.0, 7.0])
+    metric_fn = lambda y_true, y_pred: -np.mean((y_true - y_pred)**2)
+    res = func(DummyModel(), X, y, metric_fn)
+    if not isinstance(res, dict): return "Expected output to be a dictionary."
+    if 0 not in res or 1 not in res: return "Keys must be feature indices 0 and 1."
+    if not np.isclose(res[1], 0.0): return "Feature 1 is unused, its importance should be 0.0."
+    if res[0] <= 0.0: return "Feature 0 is key, its importance should be positive."
+    return True
+
+def ch24_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    class DummyModel:
+        def predict(self, X):
+            return X[:, 0] * 3.0 + X[:, 1]
+    X = np.array([[2.0, 10.0], [4.0, 20.0]])
+    res = func(DummyModel(), X, 0, [1.0, 2.0])
+    # For feature 0 set to 1.0: predictions are 1*3+10=13, 1*3+20=23. Mean = 18.0
+    # For feature 0 set to 2.0: predictions are 2*3+10=16, 2*3+20=26. Mean = 21.0
+    if not np.allclose(res, np.array([18.0, 21.0])):
+        return f"Expected partial dependencies [18.0, 21.0], got {res}."
+    return True
+
+def ch24_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    def val_fn(subset):
+        s = set(subset)
+        if len(s) == 0: return 0.0
+        if s == {0}: return 5.0
+        if s == {1}: return 2.0
+        if s == {2}: return 1.0
+        if s == {0, 1}: return 8.0
+        if s == {0, 2}: return 6.0
+        if s == {1, 2}: return 4.0
+        if s == {0, 1, 2}: return 12.0
+        return 0.0
+    # Shapley for 0:
+    # S = empty: 1/3 * (v({0}) - v(empty)) = 1/3 * 5 = 5/3
+    # S = {1}: 1/6 * (v({0,1}) - v({1})) = 1/6 * (8 - 2) = 1.0
+    # S = {2}: 1/6 * (v({0,2}) - v({2})) = 1/6 * (6 - 1) = 5/6
+    # S = {1,2}: 1/3 * (v({0,1,2}) - v({1,2})) = 1/3 * (12 - 4) = 8/3
+    # Total = 5/3 + 1.0 + 5/6 + 8/3 = 10/6 + 6/6 + 5/6 + 16/6 = 37/6 = 6.1667
+    res = func(val_fn)
+    if not np.isclose(res, 37.0/6.0):
+        return f"Expected Shapley value {37.0/6.0:.4f}, got {res}."
+    return True
+
+class Ch24:
+    step_1 = ExerciseStep(
+        ch24_s1_easy_check,
+        'Use permutation_importance(model, X_test, y_test, random_state=random_state).',
+        'from sklearn.inspection import permutation_importance\ndef get_permutation_importances(model, X_test, y_test, random_state=42):\n    return permutation_importance(model, X_test, y_test, random_state=random_state)'
+    )
+    step_2 = ExerciseStep(
+        ch24_s2_easy_check,
+        'Use np.mean(np.abs(shap_values), axis=0).',
+        'def mean_absolute_shap(shap_values):\n    return np.mean(np.abs(shap_values), axis=0)'
+    )
+    step_3 = ExerciseStep(
+        ch24_s3_easy_check,
+        'Use np.abs(coefs) * stds.',
+        'def linear_feature_importance(coefs, stds):\n    return np.abs(coefs) * stds'
+    )
+    step_4 = ExerciseStep(
+        ch24_s1_check,
+        'Shuffle feature column of a copied X, evaluate model predictions, compute metrics, and subtract from baseline metric.',
+        'def permutation_importance_scratch(model, X, y, metric_fn):\n    baseline_metric = metric_fn(y, model.predict(X))\n    importances = {}\n    rng = np.random.RandomState(42)\n    for col in range(X.shape[1]):\n        X_temp = X.copy()\n        shuffled_col = X_temp[:, col].copy()\n        rng.shuffle(shuffled_col)\n        X_temp[:, col] = shuffled_col\n        shuffled_metric = metric_fn(y, model.predict(X_temp))\n        importances[col] = baseline_metric - shuffled_metric\n    return importances'
+    )
+    step_5 = ExerciseStep(
+        ch24_s2_check,
+        'Iterate over grid values, modify the feature column in a copy of X, run predictions, and calculate the mean prediction.',
+        'def partial_dependence_scratch(model, X, feature_idx, grid_values):\n    dependencies = []\n    for val in grid_values:\n        X_temp = X.copy()\n        X_temp[:, feature_idx] = val\n        preds = model.predict(X_temp)\n        dependencies.append(np.mean(preds))\n    return np.array(dependencies)'
+    )
+    step_6 = ExerciseStep(
+        ch24_s3_check,
+        'Compute the weighted difference of model predictions across the 4 subsets of features: empty, {1}, {2}, and {1, 2}.',
+        'def shapley_value_feature_0(val_fn):\n    # v(S U {0}) - v(S) for subsets of {1, 2}\n    val_empty = (val_fn((0,)) - val_fn(())) * (1.0/3.0)\n    val_1 = (val_fn((0, 1)) - val_fn((1,))) * (1.0/6.0)\n    val_2 = (val_fn((0, 2)) - val_fn((2,))) * (1.0/6.0)\n    val_1_2 = (val_fn((0, 1, 2)) - val_fn((1, 2))) * (1.0/3.0)\n    return val_empty + val_1 + val_2 + val_1_2'
+    )
+
+ch24 = Ch24()
+
+
+# ==========================================
+# --- PROJECT 1: CUSTOMER CHURN (CLASS) ----
+# ==========================================
+
+def proj1_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        rate = func('/root/notebooks/Python/Jupyter-Exercises/data/customer_churn.csv')
+    except Exception as e:
+        return f"Error executing function: {str(e)}"
+    df = pd.read_csv('/root/notebooks/Python/Jupyter-Exercises/data/customer_churn.csv')
+    expected = df['Churn'].mean()
+    if not np.isclose(rate, expected):
+        return f"Expected churn rate {expected:.4f}, but got {rate}."
+    return True
+
+def proj1_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    df = pd.DataFrame({
+        'CustomerID': [1, 2, 3],
+        'Age': [20, 30, 40],
+        'Tenure': [5, 10, 15],
+        'UsageFrequency': [2, 4, 6],
+        'SupportCalls': [1, 0, 2],
+        'Churn': [0, 1, 0]
+    })
+    try:
+        X_scaled, y = func(df)
+    except Exception as e:
+        return f"Error running preprocess_churn_data: {str(e)}"
+    if not isinstance(X_scaled, np.ndarray): return "X_scaled should be a numpy array."
+    if X_scaled.shape != (3, 4): return f"Expected shape (3, 4), got {X_scaled.shape}."
+    if not np.isclose(np.mean(X_scaled, axis=0), 0.0).all():
+        return "Features are not scaled to 0 mean."
+    if not np.allclose(y, np.array([0, 1, 0])):
+        return "Target array y is incorrect."
+    return True
+
+def proj1_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(100, 4)
+    y_train = np.random.randint(0, 2, 100)
+    X_test = np.random.randn(20, 4)
+    y_test = np.random.randint(0, 2, 20)
+    try:
+        model, score = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error running train_churn_model: {str(e)}"
+    from sklearn.ensemble import RandomForestClassifier
+    if not isinstance(model, RandomForestClassifier):
+        return "Model should be a RandomForestClassifier."
+    if not isinstance(score, (float, np.floating)):
+        return "Score should be a float."
+    return True
+
+def proj1_s4_check(func):
+    if not callable(func): return "Input must be a function."
+    y_true = np.array([0, 0, 1, 1, 1])
+    probs = np.array([0.1, 0.2, 0.4, 0.6, 0.8])
+    try:
+        best_thresh, best_f1 = func(y_true, probs)
+    except Exception as e:
+        return f"Error running tune_threshold: {str(e)}"
+    if not np.isclose(best_f1, 1.0):
+        return f"Expected max F1 of 1.0, got {best_f1}."
+    if not np.isclose(best_thresh, 0.3) and not np.isclose(best_thresh, 0.4) and not np.isclose(best_thresh, 0.2):
+        return f"Expected threshold around 0.3 or 0.4, got {best_thresh}."
+    return True
+
+class Proj1:
+    step_1 = ExerciseStep(
+        proj1_s1_check,
+        'Use pd.read_csv(file_path), then compute the mean of the Churn column.',
+        'def get_churn_rate(file_path):\n    df = pd.read_csv(file_path)\n    return df["Churn"].mean()'
+    )
+    step_2 = ExerciseStep(
+        proj1_s2_check,
+        'Drop CustomerID and Churn for features X, use Churn for y. Fit and transform X using StandardScaler.',
+        'from sklearn.preprocessing import StandardScaler\ndef preprocess_churn_data(df):\n    X = df.drop(columns=["CustomerID", "Churn"])\n    y = df["Churn"].values\n    scaler = StandardScaler()\n    X_scaled = scaler.fit_transform(X)\n    return X_scaled, y'
+    )
+    step_3 = ExerciseStep(
+        proj1_s3_check,
+        'Fit a RandomForestClassifier(random_state=42) on training set, calculate classification_report or f1_score on test predictions.',
+        'from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import f1_score\ndef train_churn_model(X_train, X_test, y_train, y_test):\n    model = RandomForestClassifier(random_state=42)\n    model.fit(X_train, y_train)\n    preds = model.predict(X_test)\n    score = f1_score(y_test, preds)\n    return model, score'
+    )
+    step_4 = ExerciseStep(
+        proj1_s4_check,
+        'Loop over thresholds from 0.1 to 0.9. Convert probs to predictions, calculate f1_score, and keep track of the max.',
+        'from sklearn.metrics import f1_score\ndef tune_threshold(y_true, probs):\n    best_f1 = -1\n    best_thresh = None\n    for t in np.arange(0.1, 1.0, 0.1):\n        preds = (probs >= t).astype(int)\n        score = f1_score(y_true, preds)\n        if score > best_f1:\n            best_f1 = score\n            best_thresh = t\n    return best_thresh, best_f1'
+    )
+
+proj1 = Proj1()
+
+
+# ==========================================
+# --- PROJECT 2: HOUSING PRICES (REG) ------
+# ==========================================
+
+def proj2_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        df = func('/root/notebooks/Python/Jupyter-Exercises/data/housing.csv')
+    except Exception as e:
+        return f"Error running engineer_housing_features: {str(e)}"
+    if not isinstance(df, pd.DataFrame): return "Expected output to be a pandas DataFrame."
+    if 'Price_per_SqFt' not in df.columns or 'Bedrooms_per_Area' not in df.columns:
+        return "Missing engineered columns 'Price_per_SqFt' and 'Bedrooms_per_Area'."
+    first_row = df.iloc[0]
+    expected_ppsf = first_row['Price'] / first_row['Area']
+    expected_bpa = first_row['Bedrooms'] / first_row['Area']
+    if not np.isclose(first_row['Price_per_SqFt'], expected_ppsf) or not np.isclose(first_row['Bedrooms_per_Area'], expected_bpa):
+        return "Calculated engineered features values are incorrect."
+    return True
+
+def proj2_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    X = np.random.randn(50, 3)
+    y = X[:, 0] * 2.0 + np.random.randn(50) * 0.1
+    try:
+        best_alpha = func(X, y)
+    except Exception as e:
+        return f"Error running tune_ridge: {str(e)}"
+    if best_alpha not in [0.1, 1.0, 10.0, 100.0]:
+        return f"Returned alpha {best_alpha} is not in the grid list [0.1, 1.0, 10.0, 100.0]."
+    return True
+
+def proj2_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(60, 4)
+    y_train = np.random.randn(60)
+    try:
+        best_params = func(X_train, y_train)
+    except Exception as e:
+        return f"Error running optuna_tune_rf: {str(e)}"
+    if not isinstance(best_params, dict):
+        return "Expected output to be a dictionary."
+    if 'n_estimators' not in best_params or 'max_depth' not in best_params:
+        return "Expected keys 'n_estimators' and 'max_depth' in best_params."
+    if not (10 <= best_params['n_estimators'] <= 50):
+        return f"n_estimators {best_params['n_estimators']} is out of bounds [10, 50]."
+    if not (3 <= best_params['max_depth'] <= 10):
+        return f"max_depth {best_params['max_depth']} is out of bounds [3, 10]."
+    return True
+
+class Proj2:
+    step_1 = ExerciseStep(
+        proj2_s1_check,
+        'Use pd.read_csv(file_path) and assign df["Price_per_SqFt"] = df["Price"] / df["Area"], etc.',
+        'def engineer_housing_features(file_path):\n    df = pd.read_csv(file_path)\n    df["Price_per_SqFt"] = df["Price"] / df["Area"]\n    df["Bedrooms_per_Area"] = df["Bedrooms"] / df["Area"]\n    return df'
+    )
+    step_2 = ExerciseStep(
+        proj2_s2_check,
+        'Use GridSearchCV(Ridge(), param_grid={"alpha": [0.1, 1.0, 10.0, 100.0]}, cv=5, scoring="neg_mean_squared_error").',
+        'from sklearn.linear_model import Ridge\nfrom sklearn.model_selection import GridSearchCV\ndef tune_ridge(X, y):\n    grid = GridSearchCV(Ridge(), param_grid={"alpha": [0.1, 1.0, 10.0, 100.0]}, cv=5, scoring="neg_mean_squared_error")\n    grid.fit(X, y)\n    return grid.best_params_["alpha"]'
+    )
+    step_3 = ExerciseStep(
+        proj2_s3_check,
+        'Define objective taking a trial. Suggest n_estimators (10..50) and max_depth (3..10). Cross-validate and return mean R2 or negative MSE. Optimize study for 20 trials.',
+        'import optuna\nfrom sklearn.ensemble import RandomForestRegressor\nfrom sklearn.model_selection import cross_val_score\ndef optuna_tune_rf(X_train, y_train):\n    def objective(trial):\n        n_est = trial.suggest_int("n_estimators", 10, 50)\n        depth = trial.suggest_int("max_depth", 3, 10)\n        model = RandomForestRegressor(n_estimators=n_est, max_depth=depth, random_state=42)\n        score = np.mean(cross_val_score(model, X_train, y_train, cv=3))\n        return score\n    study = optuna.create_study(direction="maximize")\n    study.optimize(objective, n_trials=20)\n    return study.best_params'
+    )
+
+proj2 = Proj2()
+
+
+# ==========================================
+# --- PROJECT 3: SENTIMENT ANALYSIS (NLP) --
+# ==========================================
+
+def proj3_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        words = func("Hello, World! This is a test.")
+    except Exception as e:
+        return f"Error running clean_text: {str(e)}"
+    if not isinstance(words, list): return "Expected a list of strings."
+    expected = ["hello", "world", "this", "is", "a", "test"]
+    if words != expected:
+        return f"Expected {expected}, got {words}."
+    return True
+
+def proj3_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        X, y = func('/root/notebooks/Python/Jupyter-Exercises/data/text_sentiment.csv')
+    except Exception as e:
+        return f"Error running extract_tfidf_features: {str(e)}"
+    df = pd.read_csv('/root/notebooks/Python/Jupyter-Exercises/data/text_sentiment.csv')
+    if X.shape[0] != len(df) or X.shape[1] > 100:
+        return f"Expected feature matrix shape ({len(df)}, <=100), got {X.shape}."
+    if len(y) != len(df):
+        return f"Expected labels length {len(df)}, got {len(y)}."
+    return True
+
+def proj3_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.rand(80, 50)
+    y_train = np.random.randint(0, 2, 80)
+    X_test = np.random.rand(20, 50)
+    y_test = np.random.randint(0, 2, 20)
+    try:
+        acc = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error running train_sentiment_model: {str(e)}"
+    if not isinstance(acc, (float, np.floating)):
+        return "Expected accuracy to be a float."
+    if not (0.0 <= acc <= 1.0):
+        return f"Expected accuracy in [0.0, 1.0], got {acc}."
+    return True
+
+def proj3_s4_check(func):
+    if not callable(func): return "Input must be a function."
+    class DummyModel:
+        def predict(self, X):
+            return (X[:, 0] > 0.5).astype(int)
+    X_test = np.array([
+        [0.8, 0.1],
+        [0.2, 0.9],
+        [0.9, 0.4],
+        [0.1, 0.7]
+    ])
+    y_test = np.array([1, 0, 1, 0])
+    try:
+        importances = func(DummyModel(), X_test, y_test)
+    except Exception as e:
+        return f"Error running sentiment_feature_importance: {str(e)}"
+    if not isinstance(importances, dict):
+        return "Expected a dictionary."
+    if 0 not in importances or 1 not in importances:
+        return "Dictionary keys should be feature indices 0 and 1."
+    if importances[1] != 0.0:
+        return f"Feature 1 is not used by the model, its drop should be 0.0, got {importances[1]}."
+    if importances[0] <= 0.0:
+        return f"Feature 0 is key, its drop should be positive, got {importances[0]}."
+    return True
+
+class Proj3:
+    step_1 = ExerciseStep(
+        proj3_s1_check,
+        'Use text.lower(), re.sub(r"[^\\w\\s]", "", text), and text.split().',
+        'import re\ndef clean_text(text):\n    text_clean = re.sub(r"[^\\w\\s]", "", text.lower())\n    return text_clean.split()'
+    )
+    step_2 = ExerciseStep(
+        proj3_s2_check,
+        'Load csv, instantiate TfidfVectorizer(max_features=100), call fit_transform(df["Text"]) and convert to dense array.',
+        'from sklearn.feature_extraction.text import TfidfVectorizer\ndef extract_tfidf_features(file_path):\n    df = pd.read_csv(file_path)\n    vec = TfidfVectorizer(max_features=100)\n    X = vec.fit_transform(df["Text"]).toarray()\n    y = df["Sentiment"].values\n    return X, y'
+    )
+    step_3 = ExerciseStep(
+        proj3_s3_check,
+        'Instantiate MultinomialNB(), call fit(X_train, y_train), compute score(X_test, y_test) accuracy.',
+        'from sklearn.naive_bayes import MultinomialNB\ndef train_sentiment_model(X_train, X_test, y_train, y_test):\n    clf = MultinomialNB()\n    clf.fit(X_train, y_train)\n    return clf.score(X_test, y_test)'
+    )
+    step_4 = ExerciseStep(
+        proj3_s4_check,
+        'Calculate baseline accuracy, shuffle each column index in a copy of X_test, calculate accuracy, and record the difference.',
+        'from sklearn.metrics import accuracy_score\ndef sentiment_feature_importance(model, X_test, y_test):\n    baseline_acc = accuracy_score(y_test, model.predict(X_test))\n    importances = {}\n    rng = np.random.RandomState(42)\n    for col in range(X_test.shape[1]):\n        X_temp = X_test.copy()\n        shuffled_col = X_temp[:, col].copy()\n        rng.shuffle(shuffled_col)\n        X_temp[:, col] = shuffled_col\n        shuffled_acc = accuracy_score(y_test, model.predict(X_temp))\n        importances[col] = baseline_acc - shuffled_acc\n    return importances'
+    )
+
+proj3 = Proj3()
+
+
