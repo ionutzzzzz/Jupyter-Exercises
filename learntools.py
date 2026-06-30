@@ -2018,7 +2018,7 @@ class Ch13:
     step_6 = ExerciseStep(
         ch13_s3_check,
         'Compute covariance matrix cov = np.cov(X.T). Inverse is inv_cov = np.linalg.inv(cov). Mean vector is X.mean(0). Calculate sqrt(diff @ inv_cov @ diff) for each row.',
-        'def mahalanobis_distance(X):\n    mean = X.mean(axis=0)\n    cov = np.cov(X.T)\n    inv_cov = np.linalg.inv(cov)\n    dists = []\n    for x in X:\n        diff = x - mean\n        d = np.sqrt(diff.T @ inv_cov @ diff)\n        dists.append(d)\n    return np.array(dists)'
+        'def mahalanobis_distance(X):\n    mean = X.mean(axis=0)\n    cov = np.cov(X.T)\n    inv_cov = np.linalg.pinv(cov)\n    dists = []\n    for x in X:\n        diff = x - mean\n        d = np.sqrt(diff.T @ inv_cov @ diff)\n        dists.append(d)\n    return np.array(dists)'
     )
 
 ch13 = Ch13()
