@@ -2,6 +2,13 @@
 
 Welcome to your interactive Machine Learning curriculum! This workspace contains 24 comprehensive Jupyter notebooks designed to take you from data manipulation fundamentals all the way to building deep neural networks, time-series forecasting, NLP, recommender systems, association rule mining, Bayesian optimization, reinforcement learning, computer vision, graph machine learning, and explainable AI.
 
+---
+
+### 🖥️ **[Curriculum Launchpad & Progress Dashboard](file:///home/hp/Documents/GitHub/Jupyter-Exercises/index.html)**
+*Click the link above to open the premium interactive dashboard to track your completion progress and easily launch each chapter.*
+
+---
+
 Each notebook is structured like a Kaggle course chapter and contains:
 - **Theory & Mathematical Foundations**: Concise guides with LaTeX mathematical formulas.
 - **Example Code**: Concrete implementations using `numpy`, `pandas`, `matplotlib`, `seaborn`, `scipy`, `statsmodels`, `optuna`, `pillow`, and `scikit-learn`.
@@ -76,15 +83,28 @@ Below is the complete list of interactive notebooks in this workspace:
 
 
 ### 7. Practical Case Studies & Projects
-- 📉 **[Project 1: Predict Customer Churn (Classification Case Study)](file:///root/notebooks/Python/Jupyter-Exercises/Project_01_Customer_Churn.ipynb)**
+- 📉 **[Project 1: Predict Customer Churn (Classification Case Study)](file:///home/hp/Documents/GitHub/Jupyter-Exercises/Chapter_25_Customer_Churn.ipynb)**
   - Dataset: `data/customer_churn.csv`
   - Topics: Binary classification, exploratory data analysis, feature scaling, model training, and precision-recall/F1 decision threshold tuning.
-- 🏡 **[Project 2: Housing Price Prediction (Regression Case Study)](file:///root/notebooks/Python/Jupyter-Exercises/Project_02_Housing_Prices.ipynb)**
+- 🏡 **[Project 2: Housing Price Prediction (Regression Case Study)](file:///home/hp/Documents/GitHub/Jupyter-Exercises/Chapter_26_Housing_Prices.ipynb)**
   - Dataset: `data/housing.csv`
   - Topics: Feature engineering, regularized Ridge regression grid search, and hyperparameter tuning with Optuna.
-- 💬 **[Project 3: Sentiment Analysis on Customer Reviews (NLP Case Study)](file:///root/notebooks/Python/Jupyter-Exercises/Project_03_Sentiment_Analysis.ipynb)**
+- 💬 **[Project 3: Sentiment Analysis on Customer Reviews (NLP Case Study)](file:///home/hp/Documents/GitHub/Jupyter-Exercises/Chapter_27_Sentiment_Analysis.ipynb)**
   - Dataset: `data/text_sentiment.csv`
   - Topics: Text cleaning, tokenization, TF-IDF vectorization, Naive Bayes sentiment classifiers, and permutation feature importance.
+- 🌸 **[Project 4: Iris Species Classification (Multi-class Case Study)](file:///home/hp/Documents/GitHub/Jupyter-Exercises/Chapter_28_Iris_Classification.ipynb)**
+  - Dataset: `data/iris.csv`
+  - Topics: Multi-class classification, feature scaling, Decision Tree classifier, Gaussian Naive Bayes, and class-specific F1-scores evaluation.
+- 👥 **[Project 5: Customer Segmentation (Unsupervised Case Study)](file:///home/hp/Documents/GitHub/Jupyter-Exercises/Chapter_29_Customer_Segmentation.ipynb)**
+  - Dataset: `data/customer_churn.csv`
+  - Topics: Clustering features preparation, Elbow method, KMeans clustering, Silhouette Score, PCA dimension reduction, and cluster profiling.
+- 📈 **[Project 6: Daily Sales Forecasting (Time Series Case Study)](file:///home/hp/Documents/GitHub/Jupyter-Exercises/Chapter_30_Sales_Forecasting.ipynb)**
+  - Dataset: `data/daily_sales.csv`
+  - Topics: Date parsing, rolling statistics, Augmented Dickey-Fuller stationarity test, differencing, ARIMA model fitting, and MAPE evaluation.
+- 🛡️ **[Project 7: Credit Card Fraud Detection (Imbalanced Case Study)](file:///home/hp/Documents/GitHub/Jupyter-Exercises/Chapter_31_Fraud_Detection.ipynb)**
+  - Dataset: `data/credit_card_fraud.csv`
+  - Topics: Fraud ratio calculation, manual random oversampling, RandomForest classifier, Precision-Recall AUC calculation, Cost-Sensitive SVM, and threshold optimization.
+
 
 ---
 

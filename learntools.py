@@ -1344,6 +1344,61 @@ def ch5_s3_easy_check(val):
     if not np.isclose(val, 0.75): return f"Expected accuracy 0.75, got {val}."
     return True
 
+
+def ch1_s4_easy_check(mean_val):
+    if not isinstance(mean_val, (float, np.floating)): return "Output should be a float."
+    if not np.isclose(mean_val, 30.0): return f"Expected mean of 30.0, but got {mean_val}."
+    return True
+
+def ch1_s5_easy_check(df):
+    if not isinstance(df, pd.DataFrame): return "Output should be a pandas DataFrame."
+    if list(df.columns) != ['A', 'B']: return f"Expected columns ['A', 'B'], but got {list(df.columns)}."
+    if list(df['A'].values) != [1, 2] or list(df['B'].values) != [3, 4]: return "DataFrame values are incorrect."
+    return True
+
+def ch2_s4_easy_check(s):
+    if not isinstance(s, pd.Series): return "Output should be a pandas Series."
+    if list(s.values) != [1.0, 3.0, 3.0, 4.0, 5.0]: return f"Expected [1.0, 3.0, 3.0, 4.0, 5.0], but got {list(s.values)}."
+    return True
+
+def ch2_s5_easy_check(arr):
+    if not isinstance(arr, np.ndarray): return "Output should be a numpy array."
+    if arr.min() != 0.0 or arr.max() != 1.0: return "Values are not scaled to [0, 1] range."
+    if not np.allclose(arr, [0.0, 0.5, 1.0]): return f"Expected [0.0, 0.5, 1.0], but got {arr}."
+    return True
+
+def ch3_s4_easy_check():
+    if check_code_history(r'\\b(boxplot|box)\\s*\\('):
+        return True
+    return "No correct boxplot was found. Use sns.boxplot(x=data_to_box)."
+
+def ch3_s5_easy_check():
+    if check_code_history(r'\\b(bar|barplot)\\s*\\('):
+        return True
+    return "No correct bar chart was found. Use plt.bar or sns.barplot."
+
+def ch4_s4_easy_check(val):
+    if not isinstance(val, (float, np.floating)): return "Output should be a float."
+    if not np.isclose(val, 0.94, atol=1e-2): return f"Expected R2 score around 0.94, but got {val}."
+    return True
+
+def ch4_s5_easy_check(model):
+    from sklearn.linear_model import LogisticRegression
+    if not isinstance(model, LogisticRegression): return "Output should be a LogisticRegression instance."
+    if model.C != 1.0: return f"Expected C=1.0, got {model.C}."
+    return True
+
+def ch5_s4_easy_check(model):
+    from sklearn.tree import DecisionTreeRegressor
+    if not isinstance(model, DecisionTreeRegressor): return "Output should be a DecisionTreeRegressor instance."
+    if model.max_depth != 5: return f"Expected max_depth=5, got {model.max_depth}."
+    return True
+
+def ch5_s5_easy_check(probs):
+    if not isinstance(probs, np.ndarray): return "Output should be a numpy array."
+    if probs.shape != (2, 2): return f"Expected probability shape (2, 2), got {probs.shape}."
+    return True
+
 def ch6_s1_easy_check(model):
     from sklearn.naive_bayes import MultinomialNB
     if not isinstance(model, MultinomialNB): return "Output should be a MultinomialNB."
@@ -1593,12 +1648,28 @@ class Ch1:
     step_5 = ExerciseStep(
         ch1_s2_check,
         "Use sales_df.groupby('Category').agg(Avg_Revenue=('Revenue', 'mean'), Total_Quantity=('Quantity', 'sum'))",
-        "agg_df = sales_df.groupby('Category').agg(\n    Avg_Revenue=('Revenue', 'mean'),\n    Total_Quantity=('Quantity', 'sum')\n)"
+        "agg_df = sales_df.groupby('Category').agg(
+    Avg_Revenue=('Revenue', 'mean'),
+    Total_Quantity=('Quantity', 'sum')
+)"
     )
     step_6 = ExerciseStep(
         ch1_s3_check,
         'Use np.sum(A, axis=1, keepdims=True) to compute row sums. Divide A by these sums to normalize. Then use np.dot or @ for multiplication.',
-        'def normalize_and_multiply(A, B):\n    row_sums = np.sum(A, axis=1, keepdims=True)\n    A_norm = A / row_sums\n    return A_norm @ B'
+        'def normalize_and_multiply(A, B):
+    row_sums = np.sum(A, axis=1, keepdims=True)
+    A_norm = A / row_sums
+    return A_norm @ B'
+    )
+    step_7 = ExerciseStep(
+        ch1_s4_easy_check,
+        'Use np.mean(arr_to_mean).',
+        'arr_mean = np.mean(arr_to_mean)'
+    )
+    step_8 = ExerciseStep(
+        ch1_s5_easy_check,
+        'Use pd.DataFrame(data_dict).',
+        'df_created = pd.DataFrame(data_dict)'
     )
 
 ch1 = Ch1()
@@ -1628,12 +1699,28 @@ class Ch2:
     step_5 = ExerciseStep(
         ch2_s2_check,
         "Map 'Size' with a dictionary, and use pd.get_dummies(df, columns=['Color']) for one-hot encoding.",
-        "df['Size_Encoded'] = df['Size'].map({'Small': 0, 'Medium': 1, 'Large': 2})\nencoded_df = pd.get_dummies(df, columns=['Color'])"
+        "df['Size_Encoded'] = df['Size'].map({'Small': 0, 'Medium': 1, 'Large': 2})
+encoded_df = pd.get_dummies(df, columns=['Color'])"
     )
     step_6 = ExerciseStep(
         ch2_s3_check,
         'Calculate percentiles using np.percentile(arr, 10) and np.percentile(arr, 90). Clip the array using np.clip. Then do min-max scaling.',
-        'def custom_scale(arr, min_val, max_val):\n    p10 = np.percentile(arr, 10)\n    p90 = np.percentile(arr, 90)\n    clipped = np.clip(arr, p10, p90)\n    scaled = (clipped - clipped.min()) / (clipped.max() - clipped.min()) * (max_val - min_val) + min_val\n    return scaled'
+        'def custom_scale(arr, min_val, max_val):
+    p10 = np.percentile(arr, 10)
+    p90 = np.percentile(arr, 90)
+    clipped = np.clip(arr, p10, p90)
+    scaled = (clipped - clipped.min()) / (clipped.max() - clipped.min()) * (max_val - min_val) + min_val
+    return scaled'
+    )
+    step_7 = ExerciseStep(
+        ch2_s4_easy_check,
+        'Use s_to_fill.fillna(s_to_fill.median()).',
+        's_median_filled = s_to_fill.fillna(s_to_fill.median())'
+    )
+    step_8 = ExerciseStep(
+        ch2_s5_easy_check,
+        'Use standard min-max scaling formula: (arr - arr.min()) / (arr.max() - arr.min()).',
+        'arr_scaled_01 = (arr_to_scale - arr_to_scale.min()) / (arr_to_scale.max() - arr_to_scale.min())'
     )
 
 ch2 = Ch2()
@@ -1648,7 +1735,9 @@ class Ch3:
     step_2 = ExerciseStep(
         ch3_s2_easy_check,
         "Use plt.title('My First Plot'), plt.xlabel('X Axis'), and plt.ylabel('Y Axis').",
-        "plt.title('My First Plot')\nplt.xlabel('X Axis')\nplt.ylabel('Y Axis')"
+        "plt.title('My First Plot')
+plt.xlabel('X Axis')
+plt.ylabel('Y Axis')"
     )
     step_3 = ExerciseStep(
         ch3_s3_easy_check,
@@ -1658,17 +1747,42 @@ class Ch3:
     step_4 = ExerciseStep(
         ch3_s1_check,
         'Use plt.hist(data) or sns.histplot(data). Remember to add plt.title(), plt.xlabel(), plt.ylabel().',
-        "plt.figure(figsize=(8, 5))\nplt.hist(data, bins=20, color='skyblue', edgecolor='black')\nplt.title('Feature Distribution')\nplt.xlabel('Value')\nplt.ylabel('Frequency')\nplt.grid(True)\nplt.show()"
+        "plt.figure(figsize=(8, 5))
+plt.hist(data, bins=20, color='skyblue', edgecolor='black')
+plt.title('Feature Distribution')
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+plt.grid(True)
+plt.show()"
     )
     step_5 = ExerciseStep(
         ch3_s2_check,
         "Use sns.scatterplot or sns.regplot. For a regression line with hue, sns.lmplot(x='total_bill', y='tip', hue='smoker', data=tips) is ideal.",
-        "tips = sns.load_dataset('tips')\nsns.lmplot(x='total_bill', y='tip', hue='smoker', data=tips, height=6, aspect=1.2)\nplt.title('Relationship between total_bill and tip by smoker')\nplt.show()"
+        "tips = sns.load_dataset('tips')
+sns.lmplot(x='total_bill', y='tip', hue='smoker', data=tips, height=6, aspect=1.2)
+plt.title('Relationship between total_bill and tip by smoker')
+plt.show()"
     )
     step_6 = ExerciseStep(
         ch3_s3_check,
         'Compute the correlation matrix using df.corr(). Construct a mask for weak correlations or simply mask them out. Pass it to sns.heatmap.',
-        "corr = df.corr()\n# Mask out weak correlations\ncorr_filtered = corr.copy()\ncorr_filtered[corr_filtered.abs() < 0.3] = np.nan\nsns.heatmap(corr_filtered, annot=True, cmap='coolwarm', fmt='.2f', vmin=-1, vmax=1)\nplt.title('Correlation Heatmap (|r| >= 0.3)')\nplt.show()"
+        "corr = df.corr()
+# Mask out weak correlations
+corr_filtered = corr.copy()
+corr_filtered[corr_filtered.abs() < 0.3] = np.nan
+sns.heatmap(corr_filtered, annot=True, cmap='coolwarm', fmt='.2f', vmin=-1, vmax=1)
+plt.title('Correlation Heatmap (|r| >= 0.3)')
+plt.show()"
+    )
+    step_7 = ExerciseStep(
+        ch3_s4_easy_check,
+        'Use sns.boxplot(x=data_to_box).',
+        'ax_box = sns.boxplot(x=data_to_box)'
+    )
+    step_8 = ExerciseStep(
+        ch3_s5_easy_check,
+        'Use plt.bar(categories, values).',
+        'plt.bar(categories, values)'
     )
 
 ch3 = Ch3()
@@ -1678,7 +1792,8 @@ class Ch4:
     step_1 = ExerciseStep(
         ch4_s1_easy_check,
         'Use: from sklearn.linear_model import LinearRegression, then lr_model = LinearRegression().',
-        'from sklearn.linear_model import LinearRegression\nlr_model = LinearRegression()'
+        'from sklearn.linear_model import LinearRegression
+lr_model = LinearRegression()'
     )
     step_2 = ExerciseStep(
         ch4_s2_easy_check,
@@ -1693,17 +1808,41 @@ class Ch4:
     step_4 = ExerciseStep(
         ch4_s1_check,
         'Instantiate with model = LinearRegression(), train with model.fit(X_train, y_train), then make predictions with model.predict(X_test).',
-        'model = LinearRegression()\nmodel.fit(X_train, y_train)\npreds = model.predict(X_test)'
+        'model = LinearRegression()
+model.fit(X_train, y_train)
+preds = model.predict(X_test)'
     )
     step_5 = ExerciseStep(
         ch4_s2_check,
         'Initialize w and b to 0. Loop over epochs. Calculate predictions: pred = w*X + b. Calculate gradients: dw = -2/N * sum(X * (y - pred)), db = -2/N * sum(y - pred). Update w = w - lr*dw, b = b - lr*db.',
-        'def gradient_descent(X, y, lr, epochs):\n    w, b = 0.0, 0.0\n    N = len(X)\n    for _ in range(epochs):\n        pred = w * X + b\n        dw = -2/N * np.sum(X * (y - pred))\n        db = -2/N * np.sum(y - pred)\n        w -= lr * dw\n        b -= lr * db\n    return w, b'
+        'def gradient_descent(X, y, lr, epochs):
+    w, b = 0.0, 0.0
+    N = len(X)
+    for _ in range(epochs):
+        pred = w * X + b
+        dw = -2/N * np.sum(X * (y - pred))
+        db = -2/N * np.sum(y - pred)
+        w -= lr * dw
+        b -= lr * db
+    return w, b'
     )
     step_6 = ExerciseStep(
         ch4_s3_check,
         "Train LogisticRegression(penalty='l1', solver='liblinear', C=0.1) for L1 and LogisticRegression(penalty='l2', C=0.1) for L2. Extract coef_[0] for each.",
-        "model_l1 = LogisticRegression(penalty='l1', solver='liblinear', C=0.1, random_state=42).fit(X_train, y_train)\nmodel_l2 = LogisticRegression(penalty='l2', C=0.1, random_state=42).fit(X_train, y_train)\ncoef_l1 = model_l1.coef_[0]\ncoef_l2 = model_l2.coef_[0]"
+        "model_l1 = LogisticRegression(penalty='l1', solver='liblinear', C=0.1, random_state=42).fit(X_train, y_train)
+model_l2 = LogisticRegression(penalty='l2', C=0.1, random_state=42).fit(X_train, y_train)
+coef_l1 = model_l1.coef_[0]
+coef_l2 = model_l2.coef_[0]"
+    )
+    step_7 = ExerciseStep(
+        ch4_s4_easy_check,
+        'Use r2_score(y_true_r2, y_pred_r2).',
+        'r2_val = r2_score(y_true_r2, y_pred_r2)'
+    )
+    step_8 = ExerciseStep(
+        ch4_s5_easy_check,
+        'Use LogisticRegression(C=1.0, random_state=42).',
+        'log_reg_model = LogisticRegression(C=1.0, random_state=42)'
     )
 
 ch4 = Ch4()
@@ -1713,7 +1852,8 @@ class Ch5:
     step_1 = ExerciseStep(
         ch5_s1_easy_check,
         'Use: from sklearn.tree import DecisionTreeClassifier, then dt_easy = DecisionTreeClassifier(max_depth=3).',
-        'from sklearn.tree import DecisionTreeClassifier\ndt_easy = DecisionTreeClassifier(max_depth=3)'
+        'from sklearn.tree import DecisionTreeClassifier
+dt_easy = DecisionTreeClassifier(max_depth=3)'
     )
     step_2 = ExerciseStep(
         ch5_s2_easy_check,
@@ -1728,22 +1868,238 @@ class Ch5:
     step_4 = ExerciseStep(
         ch5_s1_check,
         'Instantiate DecisionTreeClassifier(max_depth=3, random_state=42) and fit on X_train, y_train.',
-        'dt_model = DecisionTreeClassifier(max_depth=3, random_state=42)\ndt_model.fit(X_train, y_train)'
+        'dt_model = DecisionTreeClassifier(max_depth=3, random_state=42)
+dt_model.fit(X_train, y_train)'
     )
     step_5 = ExerciseStep(
         ch5_s2_check,
         'Instantiate RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=4, random_state=42), fit it, predict on X_test, and compute accuracy_score(y_test, preds).',
-        'rf_model = RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=4, random_state=42)\nrf_model.fit(X_train, y_train)\npreds = rf_model.predict(X_test)\nrf_acc = accuracy_score(y_test, preds)'
+        'rf_model = RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=4, random_state=42)
+rf_model.fit(X_train, y_train)
+preds = rf_model.predict(X_test)
+rf_acc = accuracy_score(y_test, preds)'
     )
     step_6 = ExerciseStep(
         ch5_s3_check,
         'Get importances from rf_model.feature_importances_. Use np.where(importances > 0.1)[0] for indices. Then index X_train[:, selected_indices].',
-        'importances = rf_model.feature_importances_\nselected_indices = np.where(importances > 0.1)[0]\nX_train_filtered = X_train[:, selected_indices]'
+        'importances = rf_model.feature_importances_
+selected_indices = np.where(importances > 0.1)[0]
+X_train_filtered = X_train[:, selected_indices]'
+    )
+    step_7 = ExerciseStep(
+        ch5_s4_easy_check,
+        'Use DecisionTreeRegressor(max_depth=5, random_state=42).',
+        'dtr_model = DecisionTreeRegressor(max_depth=5, random_state=42)'
+    )
+    step_8 = ExerciseStep(
+        ch5_s5_easy_check,
+        'Use trained_dt.predict_proba(X_new_probs).',
+        'pred_probs = trained_dt.predict_proba(X_new_probs)'
     )
 
 ch5 = Ch5()
 
 # --- Chapter 6 ---
+
+
+def ch6_s4_easy_check(model):
+    from sklearn.naive_bayes import ComplementNB
+    if not isinstance(model, ComplementNB): return 'Output should be a ComplementNB instance.'
+    return True
+
+def ch6_s5_easy_check(dec):
+    if not isinstance(dec, np.ndarray): return 'Output should be a numpy array.'
+    if dec.shape != (2,): return f'Expected shape (2,), got {dec.shape}.'
+    return True
+
+def ch7_s4_easy_check(val):
+    if not isinstance(val, (float, np.floating)): return 'Output should be a float.'
+    if val < 0: return 'Inertia must be positive.'
+    return True
+
+def ch7_s5_easy_check(arr):
+    if not isinstance(arr, np.ndarray): return 'Output should be a numpy array.'
+    if len(arr) != 2: return f'Expected 2 variance ratios, got {len(arr)}.'
+    return True
+
+def ch8_s4_easy_check(col):
+    if not isinstance(col, pd.Series): return 'Output should be a pandas Series.'
+    if not np.allclose(col.values, np.log1p([30000, 50000, 90000, 0])): return 'Values are incorrect.'
+    return True
+
+def ch8_s5_easy_check(col):
+    if not isinstance(col, pd.Series): return 'Output should be a pandas Series.'
+    if list(col.values) != [6, 20, 42]: return f'Expected [6, 20, 42], got {list(col.values)}.'
+    return True
+
+def ch9_s4_easy_check(cm):
+    if not isinstance(cm, np.ndarray): return 'Output should be a numpy array.'
+    if cm.shape != (2, 2): return f'Expected shape (2, 2), got {cm.shape}.'
+    return True
+
+def ch9_s5_easy_check(val):
+    if not isinstance(val, (float, np.floating)): return 'Output should be a float.'
+    if not np.isclose(val, 0.666666666): return f'Expected precision 0.67, got {val}.'
+    return True
+
+def ch10_s4_easy_check(model):
+    from tensorflow.keras.models import Sequential
+    if not isinstance(model, Sequential): return 'Output should be a Keras Sequential model.'
+    return True
+
+def ch10_s5_easy_check(model):
+    from tensorflow.keras.models import Sequential
+    if not isinstance(model, Sequential): return 'Output should be a Keras Sequential model.'
+    if not model.optimizer: return 'Model has not been compiled yet. Use model.compile().'
+    return True
+
+def ch11_s4_easy_check(s):
+    if not isinstance(s, pd.Series): return 'Output should be a pandas Series.'
+    if not np.isnan(s.iloc[0]): return 'Expected first value to be NaN due to shifting.'
+    return True
+
+def ch11_s5_easy_check(s):
+    if not isinstance(s, pd.Series): return 'Output should be a pandas Series.'
+    if len(s) != 2: return f'Expected 2 monthly data points, got {len(s)}.'
+    return True
+
+def ch12_s4_easy_check(col):
+    if not isinstance(col, pd.Series): return 'Output should be a pandas Series.'
+    if list(col.values) != [11, 19, 3]: return f'Expected [11, 19, 3], got {list(col.values)}.'
+    return True
+
+def ch12_s5_easy_check(lst):
+    if not isinstance(lst, list): return 'Output should be a list.'
+    if lst != ['Tokenize', 'this', 'simple', 'sentence']: return f'Unexpected tokens: {lst}.'
+    return True
+
+def ch13_s4_easy_check(model):
+    from sklearn.ensemble import IsolationForest
+    if not isinstance(model, IsolationForest): return 'Output should be an IsolationForest model.'
+    if model.contamination != 0.05: return f'Expected contamination=0.05, got {model.contamination}.'
+    return True
+
+def ch13_s5_easy_check(arr):
+    if not isinstance(arr, np.ndarray): return 'Output should be a numpy array.'
+    if not np.isclose(np.mean(arr, axis=0), 0.0).all(): return 'Features are not standard scaled to 0 mean.'
+    return True
+
+def ch14_s4_easy_check(model):
+    from sklearn.ensemble import VotingClassifier
+    if not isinstance(model, VotingClassifier): return 'Output should be a VotingClassifier model.'
+    if model.voting != 'soft': return f'Expected voting=soft, got {model.voting}.'
+    return True
+
+def ch14_s5_easy_check(model):
+    from sklearn.ensemble import AdaBoostClassifier
+    if not isinstance(model, AdaBoostClassifier): return 'Output should be an AdaBoostClassifier model.'
+    if model.n_estimators != 50: return f'Expected n_estimators=50, got {model.n_estimators}.'
+    return True
+
+def ch15_s4_easy_check(model):
+    from sklearn.manifold import TSNE
+    if not isinstance(model, TSNE): return 'Output should be a TSNE instance.'
+    if model.n_components != 2: return f'Expected n_components=2, got {model.n_components}.'
+    return True
+
+def ch15_s5_easy_check(arr):
+    if not isinstance(arr, np.ndarray): return 'Output should be a numpy array.'
+    if arr.shape[1] != 2: return f'Expected output shape to have 2 columns, got {arr.shape[1]}.'
+    return True
+
+def ch16_s4_easy_check(val):
+    if not isinstance(val, (float, np.floating)): return 'Output should be a float.'
+    if not np.isclose(val, 0.985, atol=1e-2): return f'Expected similarity near 0.985, got {val}.'
+    return True
+
+def ch16_s5_easy_check(val):
+    if not isinstance(val, (float, np.floating)): return 'Output should be a float.'
+    if not np.isclose(val, 0.962, atol=1e-2): return f'Expected correlation near 0.962, got {val}.'
+    return True
+
+def ch17_s4_easy_check(model):
+    from mlxtend.preprocessing import TransactionEncoder
+    if not isinstance(model, TransactionEncoder): return 'Output should be a TransactionEncoder.'
+    return True
+
+def ch17_s5_easy_check(df):
+    if not isinstance(df, pd.DataFrame): return 'Output should be a pandas DataFrame.'
+    return True
+
+def ch18_s4_easy_check(model):
+    from sklearn.semi_supervised import LabelSpreading
+    if not isinstance(model, LabelSpreading): return 'Output should be a LabelSpreading instance.'
+    if model.kernel != 'knn': return f'Expected kernel=knn, got {model.kernel}.'
+    return True
+
+def ch18_s5_easy_check(arr):
+    if not isinstance(arr, np.ndarray): return 'Output should be a numpy array.'
+    if list(arr) != [1, 0, -1, 1, -1]: return f'Unexpected labels: {list(arr)}.'
+    return True
+
+def ch19_s4_easy_check(weights):
+    if not isinstance(weights, np.ndarray): return 'Output should be a numpy array.'
+    if not np.isclose(weights[0], 0.6) or not np.isclose(weights[1], 3.0): return 'Weights are incorrect.'
+    return True
+
+def ch19_s5_easy_check(arr):
+    if not isinstance(arr, np.ndarray): return 'Output should be a numpy array.'
+    if len(arr) != 4: return f'Expected 4 indices, got {len(arr)}.'
+    return True
+
+def ch20_s4_easy_check(model):
+    from sklearn.model_selection import GridSearchCV
+    if not isinstance(model, GridSearchCV): return 'Output should be a GridSearchCV instance.'
+    return True
+
+def ch20_s5_easy_check(model):
+    from sklearn.model_selection import RandomizedSearchCV
+    if not isinstance(model, RandomizedSearchCV): return 'Output should be a RandomizedSearchCV instance.'
+    return True
+
+def ch21_s4_easy_check(q):
+    if not isinstance(q, np.ndarray): return 'Output should be a numpy array.'
+    if q.shape != (5, 3): return f'Expected shape (5, 3), got {q.shape}.'
+    return True
+
+def ch21_s5_easy_check(act):
+    if not isinstance(act, (int, np.integer)): return 'Output should be an integer.'
+    rng = np.random.RandomState(42)
+    expected = rng.choice(3)
+    if act != expected: return f'Expected {expected}, got {act}.'
+    return True
+
+def ch22_s4_easy_check(model):
+    from tensorflow.keras.models import Sequential
+    if not isinstance(model, Sequential): return 'Output should be a Keras Sequential model.'
+    return True
+
+def ch22_s5_easy_check(model):
+    from tensorflow.keras.models import Sequential
+    if not isinstance(model, Sequential): return 'Output should be a Keras Sequential model.'
+    if len(model.layers) < 2: return 'Model is missing layers.'
+    return True
+
+def ch23_s4_easy_check(dc):
+    if not isinstance(dc, dict): return 'Output should be a dictionary.'
+    if len(dc) != 4: return f'Expected 4 node centralities, got {len(dc)}.'
+    return True
+
+def ch23_s5_easy_check(adj):
+    if not isinstance(adj, np.ndarray): return 'Output should be a numpy array.'
+    if adj.shape != (4, 4): return f'Expected shape (4, 4), got {adj.shape}.'
+    return True
+
+def ch24_s4_easy_check(coef):
+    if not isinstance(coef, np.ndarray): return 'Output should be a numpy array.'
+    if not np.isclose(coef[0], 2.0): return f'Expected coef 2.0, got {coef[0]}.'
+    return True
+
+def ch24_s5_easy_check(exp):
+    import shap
+    if not isinstance(exp, shap.explainers._tree.Tree): return 'Output should be a SHAP Tree Explainer.'
+    return True
+
 class Ch6:
     step_1 = ExerciseStep(
         ch6_s1_easy_check,
@@ -1774,6 +2130,17 @@ class Ch6:
         ch6_s3_check,
         "Fit SVC(kernel='linear', random_state=42) and SVC(kernel='rbf', random_state=42) on X_train, y_train. Compute and return their accuracies on X_test.",
         "svm_lin = SVC(kernel='linear', random_state=42).fit(X_train, y_train)\nsvm_rbf = SVC(kernel='rbf', random_state=42).fit(X_train, y_train)\nacc_linear = accuracy_score(y_test, svm_lin.predict(X_test))\nacc_rbf = accuracy_score(y_test, svm_rbf.predict(X_test))"
+    )
+
+    step_7 = ExerciseStep(
+        ch6_s4_easy_check,
+        'Use: cnb_model = ComplementNB().',
+        'from sklearn.naive_bayes import ComplementNB\ncnb_model = ComplementNB()'
+    )
+    step_8 = ExerciseStep(
+        ch6_s5_easy_check,
+        'Call trained_svm.decision_function(X_new_svm).',
+        'decision_values = trained_svm.decision_function(X_new_svm)'
     )
 
 ch6 = Ch6()
@@ -1811,6 +2178,17 @@ class Ch7:
         'def kmeans_scratch(X, k, max_iters=100):\n    np.random.seed(42)\n    idx = np.random.choice(len(X), k, replace=False)\n    centers = X[idx]\n    for _ in range(max_iters):\n        # Distances to all centers\n        dists = np.linalg.norm(X[:, np.newaxis] - centers, axis=2)\n        labels = np.argmin(dists, axis=1)\n        # Update centers\n        new_centers = np.array([X[labels == i].mean(axis=0) if len(X[labels == i]) > 0 else centers[i] for i in range(k)])\n        if np.allclose(centers, new_centers):\n            break\n        centers = new_centers\n    return centers, labels'
     )
 
+    step_7 = ExerciseStep(
+        ch7_s4_easy_check,
+        'Fit model = KMeans(n_clusters=2, random_state=42).fit(X_kmeans) and return model.inertia_.',
+        'model = KMeans(n_clusters=2, random_state=42).fit(X_kmeans)\ninertia_val = model.inertia_'
+    )
+    step_8 = ExerciseStep(
+        ch7_s5_easy_check,
+        'Fit PCA(n_components=2).fit(X_pca) and extract explained_variance_ratio_.',
+        'explained_variance = PCA(n_components=2).fit(X_pca).explained_variance_ratio_'
+    )
+
 ch7 = Ch7()
 
 # --- Chapter 8 ---
@@ -1844,6 +2222,17 @@ class Ch8:
         ch8_s3_check,
         'Instantiate RFE(estimator=RandomForestClassifier(random_state=42), n_features_to_select=3). Fit it on X, y. Get X_selected using rfe_model.transform(X), and ranking from rfe_model.ranking_.',
         'rfe_model = RFE(estimator=RandomForestClassifier(random_state=42), n_features_to_select=3)\nrfe_model.fit(X, y)\nX_selected = rfe_model.transform(X)\nranking = rfe_model.ranking_'
+    )
+
+    step_7 = ExerciseStep(
+        ch8_s4_easy_check,
+        "Use: np.log1p(df_log['Salary']).",
+        "df_log['Salary_Log'] = np.log1p(df_log['Salary'])"
+    )
+    step_8 = ExerciseStep(
+        ch8_s5_easy_check,
+        "Use: df_inter['A'] * df_inter['B'].",
+        "df_inter['A_x_B'] = df_inter['A'] * df_inter['B']"
     )
 
 ch8 = Ch8()
@@ -1881,6 +2270,17 @@ class Ch9:
         'best_threshold = 0.0\nmax_f1 = 0.0\nfor t in np.arange(0.1, 0.91, 0.01):\n    preds = (y_probs >= t).astype(int)\n    score = f1_score(y_test, preds)\n    if score > max_f1:\n        max_f1 = score\n        best_threshold = t'
     )
 
+    step_7 = ExerciseStep(
+        ch9_s4_easy_check,
+        'Use: confusion_matrix(y_true_cm, y_pred_cm).',
+        'cm = confusion_matrix(y_true_cm, y_pred_cm)'
+    )
+    step_8 = ExerciseStep(
+        ch9_s5_easy_check,
+        'Use: precision_score(y_true_cm, y_pred_cm).',
+        'precision_val = precision_score(y_true_cm, y_pred_cm)'
+    )
+
 ch9 = Ch9()
 
 # --- Chapter 10 ---
@@ -1914,6 +2314,17 @@ class Ch10:
         ch10_s3_check,
         'Implement sigmoid and its derivative. Initialize weights W1, W2 and biases b1, b2 randomly W1: (input_dim, hidden_dim), W2: (hidden_dim, output_dim). Forward: h = sigmoid(X @ W1 + b1), out = sigmoid(h @ W2 + b2). Backward: delta2 = (out - y) * out * (1 - out), delta1 = (delta2 @ W2.T) * h * (1 - h). Gradients: dW2 = h.T @ delta2, db2 = sum(delta2), dW1 = X.T @ delta1, db1 = sum(delta1). Update parameters.',
         'class SimpleNN:\n    def __init__(self, input_dim, hidden_dim, output_dim):\n        np.random.seed(42)\n        self.W1 = np.random.randn(input_dim, hidden_dim) * 0.1\n        self.b1 = np.zeros((1, hidden_dim))\n        self.W2 = np.random.randn(hidden_dim, output_dim) * 0.1\n        self.b2 = np.zeros((1, output_dim))\n    def forward(self, X):\n        self.z1 = np.dot(X, self.W1) + self.b1\n        self.a1 = np.tanh(self.z1)\n        self.z2 = np.dot(self.a1, self.W2) + self.b2\n        self.a2 = 1.0 / (1.0 + np.exp(-self.z2))\n        return self.a2\n    def backward(self, X, y, lr):\n        dz2 = self.a2 - y\n        dW2 = np.dot(self.a1.T, dz2)\n        db2 = np.sum(dz2, axis=0, keepdims=True)\n        dz1 = np.dot(dz2, self.W2.T) * (1.0 - self.a1 ** 2)\n        dW1 = np.dot(X.T, dz1)\n        db1 = np.sum(dz1, axis=0, keepdims=True)\n        self.W1 -= lr * dW1\n        self.b1 -= lr * db1\n        self.W2 -= lr * dW2\n        self.b2 -= lr * db2\n    def train(self, X, y, lr=0.1, epochs=10000):\n        for _ in range(epochs):\n            self.forward(X)\n            self.backward(X, y, lr)\nnn = SimpleNN(input_dim=2, hidden_dim=4, output_dim=1)\nnn.train(X_xor, y_xor, lr=0.5, epochs=10000)'
+    )
+
+    step_7 = ExerciseStep(
+        ch10_s4_easy_check,
+        "Use: keras_model = Sequential([Dense(1, activation='sigmoid')]) or Sequential().add(Dense(1, activation='sigmoid')).",
+        "keras_model = Sequential([Dense(1, activation='sigmoid', input_shape=(10,))])"
+    )
+    step_8 = ExerciseStep(
+        ch10_s5_easy_check,
+        "Call model_to_compile.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']).",
+        "model_to_compile.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])\ncompiled_model = model_to_compile"
     )
 
 ch10 = Ch10()
@@ -1951,6 +2362,17 @@ class Ch11:
         "from statsmodels.tsa.arima.model import ARIMA\nmodel = ARIMA(train, order=(1,1,0)).fit()\nfc = model.forecast(steps=20)\nmape = np.mean(np.abs((test['value'] - fc) / test['value'])) * 100"
     )
 
+    step_7 = ExerciseStep(
+        ch11_s4_easy_check,
+        'Use: ts_series.shift(1).',
+        'ts_lagged = ts_series.shift(1)'
+    )
+    step_8 = ExerciseStep(
+        ch11_s5_easy_check,
+        "Use: daily_ts.resample('ME').mean() or daily_ts.resample('M').mean().",
+        "monthly_mean = daily_ts.resample('ME').mean()"
+    )
+
 ch11 = Ch11()
 
 # --- Chapter 12 ---
@@ -1986,6 +2408,17 @@ class Ch12:
         'sentence_vectors = []\nfor s in sentences:\n    vecs = [word_vectors[w] for w in s.split() if w in word_vectors]\n    sentence_vectors.append(np.mean(vecs, axis=0))\nsentence_vectors = np.array(sentence_vectors)\nfrom sklearn.linear_model import LogisticRegression\nclf = LogisticRegression().fit(sentence_vectors[:2], labels[:2])\ntest_acc = clf.score(sentence_vectors[2:], labels[2:])'
     )
 
+    step_7 = ExerciseStep(
+        ch12_s4_easy_check,
+        'Use: text_series.str.len().',
+        'char_counts = text_series.str.len()'
+    )
+    step_8 = ExerciseStep(
+        ch12_s5_easy_check,
+        'Use: sentence.split().',
+        'tokens = sentence.split()'
+    )
+
 ch12 = Ch12()
 
 # --- Chapter 13 ---
@@ -2018,7 +2451,18 @@ class Ch13:
     step_6 = ExerciseStep(
         ch13_s3_check,
         'Compute covariance matrix cov = np.cov(X.T). Inverse is inv_cov = np.linalg.inv(cov). Mean vector is X.mean(0). Calculate sqrt(diff @ inv_cov @ diff) for each row.',
-        'def mahalanobis_distance(X):\n    mean = X.mean(axis=0)\n    cov = np.cov(X.T)\n    inv_cov = np.linalg.inv(cov)\n    dists = []\n    for x in X:\n        diff = x - mean\n        d = np.sqrt(diff.T @ inv_cov @ diff)\n        dists.append(d)\n    return np.array(dists)'
+        'def mahalanobis_distance(X):\n    mean = X.mean(axis=0)\n    cov = np.cov(X.T)\n    inv_cov = np.linalg.pinv(cov)\n    dists = []\n    for x in X:\n        diff = x - mean\n        d = np.sqrt(diff.T @ inv_cov @ diff)\n        dists.append(d)\n    return np.array(dists)'
+    )
+
+    step_7 = ExerciseStep(
+        ch13_s4_easy_check,
+        'Use: IsolationForest(contamination=0.05, random_state=42).',
+        'if_model = IsolationForest(contamination=0.05, random_state=42)'
+    )
+    step_8 = ExerciseStep(
+        ch13_s5_easy_check,
+        'Instantiate and apply StandardScaler().fit_transform(X_anom).',
+        'X_scaled_anom = StandardScaler().fit_transform(X_anom)'
     )
 
 ch13 = Ch13()
@@ -2056,6 +2500,17 @@ class Ch14:
         'meta_features = np.column_stack([\n    knn.predict_proba(X_test)[:, 1],\n    svm.predict_proba(X_test)[:, 1]\n])\nmeta_train = np.column_stack([\n    knn.predict_proba(X_train)[:, 1],\n    svm.predict_proba(X_train)[:, 1]\n])\nmeta_clf = LogisticRegression(random_state=42).fit(meta_train, y_train)\ntest_acc = accuracy_score(y_test, meta_clf.predict(meta_features))'
     )
 
+    step_7 = ExerciseStep(
+        ch14_s4_easy_check,
+        "Use: VotingClassifier(estimators=[('rf', rf_clf), ('lr', lr_clf)], voting='soft').",
+        "voting_model = VotingClassifier(estimators=[('rf', rf_clf), ('lr', lr_clf)], voting='soft')"
+    )
+    step_8 = ExerciseStep(
+        ch14_s5_easy_check,
+        'Use: AdaBoostClassifier(n_estimators=50, random_state=42).',
+        'adaboost_model = AdaBoostClassifier(n_estimators=50, random_state=42)'
+    )
+
 ch14 = Ch14()
 
 # --- Chapter 15 ---
@@ -2089,6 +2544,17 @@ class Ch15:
         ch15_s3_check,
         'Compute t-SNE with TSNE(n_components=2, perplexity=30, random_state=42) and PCA(n_components=2). Compute silhouette_score(embeddings, y) for both.',
         'tsne_emb = TSNE(n_components=2, perplexity=30, random_state=42).fit_transform(X)\npca_emb = PCA(n_components=2, random_state=42).fit_transform(X)\ntsne_silhouette = silhouette_score(tsne_emb, y)\npca_silhouette = silhouette_score(pca_emb, y)'
+    )
+
+    step_7 = ExerciseStep(
+        ch15_s4_easy_check,
+        'Use: TSNE(n_components=2, random_state=42).',
+        'X_tsne = tsne_model.fit_transform(X_manifold)'
+    )
+    step_8 = ExerciseStep(
+        ch15_s5_easy_check,
+        'Call tsne_model.fit_transform(X_manifold).',
+        'X_tsne = tsne_model.fit_transform(X_manifold)'
     )
 
 ch15 = Ch15()
@@ -2126,6 +2592,17 @@ class Ch16:
         'def matrix_factorization(R, K=2, steps=5000, alpha=0.002, beta=0.02):\n    M, N = R.shape\n    np.random.seed(42)\n    P = np.random.rand(M, K)\n    Q = np.random.rand(N, K)\n    for step in range(steps):\n        for u in range(M):\n            for i in range(N):\n                if R[u, i] > 0:\n                    eui = R[u, i] - np.dot(P[u, :], Q[i, :])\n                    for k in range(K):\n                        P[u, k] += alpha * (2 * eui * Q[i, k] - beta * P[u, k])\n                        Q[i, k] += alpha * (2 * eui * P[u, k] - beta * Q[i, k])\n    return P, Q\nP, Q = matrix_factorization(R, K=2, steps=5000)'
     )
 
+    step_7 = ExerciseStep(
+        ch16_s4_easy_check,
+        'Use: np.dot(u1, u2) / (np.linalg.norm(u1) * np.linalg.norm(u2)).',
+        'sim_val = np.dot(u1, u2) / (np.linalg.norm(u1) * np.linalg.norm(u2))'
+    )
+    step_8 = ExerciseStep(
+        ch16_s5_easy_check,
+        'Use: np.corrcoef(ratings_A, ratings_B)[0, 1].',
+        'pearson_corr = np.corrcoef(ratings_A, ratings_B)[0, 1]'
+    )
+
 ch16 = Ch16()
 
 # --- Chapter 17 ---
@@ -2159,6 +2636,17 @@ class Ch17:
         ch17_s3_check,
         'Iterate over frequent itemsets of length >= 2. For each itemset, generate non-empty proper subsets as antecedents, and the remaining items as consequents. Calculate confidence = support(itemset) / support(antecedent), lift = confidence / support(consequent). Filter by minimum confidence and lift.',
         'def generate_rules(frequent_itemsets_with_support, min_confidence=0.7, min_lift=1.1):\n    import itertools\n    support_dict = {frozenset(itemset): sup for itemset, sup in frequent_itemsets_with_support.items()}\n    rules = []\n    for itemset, sup in support_dict.items():\n        if len(itemset) < 2: continue\n        for r in range(1, len(itemset)):\n            for antecedent in itertools.combinations(itemset, r):\n                ant = frozenset(antecedent)\n                conseq = itemset - ant\n                if ant in support_dict and conseq in support_dict:\n                    conf = sup / support_dict[ant]\n                    lift = conf / support_dict[conseq]\n                    if conf >= min_confidence and lift >= min_lift:\n                        rules.append((tuple(ant), tuple(conseq), conf, lift))\n    return rules\nrules_generated = generate_rules(itemsets_with_support)'
+    )
+
+    step_7 = ExerciseStep(
+        ch17_s4_easy_check,
+        'Use: te_encoder = TransactionEncoder().',
+        'te_encoder = TransactionEncoder()'
+    )
+    step_8 = ExerciseStep(
+        ch17_s5_easy_check,
+        "Call: association_rules(frequent_itemsets, metric='confidence', min_threshold=0.6).",
+        "rules_df = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.6)"
     )
 
 ch17 = Ch17()
@@ -2196,6 +2684,17 @@ class Ch18:
         'best_gamma = 10.0\nbest_acc = 0.85'
     )
 
+    step_7 = ExerciseStep(
+        ch18_s4_easy_check,
+        "Use: LabelSpreading(kernel='knn', n_neighbors=5).",
+        "ls_model = LabelSpreading(kernel='knn', n_neighbors=5)"
+    )
+    step_8 = ExerciseStep(
+        ch18_s5_easy_check,
+        "Copy y_raw, replace 'unknown' with -1, and return values array.",
+        "y_semi = y_raw.copy().replace('unknown', -1).values.astype(int)"
+    )
+
 ch18 = Ch18()
 
 # --- Chapter 19 ---
@@ -2229,6 +2728,17 @@ class Ch19:
         ch19_s3_check,
         "Fit SVC(class_weight='balanced', random_state=42) on training set, and score on test set.",
         "clf = SVC(class_weight='balanced', random_state=42).fit(X_train, y_train)\ncost_sensitive_score = clf.score(X_test, y_test)"
+    )
+
+    step_7 = ExerciseStep(
+        ch19_s4_easy_check,
+        "Use: class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(y_imb), y=y_imb).",
+        "class_weights = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(y_imb), y=y_imb)"
+    )
+    step_8 = ExerciseStep(
+        ch19_s5_easy_check,
+        'Identify idx_0 and idx_1, select len(idx_1) elements from idx_0 with rng.choice, then concatenate.',
+        'idx_0 = np.where(y_binary == 0)[0]\nidx_1 = np.where(y_binary == 1)[0]\nrng = np.random.RandomState(42)\nidx_0_sampled = rng.choice(idx_0, size=len(idx_1), replace=False)\nbalanced_indices = np.concatenate([idx_0_sampled, idx_1])'
     )
 
 ch19 = Ch19()
@@ -2270,6 +2780,17 @@ class Ch20:
         ch20_s3_check,
         'Initialize points randomly. Fit a GaussianProcessRegressor model on those points. For each iteration, compute acquisition values (e.g. mean + std) over a dense grid. Evaluate objective at the point that maximizes the acquisition. Add this point and its objective value to your dataset, and loop.',
         'from sklearn.gaussian_process import GaussianProcessRegressor\nfrom sklearn.gaussian_process.kernels import Matern\ndef bayesian_optimization(objective, bounds, n_iters=10):\n    # Simple Bayesian Optimization simulation\n    np.random.seed(42)\n    X = np.random.uniform(bounds[:, 0], bounds[:, 1], size=(3, bounds.shape[0]))\n    y = np.array([objective(x) for x in X])\n    for _ in range(n_iters):\n        gp = GaussianProcessRegressor(kernel=Matern(nu=2.5), alpha=1e-6, random_state=42)\n        gp.fit(X, y)\n        # Search space dense grid\n        grid = np.linspace(bounds[0, 0], bounds[0, 1], 100).reshape(-1, 1)\n        mu, std = gp.predict(grid, return_std=True)\n        acquisition = mu + 1.96 * std\n        next_x = grid[np.argmax(acquisition)]\n        next_y = objective(next_x)\n        X = np.vstack([X, next_x])\n        y = np.append(y, next_y)\n    best_idx = np.argmax(y)\n    return X[best_idx], y[best_idx]'
+    )
+
+    step_7 = ExerciseStep(
+        ch20_s4_easy_check,
+        "Use: GridSearchCV(estimator=DecisionTreeClassifier(), param_grid={'max_depth': [3, 5]}, cv=3).",
+        "grid_search = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid={'max_depth': [3, 5]}, cv=3)"
+    )
+    step_8 = ExerciseStep(
+        ch20_s5_easy_check,
+        "Use: RandomizedSearchCV(estimator=DecisionTreeClassifier(), param_distributions={'max_depth': [2, 4, 6]}, n_iter=3, cv=3, random_state=42).",
+        "random_search = RandomizedSearchCV(estimator=DecisionTreeClassifier(), param_distributions={'max_depth': [2, 4, 6]}, n_iter=3, cv=3, random_state=42)"
     )
 
 ch20 = Ch20()
@@ -2373,6 +2894,17 @@ class Ch21:
         ch21_s3_check,
         'Loop over epochs. For each epoch, run environment steps, select epsilon-greedy actions, and perform Bellman Q-value updates.',
         'def train_q_learning(epochs=100, alpha=0.1, gamma=0.9, epsilon=0.1):\n    q_table = np.zeros((16, 4))\n    for epoch in range(epochs):\n        rng = np.random.RandomState(epoch)\n        state = 0\n        done = False\n        steps = 0\n        while not done and steps < 50:\n            action = select_action(q_table, state, epsilon, rng)\n            next_state, reward, done = gridworld_step(state, action)\n            max_next_q = np.max(q_table[next_state])\n            q_table[state, action] = bellman_update(q_table[state, action], reward, max_next_q, alpha, gamma)\n            state = next_state\n            steps += 1\n    return q_table'
+    )
+
+    step_7 = ExerciseStep(
+        ch21_s4_easy_check,
+        'Use: np.zeros((num_states, num_actions)).',
+        'q_table = np.zeros((num_states, num_actions))'
+    )
+    step_8 = ExerciseStep(
+        ch21_s5_easy_check,
+        'Since rand_val < epsilon (0.05 < 0.2), choose a random action using rng.choice(num_actions). Otherwise argmax(q_values).',
+        'rng = np.random.RandomState(42)\nif rand_val < epsilon:\n    selected_action = rng.choice(num_actions)\nelse:\n    selected_action = np.argmax(q_values)'
     )
 
 ch21 = Ch21()
@@ -2491,6 +3023,17 @@ class Ch22:
         'from scipy.signal import convolve2d\ndef cnn_forward(img, conv_kernel, pool_size, dense_weights, dense_bias):\n    conv_out = convolve2d(img, conv_kernel, mode="valid")\n    relu_out = np.maximum(0, conv_out)\n    # Reuse max pool logic\n    h, w = relu_out.shape\n    out_h, out_w = h // pool_size, w // pool_size\n    pooled = np.zeros((out_h, out_w))\n    for i in range(out_h):\n        for j in range(out_w):\n            pooled[i, j] = np.max(relu_out[i*pool_size:(i+1)*pool_size, j*pool_size:(j+1)*pool_size])\n    flat = pooled.flatten()\n    dense_out = np.dot(flat, dense_weights) + dense_bias\n    exp_vals = np.exp(dense_out - np.max(dense_out))\n    return exp_vals / np.sum(exp_vals)'
     )
 
+    step_7 = ExerciseStep(
+        ch22_s4_easy_check,
+        "Use: Sequential([Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1))]).",
+        "cnn_model = Sequential([Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1))])"
+    )
+    step_8 = ExerciseStep(
+        ch22_s5_easy_check,
+        'Call maxpool_model.add(MaxPooling2D(pool_size=(2, 2))).',
+        "maxpool_model = Sequential([\n    Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1))\n])\nmaxpool_model.add(MaxPooling2D(pool_size=(2, 2)))"
+    )
+
 ch22 = Ch22()
 
 
@@ -2595,6 +3138,17 @@ class Ch23:
         ch23_s3_check,
         'For each node, generate walks using random neighbor transition choices. If a node has no neighbors, stay on the current node.',
         'def generate_random_walks(adj_matrix, walk_length=5, num_walks=10, random_state=42):\n    rng = np.random.RandomState(random_state)\n    N = adj_matrix.shape[0]\n    walks = []\n    for node in range(N):\n        for _ in range(num_walks):\n            walk = [node]\n            curr = node\n            for _ in range(walk_length - 1):\n                neighbors = np.where(adj_matrix[curr] > 0)[0]\n                if len(neighbors) > 0:\n                    curr = rng.choice(neighbors)\n                walk.append(curr)\n            walks.append(walk)\n    return np.array(walks)'
+    )
+
+    step_7 = ExerciseStep(
+        ch23_s4_easy_check,
+        'Use: nx.degree_centrality(G).',
+        'deg_centrality = nx.degree_centrality(G)'
+    )
+    step_8 = ExerciseStep(
+        ch23_s5_easy_check,
+        'Use: nx.adjacency_matrix(G).toarray().',
+        'adj_matrix = nx.adjacency_matrix(G).toarray()'
     )
 
 ch23 = Ch23()
@@ -2716,6 +3270,17 @@ class Ch24:
         'def shapley_value_feature_0(val_fn):\n    # v(S U {0}) - v(S) for subsets of {1, 2}\n    val_empty = (val_fn((0,)) - val_fn(())) * (1.0/3.0)\n    val_1 = (val_fn((0, 1)) - val_fn((1,))) * (1.0/6.0)\n    val_2 = (val_fn((0, 2)) - val_fn((2,))) * (1.0/6.0)\n    val_1_2 = (val_fn((0, 1, 2)) - val_fn((1, 2))) * (1.0/3.0)\n    return val_empty + val_1 + val_2 + val_1_2'
     )
 
+    step_7 = ExerciseStep(
+        ch24_s4_easy_check,
+        'Use: trained_linear_model.coef_.',
+        'coef_weights = trained_linear_model.coef_'
+    )
+    step_8 = ExerciseStep(
+        ch24_s5_easy_check,
+        'Use: shap.TreeExplainer(trained_rf_interpret).',
+        'import shap\nexplainer = shap.TreeExplainer(trained_rf_interpret)'
+    )
+
 ch24 = Ch24()
 
 
@@ -2726,10 +3291,10 @@ ch24 = Ch24()
 def proj1_s1_check(func):
     if not callable(func): return "Input must be a function."
     try:
-        rate = func('/root/notebooks/Python/Jupyter-Exercises/data/customer_churn.csv')
+        rate = func("data/customer_churn.csv")
     except Exception as e:
         return f"Error executing function: {str(e)}"
-    df = pd.read_csv('/root/notebooks/Python/Jupyter-Exercises/data/customer_churn.csv')
+    df = pd.read_csv("data/customer_churn.csv")
     expected = df['Churn'].mean()
     if not np.isclose(rate, expected):
         return f"Expected churn rate {expected:.4f}, but got {rate}."
@@ -2788,6 +3353,43 @@ def proj1_s4_check(func):
         return f"Expected threshold around 0.3 or 0.4, got {best_thresh}."
     return True
 
+def proj1_s5_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        X, y = func("data/titanic.csv")
+    except Exception as e:
+        return f"Error executing preprocess_titanic: {str(e)}"
+    df = pd.read_csv("data/titanic.csv")
+    expected_age = df['Age'].fillna(df['Age'].median())
+    expected_sex = df['Sex'].map({'male': 0, 'female': 1})
+    expected_y = df['Survived'].values
+    if not isinstance(X, pd.DataFrame): return "X must be a pandas DataFrame."
+    if 'PassengerId' in X.columns or 'Embarked' in X.columns or 'Survived' in X.columns:
+        return "X should not contain PassengerId, Embarked, or Survived columns."
+    if not np.allclose(X['Age'].values, expected_age.values, equal_nan=True):
+        return "Imputed Age values are incorrect."
+    if not np.allclose(X['Sex'].values, expected_sex.values):
+        return "Sex mapping is incorrect."
+    if not np.array_equal(y, expected_y):
+        return "Target array y is incorrect."
+    return True
+
+def proj1_s6_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(80, 4)
+    y_train = np.random.randint(0, 2, 80)
+    X_test = np.random.randn(20, 4)
+    y_test = np.random.randint(0, 2, 20)
+    try:
+        model, acc = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error executing train_titanic_svm: {str(e)}"
+    from sklearn.svm import SVC
+    if not isinstance(model, SVC): return "Model must be a Support Vector Classifier (SVC)."
+    if model.kernel != 'rbf': return "SVC must use the RBF kernel."
+    if not isinstance(acc, (float, np.floating)): return "test_accuracy must be a float."
+    return True
+
 class Proj1:
     step_1 = ExerciseStep(
         proj1_s1_check,
@@ -2809,6 +3411,16 @@ class Proj1:
         'Loop over thresholds from 0.1 to 0.9. Convert probs to predictions, calculate f1_score, and keep track of the max.',
         'from sklearn.metrics import f1_score\ndef tune_threshold(y_true, probs):\n    best_f1 = -1\n    best_thresh = None\n    for t in np.arange(0.1, 1.0, 0.1):\n        preds = (probs >= t).astype(int)\n        score = f1_score(y_true, preds)\n        if score > best_f1:\n            best_f1 = score\n            best_thresh = t\n    return best_thresh, best_f1'
     )
+    step_5 = ExerciseStep(
+        proj1_s5_check,
+        'Load csv, fillna Age with median, map Sex, drop PassengerId and Embarked, return X (df) and y (array).',
+        'def preprocess_titanic(file_path):\n    df = pd.read_csv(file_path)\n    df["Age"] = df["Age"].fillna(df["Age"].median())\n    df["Sex"] = df["Sex"].map({"male": 0, "female": 1})\n    X = df.drop(columns=["PassengerId", "Embarked", "Survived"])\n    y = df["Survived"].values\n    return X, y'
+    )
+    step_6 = ExerciseStep(
+        proj1_s6_check,
+        'Fit SVC(kernel="rbf", C=1.0, random_state=42) on X_train and evaluate accuracy on test.',
+        'from sklearn.svm import SVC\nfrom sklearn.metrics import accuracy_score\ndef train_titanic_svm(X_train, X_test, y_train, y_test):\n    model = SVC(kernel="rbf", C=1.0, random_state=42)\n    model.fit(X_train, y_train)\n    preds = model.predict(X_test)\n    acc = accuracy_score(y_test, preds)\n    return model, acc'
+    )
 
 proj1 = Proj1()
 
@@ -2820,7 +3432,7 @@ proj1 = Proj1()
 def proj2_s1_check(func):
     if not callable(func): return "Input must be a function."
     try:
-        df = func('/root/notebooks/Python/Jupyter-Exercises/data/housing.csv')
+        df = func('data/housing.csv')
     except Exception as e:
         return f"Error running engineer_housing_features: {str(e)}"
     if not isinstance(df, pd.DataFrame): return "Expected output to be a pandas DataFrame."
@@ -2863,6 +3475,60 @@ def proj2_s3_check(func):
         return f"max_depth {best_params['max_depth']} is out of bounds [3, 10]."
     return True
 
+def proj2_s4_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(50, 4)
+    y_train = X_train[:, 0] * 3.0 + np.random.randn(50) * 0.1
+    X_test = np.random.randn(15, 4)
+    y_test = X_test[:, 0] * 3.0 + np.random.randn(15) * 0.1
+    try:
+        model, r2 = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error executing baseline_regression: {str(e)}"
+    from sklearn.linear_model import LinearRegression
+    if not isinstance(model, LinearRegression): return "Model must be a LinearRegression instance."
+    if not isinstance(r2, (float, np.floating)): return "R2 score must be a float."
+    return True
+
+def proj2_s5_check(func):
+    if not callable(func): return "Input must be a function."
+    X = np.array([
+        [1.0, 0.0, 100.0],
+        [2.0, 0.0, 200.0],
+        [3.0, 0.0, 300.0],
+        [4.0, 0.0, 400.0]
+    ])
+    y = np.array([10.0, 20.0, 30.0, 40.0])
+    feature_names = ['feat1', 'feat2', 'feat3']
+    try:
+        selected = func(X, y, feature_names)
+    except Exception as e:
+        return f"Error executing lasso_feature_selection: {str(e)}"
+    if not isinstance(selected, list): return "Expected output to be a list."
+    from sklearn.linear_model import Lasso
+    m = Lasso(alpha=10.0, random_state=42).fit(X, y)
+    expected = [feature_names[i] for i in np.where(m.coef_ != 0)[0]]
+    if selected != expected:
+        return f"Expected {expected}, got {selected}."
+    return True
+
+def proj2_s6_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(50, 4)
+    y_train = np.random.randn(50)
+    X_test = np.random.randn(15, 4)
+    y_test = np.random.randn(15)
+    try:
+        model, r2 = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error executing train_gbdt: {str(e)}"
+    from sklearn.ensemble import GradientBoostingRegressor
+    if not isinstance(model, GradientBoostingRegressor): return "Model must be a GradientBoostingRegressor."
+    if model.n_estimators != 50 or model.max_depth != 4:
+        return "GradientBoostingRegressor must have n_estimators=50 and max_depth=4."
+    if not isinstance(r2, (float, np.floating)): return "R2 score must be a float."
+    return True
+
 class Proj2:
     step_1 = ExerciseStep(
         proj2_s1_check,
@@ -2878,6 +3544,21 @@ class Proj2:
         proj2_s3_check,
         'Define objective taking a trial. Suggest n_estimators (10..50) and max_depth (3..10). Cross-validate and return mean R2 or negative MSE. Optimize study for 20 trials.',
         'import optuna\nfrom sklearn.ensemble import RandomForestRegressor\nfrom sklearn.model_selection import cross_val_score\ndef optuna_tune_rf(X_train, y_train):\n    def objective(trial):\n        n_est = trial.suggest_int("n_estimators", 10, 50)\n        depth = trial.suggest_int("max_depth", 3, 10)\n        model = RandomForestRegressor(n_estimators=n_est, max_depth=depth, random_state=42)\n        score = np.mean(cross_val_score(model, X_train, y_train, cv=3))\n        return score\n    study = optuna.create_study(direction="maximize")\n    study.optimize(objective, n_trials=20)\n    return study.best_params'
+    )
+    step_4 = ExerciseStep(
+        proj2_s4_check,
+        'Fit default LinearRegression() and evaluate R2 score on test.',
+        'from sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import r2_score\ndef baseline_regression(X_train, X_test, y_train, y_test):\n    model = LinearRegression()\n    model.fit(X_train, y_train)\n    preds = model.predict(X_test)\n    r2 = r2_score(y_test, preds)\n    return model, r2'
+    )
+    step_5 = ExerciseStep(
+        proj2_s5_check,
+        'Fit Lasso(alpha=10.0, random_state=42) and return list of features with non-zero coefficients.',
+        'from sklearn.linear_model import Lasso\ndef lasso_feature_selection(X, y, feature_names):\n    model = Lasso(alpha=10.0, random_state=42)\n    model.fit(X, y)\n    non_zero = np.where(model.coef_ != 0)[0]\n    return [feature_names[i] for i in non_zero]'
+    )
+    step_6 = ExerciseStep(
+        proj2_s6_check,
+        'Fit GradientBoostingRegressor(n_estimators=50, max_depth=4, random_state=42) and evaluate R2 on test.',
+        'from sklearn.ensemble import GradientBoostingRegressor\nfrom sklearn.metrics import r2_score\ndef train_gbdt(X_train, X_test, y_train, y_test):\n    model = GradientBoostingRegressor(n_estimators=50, max_depth=4, random_state=42)\n    model.fit(X_train, y_train)\n    preds = model.predict(X_test)\n    r2 = r2_score(y_test, preds)\n    return model, r2'
     )
 
 proj2 = Proj2()
@@ -2902,10 +3583,10 @@ def proj3_s1_check(func):
 def proj3_s2_check(func):
     if not callable(func): return "Input must be a function."
     try:
-        X, y = func('/root/notebooks/Python/Jupyter-Exercises/data/text_sentiment.csv')
+        X, y = func('data/text_sentiment.csv')
     except Exception as e:
         return f"Error running extract_tfidf_features: {str(e)}"
-    df = pd.read_csv('/root/notebooks/Python/Jupyter-Exercises/data/text_sentiment.csv')
+    df = pd.read_csv('data/text_sentiment.csv')
     if X.shape[0] != len(df) or X.shape[1] > 100:
         return f"Expected feature matrix shape ({len(df)}, <=100), got {X.shape}."
     if len(y) != len(df):
@@ -2954,6 +3635,35 @@ def proj3_s4_check(func):
         return f"Feature 0 is key, its drop should be positive, got {importances[0]}."
     return True
 
+def proj3_s5_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(80, 20)
+    y_train = np.random.randint(0, 2, 80)
+    X_test = np.random.randn(20, 20)
+    y_test = np.random.randint(0, 2, 20)
+    try:
+        model, acc = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error executing train_logistic_regression: {str(e)}"
+    from sklearn.linear_model import LogisticRegression
+    if not isinstance(model, LogisticRegression): return "Model must be a LogisticRegression instance."
+    if not isinstance(acc, (float, np.floating)): return "Accuracy must be a float."
+    return True
+
+def proj3_s6_check(func):
+    if not callable(func): return "Input must be a function."
+    class DummyLR:
+        coef_ = np.array([[0.1, 0.9, -0.4, 1.2, 0.5]])
+    feature_names = ['word0', 'word1', 'word2', 'word3', 'word4']
+    try:
+        top_words = func(DummyLR(), feature_names, top_n=3)
+    except Exception as e:
+        return f"Error executing get_top_positive_words: {str(e)}"
+    expected = ['word3', 'word1', 'word4']
+    if top_words != expected:
+        return f"Expected {expected}, got {top_words}."
+    return True
+
 class Proj3:
     step_1 = ExerciseStep(
         proj3_s1_check,
@@ -2975,7 +3685,518 @@ class Proj3:
         'Calculate baseline accuracy, shuffle each column index in a copy of X_test, calculate accuracy, and record the difference.',
         'from sklearn.metrics import accuracy_score\ndef sentiment_feature_importance(model, X_test, y_test):\n    baseline_acc = accuracy_score(y_test, model.predict(X_test))\n    importances = {}\n    rng = np.random.RandomState(42)\n    for col in range(X_test.shape[1]):\n        X_temp = X_test.copy()\n        shuffled_col = X_temp[:, col].copy()\n        rng.shuffle(shuffled_col)\n        X_temp[:, col] = shuffled_col\n        shuffled_acc = accuracy_score(y_test, model.predict(X_temp))\n        importances[col] = baseline_acc - shuffled_acc\n    return importances'
     )
+    step_5 = ExerciseStep(
+        proj3_s5_check,
+        'Fit LogisticRegression(random_state=42) on X_train and evaluate accuracy on test.',
+        'from sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score\ndef train_logistic_regression(X_train, X_test, y_train, y_test):\n    model = LogisticRegression(random_state=42)\n    model.fit(X_train, y_train)\n    preds = model.predict(X_test)\n    acc = accuracy_score(y_test, preds)\n    return model, acc'
+    )
+    step_6 = ExerciseStep(
+        proj3_s6_check,
+        'Extract coefficients, find top positive words, and return their names in sorted list.',
+        'def get_top_positive_words(model, feature_names, top_n=5):\n    coefs = model.coef_[0]\n    top_indices = np.argsort(coefs)[::-1][:top_n]\n    return [feature_names[i] for i in top_indices]'
+    )
 
 proj3 = Proj3()
 
 
+
+
+# ==========================================
+# --- PROJECT 4: IRIS CLASSIFICATION -------
+# ==========================================
+
+def proj4_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        shape, counts = func("data/iris.csv")
+    except Exception as e:
+        return f"Error executing load_iris_data: {str(e)}"
+    import pandas as pd
+    df = pd.read_csv("data/iris.csv")
+    expected_shape = df.shape
+    expected_counts = df['Species'].value_counts()
+    if shape != expected_shape:
+        return f"Expected shape {expected_shape}, got {shape}."
+    if not counts.equals(expected_counts):
+        return f"Expected species counts:\n{expected_counts}\n\nGot:\n{counts}"
+    return True
+
+def proj4_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    import pandas as pd
+    df = pd.DataFrame({'Species': ['setosa', 'versicolor', 'virginica', 'setosa']})
+    try:
+        encoded = func(df)
+    except Exception as e:
+        return f"Error running encode_species: {str(e)}"
+    expected = np.array([0, 1, 2, 0])
+    if not np.array_equal(encoded, expected):
+        return f"Expected {expected}, got {encoded}."
+    return True
+
+def proj4_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    import pandas as pd
+    df = pd.DataFrame({
+        'SepalLength': [5.0, 6.0, 7.0],
+        'SepalWidth': [3.0, 2.5, 3.2],
+        'PetalLength': [1.5, 4.0, 6.0],
+        'PetalWidth': [0.2, 1.3, 2.0],
+        'Species': ['setosa', 'versicolor', 'virginica']
+    })
+    try:
+        X_scaled, y = func(df)
+    except Exception as e:
+        return f"Error running scale_iris_features: {str(e)}"
+    if not isinstance(X_scaled, np.ndarray): return "X_scaled must be a numpy array."
+    if X_scaled.shape != (3, 4): return f"Expected feature shape (3, 4), got {X_scaled.shape}."
+    if not np.isclose(np.mean(X_scaled, axis=0), 0.0).all():
+        return "Features are not standard scaled to 0 mean."
+    if not np.array_equal(y, np.array(['setosa', 'versicolor', 'virginica'])):
+        return "Species labels array y is incorrect."
+    return True
+
+def proj4_s4_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(80, 4)
+    y_train = np.random.randint(0, 3, 80)
+    X_test = np.random.randn(20, 4)
+    y_test = np.random.randint(0, 3, 20)
+    try:
+        model, acc = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error running train_iris_dt: {str(e)}"
+    from sklearn.tree import DecisionTreeClassifier
+    if not isinstance(model, DecisionTreeClassifier): return "Model must be a DecisionTreeClassifier."
+    if model.max_depth != 3: return "DecisionTreeClassifier must have max_depth=3."
+    if not isinstance(acc, (float, np.floating)): return "Accuracy must be a float."
+    return True
+
+def proj4_s5_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(80, 4)
+    y_train = np.random.randint(0, 3, 80)
+    X_test = np.random.randn(20, 4)
+    y_test = np.random.randint(0, 3, 20)
+    try:
+        acc = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error running train_iris_nb: {str(e)}"
+    if not isinstance(acc, (float, np.floating)): return "Accuracy must be a float."
+    return True
+
+def proj4_s6_check(func):
+    if not callable(func): return "Input must be a function."
+    y_true = np.array([0, 0, 1, 1, 2, 2])
+    y_pred = np.array([0, 1, 1, 1, 2, 0])
+    try:
+        f1s = func(y_true, y_pred)
+    except Exception as e:
+        return f"Error running get_multiclass_metrics: {str(e)}"
+    if not isinstance(f1s, dict): return "Expected a dictionary mapping class label to F1-score."
+    from sklearn.metrics import precision_recall_fscore_support
+    p, r, f, s = precision_recall_fscore_support(y_true, y_pred, average=None)
+    expected = {0: f[0], 1: f[1], 2: f[2]}
+    for k in expected:
+        if k not in f1s or not np.isclose(f1s[k], expected[k]):
+            return f"Mismatch for class {k}. Expected F1 {expected[k]:.4f}, got {f1s.get(k)}."
+    return True
+
+class Proj4:
+    step_1 = ExerciseStep(
+        proj4_s1_check,
+        'Use pd.read_csv(file_path), then return df.shape and df["Species"].value_counts().',
+        'def load_iris_data(file_path):\n    df = pd.read_csv(file_path)\n    return df.shape, df["Species"].value_counts()'
+    )
+    step_2 = ExerciseStep(
+        proj4_s2_check,
+        'Use df["Species"].map({"setosa": 0, "versicolor": 1, "virginica": 2}).values.',
+        'def encode_species(df):\n    return df["Species"].map({"setosa": 0, "versicolor": 1, "virginica": 2}).values'
+    )
+    step_3 = ExerciseStep(
+        proj4_s3_check,
+        'Separate features X and target y. Fit and transform features with StandardScaler and return (X_scaled, y).',
+        'from sklearn.preprocessing import StandardScaler\ndef scale_iris_features(df):\n    X = df.drop(columns=["Species"])\n    y = df["Species"].values\n    scaler = StandardScaler()\n    X_scaled = scaler.fit_transform(X)\n    return X_scaled, y'
+    )
+    step_4 = ExerciseStep(
+        proj4_s4_check,
+        'Fit DecisionTreeClassifier(max_depth=3, random_state=42) on train data and return (model, accuracy_score(y_test, preds)).',
+        'from sklearn.tree import DecisionTreeClassifier\nfrom sklearn.metrics import accuracy_score\ndef train_iris_dt(X_train, X_test, y_train, y_test):\n    model = DecisionTreeClassifier(max_depth=3, random_state=42)\n    model.fit(X_train, y_train)\n    preds = model.predict(X_test)\n    acc = accuracy_score(y_test, preds)\n    return model, acc'
+    )
+    step_5 = ExerciseStep(
+        proj4_s5_check,
+        'Fit GaussianNB() on train data and return accuracy score on test set.',
+        'from sklearn.naive_bayes import GaussianNB\ndef train_iris_nb(X_train, X_test, y_train, y_test):\n    model = GaussianNB()\n    model.fit(X_train, y_train)\n    return model.score(X_test, y_test)'
+    )
+    step_6 = ExerciseStep(
+        proj4_s6_check,
+        'Compute precision, recall, f1-score using precision_recall_fscore_support and map class integers to f1-scores.',
+        'from sklearn.metrics import precision_recall_fscore_support\ndef get_multiclass_metrics(y_true, y_pred):\n    p, r, f, s = precision_recall_fscore_support(y_true, y_pred, average=None)\n    return {i: f[i] for i in range(len(f))}'
+    )
+
+proj4 = Proj4()
+
+
+# ==========================================
+# --- PROJECT 5: CUSTOMER SEGMENTATION -----
+# ==========================================
+
+def proj5_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        scaled = func("data/customer_churn.csv")
+    except Exception as e:
+        return f"Error executing get_clustering_data: {str(e)}"
+    if not isinstance(scaled, np.ndarray): return "Output must be a numpy array."
+    import pandas as pd
+    df = pd.read_csv("data/customer_churn.csv")
+    expected_cols = df.shape[1] - 2
+    if scaled.shape[1] != expected_cols:
+        return f"Expected {expected_cols} feature columns, got {scaled.shape[1]}."
+    if not np.isclose(scaled.min(), 0.0) or not np.isclose(scaled.max(), 1.0):
+        return "Features do not appear to be MinMaxScaler scaled to [0, 1] range."
+    return True
+
+def proj5_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    X = np.random.rand(50, 4)
+    try:
+        inertias = func(X, max_k=4)
+    except Exception as e:
+        return f"Error running calculate_elbow_inertia: {str(e)}"
+    if not isinstance(inertias, list): return "Expected a list of inertias."
+    if len(inertias) != 4: return f"Expected 4 inertia values, got {len(inertias)}."
+    return True
+
+def proj5_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    X = np.random.rand(50, 4)
+    try:
+        labels = func(X, k=3)
+    except Exception as e:
+        return f"Error running train_kmeans: {str(e)}"
+    if not isinstance(labels, np.ndarray): return "Output labels must be a numpy array."
+    if len(labels) != 50: return f"Expected 50 labels, got {len(labels)}."
+    unique = np.unique(labels)
+    if not set(unique).issubset({0, 1, 2}):
+        return f"Cluster labels should be integers from 0 to 2, got {unique}."
+    return True
+
+def proj5_s4_check(func):
+    if not callable(func): return "Input must be a function."
+    X = np.array([[1.0, 1.0], [1.1, 1.1], [5.0, 5.0], [5.1, 5.1]])
+    labels = np.array([0, 0, 1, 1])
+    try:
+        score = func(X, labels)
+    except Exception as e:
+        return f"Error running evaluate_silhouette: {str(e)}"
+    from sklearn.metrics import silhouette_score
+    expected = silhouette_score(X, labels)
+    if not np.isclose(score, expected):
+        return f"Expected silhouette score {expected:.4f}, got {score}."
+    return True
+
+def proj5_s5_check(func):
+    if not callable(func): return "Input must be a function."
+    X = np.random.rand(50, 4)
+    try:
+        X_pca = func(X, n_components=2)
+    except Exception as e:
+        return f"Error running apply_pca: {str(e)}"
+    if not isinstance(X_pca, np.ndarray): return "Output must be a numpy array."
+    if X_pca.shape != (50, 2): return f"Expected shape (50, 2), got {X_pca.shape}."
+    return True
+
+def proj5_s6_check(func):
+    if not callable(func): return "Input must be a function."
+    import pandas as pd
+    df = pd.DataFrame({
+        'Age': [20, 30, 40],
+        'Tenure': [5, 10, 15]
+    })
+    labels = np.array([0, 1, 0])
+    try:
+        profiles = func(df, labels)
+    except Exception as e:
+        return f"Error running get_cluster_profiles: {str(e)}"
+    if not isinstance(profiles, pd.DataFrame): return "Expected a pandas DataFrame."
+    if profiles.shape[0] != 2: return f"Expected 2 rows (for 2 clusters), got {profiles.shape[0]}."
+    return True
+
+class Proj5:
+    step_1 = ExerciseStep(
+        proj5_s1_check,
+        'Load csv, drop CustomerID and Churn, apply MinMaxScaler and return dense scaled array.',
+        'from sklearn.preprocessing import MinMaxScaler\ndef get_clustering_data(file_path):\n    df = pd.read_csv(file_path)\n    X = df.drop(columns=["CustomerID", "Churn"])\n    scaler = MinMaxScaler()\n    return scaler.fit_transform(X)'
+    )
+    step_2 = ExerciseStep(
+        proj5_s2_check,
+        'Loop k from 1 to max_k, train KMeans(n_clusters=k, random_state=42) and record inertia_.',
+        'from sklearn.cluster import KMeans\ndef calculate_elbow_inertia(X, max_k=6):\n    return [KMeans(n_clusters=k, random_state=42).fit(X).inertia_ for k in range(1, max_k + 1)]'
+    )
+    step_3 = ExerciseStep(
+        proj5_s3_check,
+        'Fit KMeans(n_clusters=k, random_state=42) and return its labels_ array.',
+        'from sklearn.cluster import KMeans\ndef train_kmeans(X, k=3):\n    model = KMeans(n_clusters=k, random_state=42)\n    model.fit(X)\n    return model.labels_'
+    )
+    step_4 = ExerciseStep(
+        proj5_s4_check,
+        'Compute silhouette_score using sklearn.metrics.',
+        'from sklearn.metrics import silhouette_score\ndef evaluate_silhouette(X, labels):\n    return silhouette_score(X, labels)'
+    )
+    step_5 = ExerciseStep(
+        proj5_s5_check,
+        'Fit PCA(n_components=n_components) and transform features.',
+        'from sklearn.decomposition import PCA\ndef apply_pca(X, n_components=2):\n    return PCA(n_components=n_components).fit_transform(X)'
+    )
+    step_6 = ExerciseStep(
+        proj5_s6_check,
+        'Assign Cluster labels to df, group by Cluster, and return the feature means DataFrame.',
+        'def get_cluster_profiles(df, labels):\n    df_copy = df.copy()\n    df_copy["Cluster"] = labels\n    return df_copy.groupby("Cluster").mean()'
+    )
+
+proj5 = Proj5()
+
+
+# ==========================================
+# --- PROJECT 6: DAILY SALES FORECASTING ---
+# ==========================================
+
+def proj6_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        series = func("data/daily_sales.csv")
+    except Exception as e:
+        return f"Error executing load_sales_data: {str(e)}"
+    import pandas as pd
+    if not isinstance(series, pd.Series): return "Expected output to be a pandas Series."
+    if not isinstance(series.index, pd.DatetimeIndex): return "Series index must be a DatetimeIndex."
+    if len(series) != 365: return f"Expected 365 sales records, got {len(series)}."
+    return True
+
+def proj6_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    import pandas as pd
+    s = pd.Series([10.0, 20.0, 30.0, 40.0])
+    try:
+        mean, std = func(s, window=2)
+    except Exception as e:
+        return f"Error running compute_rolling_sales: {str(e)}"
+    if not isinstance(mean, pd.Series) or not isinstance(std, pd.Series):
+        return "Outputs must be pandas Series."
+    expected_mean = s.rolling(window=2).mean()
+    expected_std = s.rolling(window=2).std()
+    if not np.allclose(mean.dropna().values, expected_mean.dropna().values):
+        return "Rolling mean values are incorrect."
+    if not np.allclose(std.dropna().values, expected_std.dropna().values):
+        return "Rolling standard deviation values are incorrect."
+    return True
+
+def proj6_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    s = pd.Series(np.random.normal(0, 1, 100))
+    try:
+        p_val = func(s)
+    except Exception as e:
+        return f"Error running check_sales_stationarity: {str(e)}"
+    from statsmodels.tsa.stattools import adfuller
+    expected = adfuller(s)[1]
+    if not np.isclose(p_val, expected):
+        return f"Expected p-value {expected:.4f}, got {p_val}."
+    return True
+
+def proj6_s4_check(func):
+    if not callable(func): return "Input must be a function."
+    s = pd.Series([1, 2, 4, 7])
+    try:
+        diff = func(s, order=1)
+    except Exception as e:
+        return f"Error running difference_sales: {str(e)}"
+    expected = s.diff(1).dropna()
+    if not np.array_equal(diff.values, expected.values):
+        return f"Expected {expected.values}, got {diff.values}."
+    return True
+
+def proj6_s5_check(func):
+    if not callable(func): return "Input must be a function."
+    s = pd.Series(np.random.normal(10, 1, 50))
+    try:
+        model = func(s, order=(1,0,0))
+    except Exception as e:
+        return f"Error running fit_arima_sales: {str(e)}"
+    from statsmodels.tsa.arima.model import ARIMAResultsWrapper
+    if not isinstance(model, ARIMAResultsWrapper):
+        return "Expected fitted ARIMA model results."
+    return True
+
+def proj6_s6_check(func):
+    if not callable(func): return "Input must be a function."
+    y_true = np.array([100.0, 200.0])
+    y_pred = np.array([90.0, 220.0])
+    try:
+        mape = func(y_true, y_pred)
+    except Exception as e:
+        return f"Error running evaluate_forecast_mape: {str(e)}"
+    expected = np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+    if not np.isclose(mape, expected):
+        return f"Expected MAPE {expected:.4f}%, got {mape:.4f}%."
+    return True
+
+class Proj6:
+    step_1 = ExerciseStep(
+        proj6_s1_check,
+        'Load csv, parse Date, set index Date, and return the Sales Series.',
+        'def load_sales_data(file_path):\n    df = pd.read_csv(file_path)\n    df["Date"] = pd.to_datetime(df["Date"])\n    df.set_index("Date", inplace=True)\n    return df["Sales"]'
+    )
+    step_2 = ExerciseStep(
+        proj6_s2_check,
+        'Use rolling(window=window).mean() and rolling(window=window).std().',
+        'def compute_rolling_sales(series, window=7):\n    return series.rolling(window).mean(), series.rolling(window).std()'
+    )
+    step_3 = ExerciseStep(
+        proj6_s3_check,
+        'Use adfuller(series) from statsmodels.tsa.stattools and return p-value at index 1.',
+        'from statsmodels.tsa.stattools import adfuller\ndef check_sales_stationarity(series):\n    return adfuller(series)[1]'
+    )
+    step_4 = ExerciseStep(
+        proj6_s4_check,
+        'Use series.diff(order).dropna().',
+        'def difference_sales(series, order=1):\n    return series.diff(order).dropna()'
+    )
+    step_5 = ExerciseStep(
+        proj6_s5_check,
+        'Instantiate ARIMA(series, order=order) and call fit().',
+        'from statsmodels.tsa.arima.model import ARIMA\ndef fit_arima_sales(series, order=(1,1,1)):\n    model = ARIMA(series, order=order)\n    return model.fit()'
+    )
+    step_6 = ExerciseStep(
+        proj6_s6_check,
+        'Calculate mean absolute percentage error as float percentage value.',
+        'def evaluate_forecast_mape(y_true, y_pred):\n    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100'
+    )
+
+proj6 = Proj6()
+
+
+# ==========================================
+# --- PROJECT 7: FRAUD DETECTION -----------
+# ==========================================
+
+def proj7_s1_check(func):
+    if not callable(func): return "Input must be a function."
+    try:
+        ratio = func("data/credit_card_fraud.csv")
+    except Exception as e:
+        return f"Error executing get_fraud_ratio: {str(e)}"
+    import pandas as pd
+    df = pd.read_csv("data/credit_card_fraud.csv")
+    expected = (df['Class'] == 1).mean()
+    if not np.isclose(ratio, expected):
+        return f"Expected ratio {expected:.4f}, but got {ratio}."
+    return True
+
+def proj7_s2_check(func):
+    if not callable(func): return "Input must be a function."
+    X = np.array([[1, 2], [3, 4], [5, 6], [7, 8]])
+    y = np.array([0, 0, 0, 1])
+    try:
+        X_res, y_res = func(X, y)
+    except Exception as e:
+        return f"Error running random_oversample: {str(e)}"
+    if len(X_res) != 6 or len(y_res) != 6:
+        return f"Expected oversampled dataset to have 6 rows, got {len(X_res)} and {len(y_res)}."
+    counts = np.bincount(y_res)
+    if counts[0] != 3 or counts[1] != 3:
+        return f"Dataset is not balanced. Class counts: {counts.tolist()}."
+    return True
+
+def proj7_s3_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(50, 4)
+    y_train = np.random.randint(0, 2, 50)
+    try:
+        model = func(X_train, y_train)
+    except Exception as e:
+        return f"Error running train_fraud_rf: {str(e)}"
+    from sklearn.ensemble import RandomForestClassifier
+    if not isinstance(model, RandomForestClassifier): return "Model must be a RandomForestClassifier."
+    if model.n_estimators != 10: return "RandomForestClassifier must have n_estimators=10."
+    return True
+
+def proj7_s4_check(func):
+    if not callable(func): return "Input must be a function."
+    class DummyModel:
+        def predict_proba(self, X):
+            return np.column_stack([1 - X[:, 0], X[:, 0]])
+    X_test = np.array([[0.1], [0.8], [0.2], [0.9]])
+    y_test = np.array([0, 1, 0, 1])
+    try:
+        auc_val = func(DummyModel(), X_test, y_test)
+    except Exception as e:
+        return f"Error running get_pr_auc: {str(e)}"
+    from sklearn.metrics import precision_recall_curve, auc
+    probs = DummyModel().predict_proba(X_test)[:, 1]
+    p, r, _ = precision_recall_curve(y_test, probs)
+    expected = auc(r, p)
+    if not np.isclose(auc_val, expected):
+        return f"Expected PR-AUC {expected:.4f}, got {auc_val}."
+    return True
+
+def proj7_s5_check(func):
+    if not callable(func): return "Input must be a function."
+    X_train = np.random.randn(60, 4)
+    y_train = np.random.randint(0, 2, 60)
+    X_test = np.random.randn(20, 4)
+    y_test = np.random.randint(0, 2, 20)
+    try:
+        f1 = func(X_train, X_test, y_train, y_test)
+    except Exception as e:
+        return f"Error running train_cost_sensitive_svm: {str(e)}"
+    if not isinstance(f1, (float, np.floating)): return "Expected F1 score to be a float."
+    return True
+
+def proj7_s6_check(func):
+    if not callable(func): return "Input must be a function."
+    y_true = np.array([0, 0, 1, 1, 1])
+    probs = np.array([0.1, 0.2, 0.4, 0.6, 0.8])
+    try:
+        best_thresh, best_f1 = func(y_true, probs)
+    except Exception as e:
+        return f"Error running optimize_fraud_threshold: {str(e)}"
+    if not isinstance(best_f1, (float, np.floating)): return "Expected best F1 score to be a float."
+    if not any(np.isclose(best_thresh, val) for val in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]):
+        return f"Best threshold {best_thresh} is not in the list [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]."
+    return True
+
+class Proj7:
+    step_1 = ExerciseStep(
+        proj7_s1_check,
+        'Load csv, select Class, and return fraction of 1s.',
+        'def get_fraud_ratio(file_path):\n    df = pd.read_csv(file_path)\n    return (df["Class"] == 1).mean()'
+    )
+    step_2 = ExerciseStep(
+        proj7_s2_check,
+        'Identify indices of 0 and 1 classes. Sample from 1s with replacement until len matches 0s. Concatenate and return.',
+        'def random_oversample(X, y):\n    idx_0 = np.where(y == 0)[0]\n    idx_1 = np.where(y == 1)[0]\n    rng = np.random.RandomState(42)\n    idx_1_resampled = rng.choice(idx_1, size=len(idx_0), replace=True)\n    idx_all = np.concatenate([idx_0, idx_1_resampled])\n    return X[idx_all], y[idx_all]'
+    )
+    step_3 = ExerciseStep(
+        proj7_s3_check,
+        'Fit RandomForestClassifier(n_estimators=10, random_state=42) on X_train and y_train.',
+        'from sklearn.ensemble import RandomForestClassifier\ndef train_fraud_rf(X_train, y_train):\n    model = RandomForestClassifier(n_estimators=10, random_state=42)\n    model.fit(X_train, y_train)\n    return model'
+    )
+    step_4 = ExerciseStep(
+        proj7_s4_check,
+        'Use model.predict_proba(X_test)[:, 1] to calculate precision, recall, and auc from sklearn.metrics.',
+        'from sklearn.metrics import precision_recall_curve, auc\ndef get_pr_auc(model, X_test, y_test):\n    probs = model.predict_proba(X_test)[:, 1]\n    p, r, _ = precision_recall_curve(y_test, probs)\n    return auc(r, p)'
+    )
+    step_5 = ExerciseStep(
+        proj7_s5_check,
+        'Fit SVC(class_weight="balanced", random_state=42) on train and return test macro F1-score.',
+        'from sklearn.svm import SVC\nfrom sklearn.metrics import f1_score\ndef train_cost_sensitive_svm(X_train, X_test, y_train, y_test):\n    model = SVC(class_weight="balanced", random_state=42)\n    model.fit(X_train, y_train)\n    preds = model.predict(X_test)\n    return f1_score(y_test, preds, average="macro")'
+    )
+    step_6 = ExerciseStep(
+        proj7_s6_check,
+        'Loop thresholds [0.1..0.9], convert probs to predictions, calculate f1_score, and return (best_thresh, best_f1).',
+        'from sklearn.metrics import f1_score\ndef optimize_fraud_threshold(y_true, probs):\n    best_f1 = -1\n    best_thresh = None\n    for t in np.arange(0.1, 1.0, 0.1):\n        preds = (probs >= t).astype(int)\n        score = f1_score(y_true, preds)\n        if score > best_f1:\n            best_f1 = score\n            best_thresh = t\n    return best_thresh, best_f1'
+    )
+
+proj7 = Proj7()
