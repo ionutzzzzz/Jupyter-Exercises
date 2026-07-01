@@ -2452,6 +2452,7 @@ class Ch13:
         ch13_s3_check,
         'Compute covariance matrix cov = np.cov(X.T). Inverse is inv_cov = np.linalg.inv(cov). Mean vector is X.mean(0). Calculate sqrt(diff @ inv_cov @ diff) for each row.',
         'def mahalanobis_distance(X):\n    mean = X.mean(axis=0)\n    cov = np.cov(X.T)\n    inv_cov = np.linalg.pinv(cov)\n    dists = []\n    for x in X:\n        diff = x - mean\n        d = np.sqrt(diff.T @ inv_cov @ diff)\n        dists.append(d)\n    return np.array(dists)'
+<<<<<<< HEAD
     )
 
     step_7 = ExerciseStep(
@@ -2463,6 +2464,8 @@ class Ch13:
         ch13_s5_easy_check,
         'Instantiate and apply StandardScaler().fit_transform(X_anom).',
         'X_scaled_anom = StandardScaler().fit_transform(X_anom)'
+=======
+>>>>>>> 90675cf0021a5b7b7a4ac10f4d93c6d191dbcdf9
     )
 
 ch13 = Ch13()
